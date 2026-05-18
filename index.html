@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advice Price Board • Armymimu</title>
+<meta name="description" content="ตรวจสอบราคาสินค้า iPhone, iPad, MacBook จาก Advice แบบ Real-time">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-dot"></div>
+    Advice Price Board
+    <span class="logo-shop">Armymimu</span>
+  </div>
+  <div class="header-right">
+    <div class="profit-badge">
+      <span class="profit-label">กำไร +</span>
+      <input id="profitInput" type="number" value="1000" />
+      <span class="profit-label">บาท</span>
+      <div class="profit-stepper">
+        <button onclick="adjustProfit(100)" title="+100">▲</button>
+        <button onclick="adjustProfit(-100)" title="-100">▼</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="main">
+  <div class="tabs">
+    <button class="tab active" data-tab="iphone" onclick="switchTab('iphone')"><span class="emoji">📱</span> iPhone <span class="count" id="cnt-iphone"></span></button>
+    <button class="tab" data-tab="ipad" onclick="switchTab('ipad')"><span class="emoji">⬛</span> iPad <span class="count" id="cnt-ipad"></span></button>
+    <button class="tab" data-tab="macbook" onclick="switchTab('macbook')"><span class="emoji">💻</span> MacBook <span class="count" id="cnt-macbook"></span></button>
+    <button class="tab" data-tab="android" onclick="switchTab('android')"><span class="emoji">🤖</span> Android <span class="count" id="cnt-android"></span></button>
+  </div>
+  <div id="panels-container"></div>
+</div>
+
+<!-- 3D Product Viewer Modal -->
+<div class="viewer-overlay" id="viewer" onclick="closeViewer(event)">
+  <button class="viewer-close" onclick="closeViewer()">&times;</button>
+  <div class="viewer-card">
+    <div class="viewer-3d-wrap">
+      <div class="viewer-3d-inner" id="viewer3d">
+        <img id="viewerImg" src="" alt="" />
+        <div class="shine"></div>
+        <div class="reflection"></div>
+      </div>
+    </div>
+    <div class="viewer-info">
+      <div class="vi-model" id="viewerModel"></div>
+      <div class="vi-spec" id="viewerSpec"></div>
+      <div class="vi-badges" id="viewerBadges"></div>
+      <div class="vi-prices" id="viewerPrices"></div>
+      <div class="vi-actions">
+        <button class="btn primary" onclick="copyViewerProduct()">📋 ก็อปราคารุ่นนี้</button>
+        <a class="btn" id="viewerLink" href="#" target="_blank">🔗 ดูใน Advice</a>
+      </div>
+    </div>
+  </div>
+  <div class="viewer-hint">🖱️ เลื่อนเมาส์เพื่อดูมุมมอง 3D</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
