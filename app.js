@@ -1,13 +1,6 @@
 const SHOP_NAME = 'Armymimu';
 const categoryData = {};
 const fetchedAt = {};
-
-// ─── API Base: auto-detect local vs production ───
-// เปลี่ยน URL นี้เป็น Render URL ของคุณหลัง deploy backend
-const API_BASE = window.location.hostname === 'localhost'
-  ? ''  // local: relative path
-  : 'https://advice-board-api.onrender.com';  // production: Render backend
-
 const LABELS = { iphone: '📱 iPhone', ipad: '⬛ iPad', macbook: '💻 MacBook', android: '🤖 Android' };
 const CATEGORIES = ['iphone', 'ipad', 'macbook', 'android'];
 const COLOR_MAP = {
@@ -167,7 +160,7 @@ async function fetchCategory(cat, retry = 0) {
   document.getElementById('dot-' + cat).className = 'status-dot loading';
   showLoadingCards(cat);
   try {
-    const resp = await fetch(`${API_BASE}/api/prices/${cat}`);
+    const resp = await fetch(`/api/prices/${cat}`);
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
     const data = await resp.json();
     categoryData[cat] = data.items || [];
