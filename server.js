@@ -36,26 +36,51 @@ async function getToken() {
   console.log('🔑 กำลังขอ Token ใหม่...');
   const launchOptions = {
     headless: 'new',
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-gpu',
+      '--disable-software-rasterizer',
+      '--disable-extensions',
+      '--disable-background-networking',
+      '--disable-default-apps',
+      '--disable-sync',
+      '--disable-translate',
+      '--no-first-run',
+      '--single-process',
+      '--no-zygote',
+      '--js-flags=--max-old-space-size=256'
+    ]
   };
-  // Use Chrome from Docker image if available
   if (process.env.PUPPETEER_EXECUTABLE_PATH) {
     launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
   }
   const browser = await puppeteer.launch(launchOptions);
   const page = await browser.newPage();
 
+  // Block images/CSS/fonts to save memory + capture token from API requests
+  await page.setRequestInterception(true);
   let token = '';
-  page.on('request', (request) => {
-    if (request.url().includes('prodbackadvice') && request.url().includes('product/get') && request.method() === 'POST') {
-      const h = request.headers();
+  page.on('request', (req) => {
+    // Capture token from Advice API calls
+    if (req.url().includes('prodbackadvice') && req.url().includes('product/get') && req.method() === 'POST') {
+      const h = req.headers();
       if (h['authorization'] && !token) {
         token = h['authorization'];
+        console.log('🔑 Token captured from request');
       }
+    }
+    // Block heavy resources
+    const rt = req.resourceType();
+    if (['image', 'stylesheet', 'font', 'media'].includes(rt)) {
+      req.abort();
+    } else {
+      req.continue();
     }
   });
 
-  await page.setViewport({ width: 1366, height: 768 });
+  await page.setViewport({ width: 800, height: 600 });
   await page.goto('https://www.advice.co.th/product/iphone', { waitUntil: 'networkidle2' });
 
   try {
