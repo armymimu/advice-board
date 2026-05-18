@@ -1,21 +1,29 @@
-FROM ghcr.io/puppeteer/puppeteer:24.0.0
+FROM node:20-slim
+
+# Install Chrome dependencies
+RUN apt-get update && apt-get install -y \
+    chromium \
+    fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-khmeros \
+    fonts-kacst fonts-freefont-ttf \
+    --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app
 
-# Copy package files first for better caching
+# Copy package files
 COPY package*.json ./
 
-# Install dependencies
+# Skip Puppeteer's bundled Chrome download since we installed Chromium via apt
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+
 RUN npm ci --omit=dev
 
-# Copy application code
+# Copy app code
 COPY . .
 
-# Expose port
 EXPOSE 10000
-
-# Set environment variables
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
+ENV PORT=10000
 ENV NODE_ENV=production
 
 CMD ["node", "server.js"]
