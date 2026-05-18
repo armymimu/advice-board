@@ -1,0 +1,15 @@
+node_modules
+.git
+.gitignore
+*.json.bak
+test*.js
+check*.js
+find*.js
+fix.js
+inspect*.js
+screenshot*
+advice_html.txt
+*.json
+!package.json
+!package-lock.json
+render.yaml
