@@ -1,113 +1,80 @@
 const express = require('express');
 const cors = require('cors');
-const puppeteer = require('puppeteer-extra');
-const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const axios = require('axios');
-
-puppeteer.use(StealthPlugin());
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// CORS: allow Netlify frontend
-const allowedOrigins = [
-  'http://localhost:3000',
-  'https://subtle-sunflower-2d64f3.netlify.app'
-];
-app.use(cors({
-  origin: (origin, cb) => {
-    if (!origin || allowedOrigins.some(o => origin.startsWith(o))) cb(null, true);
-    else cb(null, true); // allow all for now
-  }
-}));
+app.use(cors());
 app.use(express.static('.'));
 
 // ==========================================
-// Token Management
+// Token Management (ENV-based for production)
 // ==========================================
-let cachedToken = null;
-let tokenExpiry = 0;
+let cachedToken = process.env.ADVICE_TOKEN || null;
+let tokenExpiry = cachedToken ? Date.now() + (90 * 60 * 1000) : 0;
 
 async function getToken() {
   if (cachedToken && Date.now() < tokenExpiry) {
     return cachedToken;
   }
 
+  // Try getting fresh token via direct API call (no auth)
   console.log('🔑 กำลังขอ Token ใหม่...');
-  const launchOptions = {
-    headless: 'new',
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-gpu',
-      '--disable-software-rasterizer',
-      '--disable-extensions',
-      '--disable-background-networking',
-      '--disable-default-apps',
-      '--disable-sync',
-      '--disable-translate',
-      '--no-first-run',
-      '--single-process',
-      '--no-zygote',
-      '--js-flags=--max-old-space-size=256'
-    ]
-  };
-  if (process.env.PUPPETEER_EXECUTABLE_PATH) {
-    launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
-  }
-  const browser = await puppeteer.launch(launchOptions);
-  const page = await browser.newPage();
-
-  // Block images/CSS/fonts to save memory + capture token from API requests
-  await page.setRequestInterception(true);
-  let token = '';
-  page.on('request', (req) => {
-    // Capture token from Advice API calls
-    if (req.url().includes('prodbackadvice') && req.url().includes('product/get') && req.method() === 'POST') {
-      const h = req.headers();
-      if (h['authorization'] && !token) {
-        token = h['authorization'];
-        console.log('🔑 Token captured from request');
-      }
-    }
-    // Block heavy resources
-    const rt = req.resourceType();
-    if (['image', 'stylesheet', 'font', 'media'].includes(rt)) {
-      req.abort();
-    } else {
-      req.continue();
-    }
-  });
-
-  await page.setViewport({ width: 800, height: 600 });
-  await page.goto('https://www.advice.co.th/product/iphone', { waitUntil: 'networkidle2' });
-
+  
   try {
-    await page.waitForSelector('.list-product', { timeout: 15000 });
+    // Try the API directly - sometimes works without token
+    const testResp = await axios.post('https://prodbackadvice.advice.in.th/api/v1.0.0/product/get', {
+      category: 'iphone', category_sub: '', product: '', keyword: '',
+      take: 1, skip: 0, refSearch: '', page: 'product',
+      arr_filter_brand: [], arr_filter_ict: [], arr_filter_price_ict: [],
+      arr_filter_cate: [], addView: false
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Origin': 'https://www.advice.co.th',
+        'Referer': 'https://www.advice.co.th/',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      },
+      timeout: 15000
+    });
+
+    if (testResp.data?.status === 'SUCCESS') {
+      cachedToken = 'DIRECT';
+      tokenExpiry = Date.now() + (60 * 60 * 1000);
+      console.log('✅ API ใช้ได้โดยตรง');
+      return cachedToken;
+    }
   } catch (e) {
-    // Token might still be captured even on timeout
+    console.log('⚠️ Direct call failed, need token from ENV or /api/set-token');
   }
 
-  await browser.close();
-
-  if (token) {
-    cachedToken = token;
-    tokenExpiry = Date.now() + (90 * 60 * 1000); // Cache for 90 minutes
-    console.log('✅ Token ได้รับแล้ว');
-  } else {
-    throw new Error('ไม่สามารถขอ Token ได้');
+  if (!cachedToken) {
+    throw new Error('ต้องตั้ง Token ผ่าน ENV ADVICE_TOKEN หรือ /api/set-token');
   }
-
   return cachedToken;
 }
+
+// Endpoint to update token remotely (from local Puppeteer)
+app.post('/api/set-token', express.json(), (req, res) => {
+  const { token, secret } = req.body;
+  // Simple secret to prevent unauthorized token updates
+  if (secret !== (process.env.TOKEN_SECRET || 'armymimu2024')) {
+    return res.status(403).json({ error: 'Invalid secret' });
+  }
+  if (!token) return res.status(400).json({ error: 'Token required' });
+  
+  cachedToken = token;
+  tokenExpiry = Date.now() + (90 * 60 * 1000);
+  console.log('✅ Token อัพเดทจากภายนอกแล้ว');
+  res.json({ success: true, expiresAt: new Date(tokenExpiry).toISOString() });
+});
 
 // ==========================================
 // Advice API
 // ==========================================
 const API_URL = 'https://prodbackadvice.advice.in.th/api/v1.0.0/product/get';
 
-// Category slug → API category parameter
 const categoryConfigs = {
   iphone: { category: 'iphone', label: 'iPhone' },
   ipad:   { category: 'ipad',   label: 'iPad' },
@@ -117,17 +84,20 @@ const categoryConfigs = {
 
 async function fetchAllProducts(config) {
   const token = await getToken();
+  
   const headers = {
     'Content-Type': 'application/json',
     'Origin': 'https://www.advice.co.th',
     'Referer': 'https://www.advice.co.th/',
-    'Authorization': token,
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36'
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'
   };
+
+  if (token && token !== 'DIRECT') {
+    headers['Authorization'] = token;
+  }
 
   const allProducts = [];
   let skip = 0;
-  let totalFromAPI = null;
 
   while (true) {
     const body = {
@@ -152,28 +122,16 @@ async function fetchAllProducts(config) {
     if (data.status !== 'SUCCESS' || !data.data) break;
 
     const d = data.data;
-
-    // Get total count on first request
-    if (totalFromAPI === null) {
-      // For category mode, count_product in the response tells us how many were returned in this page
-      // The actual total might need us to check the full grouped response
-      // Let's just collect and paginate
-    }
-
-    // Category API returns product as an object with numeric keys (pages)
-    // Each value has { category: {...}, product: [...] }
     const productObj = d.product;
     let pageProducts = [];
 
     if (productObj && typeof productObj === 'object' && !Array.isArray(productObj)) {
-      // Object with numeric keys (category mode)
       for (const [key, pageData] of Object.entries(productObj)) {
         if (pageData.product && Array.isArray(pageData.product)) {
           pageProducts.push(...pageData.product);
         }
       }
     } else if (Array.isArray(productObj)) {
-      // Array mode (search mode) - groups of products
       for (const group of productObj) {
         if (group.product && Array.isArray(group.product)) {
           pageProducts.push(...group.product);
@@ -188,11 +146,8 @@ async function fetchAllProducts(config) {
 
     console.log(`   ดึงแล้ว ${allProducts.length} รายการ`);
 
-    // If returned less than requested, we've reached the end
     if (d.count_product !== undefined && d.count_product <= 100) break;
     if (pageProducts.length < 100) break;
-    
-    // Safety limit
     if (allProducts.length > 2000) break;
   }
 
@@ -212,13 +167,11 @@ app.get('/api/prices/:category', async (req, res) => {
     console.log(`\n🔍 กำลังดึงข้อมูล ${config.label}...`);
     const rawProducts = await fetchAllProducts(config);
 
-    // For Android, exclude Apple products
     let filtered = rawProducts;
     if (category === 'android') {
       filtered = rawProducts.filter(p => (p.brand || '').toUpperCase() !== 'APPLE');
     }
 
-    // Map to clean format
     const items = filtered.map(p => {
       let model = p.product || '';
       let modelCode = '-';
@@ -242,7 +195,7 @@ app.get('/api/prices/:category', async (req, res) => {
       };
     });
 
-    console.log(`✅ ${config.label}: ได้ ${items.length} รุ่น (จากทั้งหมด ${rawProducts.length} รายการ)`);
+    console.log(`✅ ${config.label}: ได้ ${items.length} รุ่น`);
     res.json({ items, total: items.length });
 
   } catch (error) {
@@ -253,18 +206,24 @@ app.get('/api/prices/:category', async (req, res) => {
       tokenExpiry = 0;
     }
 
-    res.status(500).json({ error: 'เกิดข้อผิดพลาดในการดึงข้อมูลจากเว็บ' });
+    res.status(500).json({ error: 'เกิดข้อผิดพลาด - Token อาจหมดอายุ กรุณา refresh token' });
   }
 });
 
-// Pre-warm token
+// Health check
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    hasToken: !!cachedToken,
+    tokenExpires: tokenExpiry > 0 ? new Date(tokenExpiry).toISOString() : 'none'
+  });
+});
+
 app.listen(PORT, async () => {
-  console.log(`🚀 API Server รันแล้วที่ http://localhost:${PORT}`);
-  console.log('📡 กำลังเตรียม Token...');
-  try {
-    await getToken();
-    console.log('✅ พร้อมใช้งาน!');
-  } catch (e) {
-    console.log('⚠️ Token ยังไม่พร้อม จะขอใหม่ตอนมีคำขอแรก');
+  console.log(`🚀 API Server รันแล้วที่ port ${PORT}`);
+  if (cachedToken) {
+    console.log('✅ Token จาก ENV พร้อมใช้งาน!');
+  } else {
+    console.log('⚠️ ยังไม่มี Token - ใช้ /api/set-token เพื่อตั้ง token');
   }
 });
