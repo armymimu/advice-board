@@ -239,6 +239,7 @@ function showLoadingCards(cat) {
 }
 
 async function fetchCategory(cat, retry = 0) {
+  const MAX_RETRIES = 5;
   document.getElementById('dot-' + cat).className = 'status-dot loading';
   showLoadingCards(cat);
   try {
@@ -249,15 +250,25 @@ async function fetchCategory(cat, retry = 0) {
     fetchedAt[cat] = new Date();
     renderCategory(cat);
   } catch(e) {
-    if (retry < 2) {
-      showToast(`โหลดล้มเหลว กำลังลองใหม่... (${retry+1}/2)`, true);
-      setTimeout(() => fetchCategory(cat, retry + 1), 2000);
+    if (retry < MAX_RETRIES) {
+      const delay = Math.min(3000 + retry * 2000, 10000);
+      const msg = retry < 2
+        ? `⏳ กำลังเริ่มระบบ... รอสักครู่ (${retry+1}/${MAX_RETRIES})`
+        : `⟳ กำลังลองใหม่... (${retry+1}/${MAX_RETRIES})`;
+      showToast(msg, false);
+      document.getElementById('submodels-' + cat).innerHTML =
+        `<div class="empty-state">
+          <div class="empty-icon">⏳</div>
+          <div class="empty-title">กำลังเริ่มระบบ...</div>
+          <div class="empty-sub">เซิร์ฟเวอร์กำลัง wake up กรุณารอสักครู่ (${retry+1}/${MAX_RETRIES})</div>
+        </div>`;
+      setTimeout(() => fetchCategory(cat, retry + 1), delay);
     } else {
       document.getElementById('submodels-' + cat).innerHTML =
         `<div class="empty-state" style="border-color:rgba(240,72,72,0.2)">
           <div class="empty-icon">⚠️</div>
           <div class="empty-title" style="color:var(--warning)">เชื่อมต่อไม่ได้</div>
-          <div class="empty-sub">กรุณารันเซิร์ฟเวอร์ก่อน (node server.js)</div>
+          <div class="empty-sub">Token อาจหมดอายุ กรุณากดลองใหม่อีกครั้ง</div>
           <button class="btn primary" onclick="fetchCategory('${cat}')" style="margin-top:16px">⟳ ลองอีกครั้ง</button>
         </div>`;
       document.getElementById('dot-' + cat).className = 'status-dot';
