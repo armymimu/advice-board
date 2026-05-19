@@ -1,5 +1,5 @@
 // ─── PIN LOCK SYSTEM ───
-const CORRECT_PIN = '888888';
+const CORRECT_PIN = '091247';
 let enteredPin = '';
 
 function initPinLock() {
