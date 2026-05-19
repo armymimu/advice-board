@@ -1,3 +1,85 @@
+// ─── PIN LOCK SYSTEM ───
+const CORRECT_PIN = '888888';
+let enteredPin = '';
+
+function initPinLock() {
+  const isUnlocked = localStorage.getItem('armymimu_unlocked') === 'true';
+  const lockScreen = document.getElementById('pin-lock-screen');
+  const appContent = document.getElementById('app-content');
+
+  if (isUnlocked) {
+    lockScreen.style.display = 'none';
+    appContent.style.display = 'block';
+    return;
+  }
+
+  const keys = document.querySelectorAll('.pin-keypad .key[data-num]');
+  const deleteKey = document.getElementById('pin-delete');
+  const dots = document.querySelectorAll('.pin-dots .dot');
+  const dotsContainer = document.querySelector('.pin-dots');
+
+  function updateDots() {
+    dots.forEach((dot, index) => {
+      if (index < enteredPin.length) {
+        dot.classList.add('filled');
+      } else {
+        dot.classList.remove('filled');
+      }
+    });
+  }
+
+  function handleInput(num) {
+    if (enteredPin.length < 6) {
+      enteredPin += num;
+      updateDots();
+      
+      if (enteredPin.length === 6) {
+        checkPin();
+      }
+    }
+  }
+
+  function handleDelete() {
+    if (enteredPin.length > 0) {
+      enteredPin = enteredPin.slice(0, -1);
+      updateDots();
+      dotsContainer.classList.remove('error');
+    }
+  }
+
+  function checkPin() {
+    if (enteredPin === CORRECT_PIN) {
+      // Success
+      localStorage.setItem('armymimu_unlocked', 'true');
+      lockScreen.classList.add('hidden');
+      setTimeout(() => {
+        lockScreen.style.display = 'none';
+        appContent.style.display = 'block';
+      }, 500);
+    } else {
+      // Error
+      dotsContainer.classList.add('error');
+      setTimeout(() => {
+        enteredPin = '';
+        updateDots();
+        dotsContainer.classList.remove('error');
+      }, 500);
+    }
+  }
+
+  keys.forEach(key => {
+    key.addEventListener('click', (e) => {
+      const num = e.target.getAttribute('data-num');
+      handleInput(num);
+    });
+  });
+
+  deleteKey.addEventListener('click', handleDelete);
+}
+
+// Run immediately
+initPinLock();
+
 const SHOP_NAME = 'Armymimu';
 const categoryData = {};
 const fetchedAt = {};

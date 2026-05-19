@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Advice Price Board • Armymimu</title>
-<meta name="description" content="ตรวจสอบราคาสินค้า iPhone, iPad, MacBook จาก Advice แบบ Real-time">
+<title>Price Dashboard</title>
+<meta name="description" content="Price Board Dashboard">
+<meta name="robots" content="noindex, nofollow">
 
 <!-- iOS Home Screen Support -->
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -16,6 +17,42 @@
 </head>
 <body>
 
+<!-- PIN Lock Screen -->
+<div id="pin-lock-screen" class="pin-lock-screen">
+  <div class="pin-container">
+    <div class="pin-header">
+      <h2>Enter Passcode</h2>
+      <p>Please enter your PIN to access the dashboard</p>
+    </div>
+    
+    <div class="pin-dots">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    
+    <div class="pin-keypad">
+      <button class="key" data-num="1">1</button>
+      <button class="key" data-num="2">2</button>
+      <button class="key" data-num="3">3</button>
+      <button class="key" data-num="4">4</button>
+      <button class="key" data-num="5">5</button>
+      <button class="key" data-num="6">6</button>
+      <button class="key" data-num="7">7</button>
+      <button class="key" data-num="8">8</button>
+      <button class="key" data-num="9">9</button>
+      <button class="key action empty"></button>
+      <button class="key" data-num="0">0</button>
+      <button class="key action delete" id="pin-delete">⌫</button>
+    </div>
+  </div>
+</div>
+
+<!-- Main App Content (Hidden by default) -->
+<div id="app-content" style="display: none;">
 <header>
   <div class="logo">
     <div class="logo-dot"></div>
@@ -71,6 +108,8 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+</div> <!-- End of app-content -->
 
 <script src="app.js"></script>
 </body>
