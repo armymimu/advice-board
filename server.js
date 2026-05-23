@@ -14,6 +14,10 @@ app.use(express.static('.'));
 let cachedToken = process.env.ADVICE_TOKEN || null;
 let tokenExpiry = cachedToken ? Date.now() + (90 * 60 * 1000) : 0;
 
+// Studio7 Cache
+let studio7Cache = [];
+let studio7LastUpdate = 0;
+
 async function getToken(forceRefresh = false) {
   if (!forceRefresh && cachedToken && Date.now() < tokenExpiry) {
     return cachedToken;
@@ -65,6 +69,20 @@ app.post('/api/set-token', express.json(), (req, res) => {
   tokenExpiry = Date.now() + (90 * 60 * 1000);
   console.log('✅ Token อัพเดทแล้ว หมดอายุ:', new Date(tokenExpiry).toISOString());
   res.json({ success: true, expiresAt: new Date(tokenExpiry).toISOString() });
+});
+
+// Endpoint to update Studio7 prices remotely
+app.post('/api/set-studio7', express.json(), (req, res) => {
+  const { products, secret } = req.body;
+  if (secret !== (process.env.TOKEN_SECRET || 'armymimu2024')) {
+    return res.status(403).json({ error: 'Invalid secret' });
+  }
+  if (!Array.isArray(products)) return res.status(400).json({ error: 'Products array required' });
+
+  studio7Cache = products;
+  studio7LastUpdate = Date.now();
+  console.log(`✅ Studio7 อัพเดทแล้ว ${products.length} รายการ`);
+  res.json({ success: true, count: products.length });
 });
 
 // ==========================================
@@ -217,6 +235,14 @@ app.get('/api/prices/:category', async (req, res) => {
 
     res.status(500).json({ error: 'Token หมดอายุ กรุณากด "Refresh Token" หรือรอสักครู่' });
   }
+});
+
+// Get Studio7 prices
+app.get('/api/prices-studio7', (req, res) => {
+  res.json({
+    items: studio7Cache,
+    lastUpdate: studio7LastUpdate > 0 ? new Date(studio7LastUpdate).toISOString() : 'none'
+  });
 });
 
 // Health check (also used by keep-alive services)
