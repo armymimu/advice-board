@@ -769,3 +769,5 @@ td { padding: 10px 14px; vertical-align: middle; }
 }
 .pin-keypad .key.action:active { background: transparent; }
 .pin-keypad .key.empty { cursor: default; }
+
+.best-cost { color: var(--success) !important; font-weight: 700 !important; }

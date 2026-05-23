@@ -83,6 +83,7 @@ initPinLock();
 const SHOP_NAME = 'Armymimu';
 const categoryData = {};
 const fetchedAt = {};
+let studio7Prices = []; // Global cache for Studio7 prices
 const LABELS = { iphone: '📱 iPhone', ipad: '⬛ iPad', macbook: '💻 MacBook', android: '🤖 Android' };
 const CATEGORIES = ['iphone', 'ipad', 'macbook', 'android'];
 const COLOR_MAP = {
@@ -102,6 +103,80 @@ const COLOR_MAP = {
 let currentSort = 'default';
 let currentFilter = 'all';
 let debounceTimer = null;
+
+function renderProducts(products) {
+    const grid = document.getElementById('products-grid');
+    grid.innerHTML = '';
+    
+    if (products.length === 0) {
+        grid.innerHTML = '<div class="no-data">ไม่พบข้อมูลสินค้า</div>';
+        return;
+    }
+    
+    const profitMargin = parseFloat(document.getElementById('profit-margin').value) / 100;
+    
+    products.forEach(product => {
+        // Calculate best cost
+        const adviceCost = product.price;
+        const s7Cost = product.s7Price;
+        let bestCost = adviceCost;
+        let cheaperAt = 'advice'; // 'advice', 'studio7', or 'equal'
+        
+        if (s7Cost) {
+            // Only compare if s7Cost is valid
+            // Note: s7Cost is starting price. We consider it carefully.
+            if (s7Cost < adviceCost) {
+                bestCost = s7Cost;
+                cheaperAt = 'studio7';
+            } else if (adviceCost < s7Cost) {
+                cheaperAt = 'advice';
+            } else {
+                cheaperAt = 'equal';
+            }
+        }
+        
+        const sellPrice = Math.ceil(bestCost * (1 + profitMargin));
+        const profit = sellPrice - bestCost;
+        
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        
+        card.innerHTML = `
+            <div class="product-brand">${product.brand}</div>
+            <div class="product-name">${product.name}</div>
+            
+            <div class="price-comparison">
+                <div class="price-box ${cheaperAt === 'advice' || cheaperAt === 'equal' ? 'best-price' : ''}">
+                    <span class="price-label">Advice</span>
+                    <span class="price-value">฿${adviceCost.toLocaleString()}</span>
+                </div>
+                <div class="price-box ${cheaperAt === 'studio7' ? 'best-price' : ''}">
+                    <span class="price-label">Studio7</span>
+                    <span class="price-value">${s7Cost ? '฿' + s7Cost.toLocaleString() + ' (เริ่มต้น)' : '-'}</span>
+                </div>
+            </div>
+
+            <div class="price-result">
+                <div class="price-row">
+                    <span>ต้นทุนที่ดีที่สุด:</span>
+                    <span class="cost-price">฿${bestCost.toLocaleString()}</span>
+                </div>
+                <div class="price-row">
+                    <span>ราคาขาย (+${(profitMargin * 100).toFixed(0)}%):</span>
+                    <span class="sell-price">฿${sellPrice.toLocaleString()}</span>
+                </div>
+                <div class="price-row profit-row">
+                    <span>กำไรสุทธิ:</span>
+                    <span class="profit">฿${profit.toLocaleString()}</span>
+                </div>
+            </div>
+            
+            <a href="${product.link}" target="_blank" class="buy-btn">ดูบนเว็บ Advice</a>
+        `;
+        
+        grid.appendChild(card);
+    });
+}
 
 // ─── Init panels ───
 const panelsContainer = document.getElementById('panels-container');
@@ -243,10 +318,16 @@ async function fetchCategory(cat, retry = 0) {
   document.getElementById('dot-' + cat).className = 'status-dot loading';
   showLoadingCards(cat);
   try {
-    const resp = await fetch(`/api/prices/${cat}`);
+    const [resp, s7Resp] = await Promise.all([
+      fetch(`/api/prices/${cat}`),
+      fetch(`/api/prices-studio7`).catch(() => null)
+    ]);
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
     const data = await resp.json();
+    const s7Data = s7Resp && s7Resp.ok ? await s7Resp.json() : { items: [] };
+    
     categoryData[cat] = data.items || [];
+    studio7Prices = s7Data.items || [];
     fetchedAt[cat] = new Date();
     renderCategory(cat);
   } catch(e) {
@@ -351,8 +432,22 @@ function renderCategory(cat, filterText = '') {
     const sid = `${cat}-${idx}`;
 
     const rows = list.map(item => {
-      const sell = (item.price||0) + profit;
-      const disc = item.priceSrp > item.price ? item.priceSrp - item.price : 0;
+      // Find Studio7 match
+      const baseNameLower = (item._parsed.submodel || item.model).toLowerCase();
+      const s7Match = studio7Prices.find(s7 => baseNameLower.includes(s7.title.toLowerCase()) || s7.title.toLowerCase().includes(baseNameLower));
+      const s7Price = s7Match ? s7Match.price : null;
+      
+      const advicePrice = item.price || 0;
+      let bestCost = advicePrice;
+      let isCheaperS7 = false;
+      
+      if (s7Price && s7Price < advicePrice) {
+          bestCost = s7Price;
+          isCheaperS7 = true;
+      }
+      
+      const sell = bestCost + profit;
+      const disc = item.priceSrp > advicePrice ? item.priceSrp - advicePrice : 0;
       const pct = item.priceSrp > 0 && disc > 0 ? Math.round(disc/item.priceSrp*100) : 0;
       const stCls = item.inStock ? 'instock' : 'outstock';
       const stTxt = item.inStock ? 'มีของ' : 'หมด';
@@ -365,8 +460,9 @@ function renderCategory(cat, filterText = '') {
         <td class="td-spec">${escapeHtml(item.spec)}</td>
         <td class="td-code">${escapeHtml(item.modelCode)}</td>
         <td class="price-srp">฿${(item.priceSrp||0).toLocaleString()}</td>
-        <td class="price-sale">฿${(item.price||0).toLocaleString()}</td>
-        <td class="price-sell">฿${sell.toLocaleString()}</td>
+        <td class="price-sale ${!isCheaperS7 && advicePrice > 0 ? 'best-cost' : ''}">฿${advicePrice.toLocaleString()}</td>
+        <td class="price-sale ${isCheaperS7 ? 'best-cost' : ''}" style="${isCheaperS7 ? 'color: var(--success); font-weight: 600;' : 'color: var(--text3)'}">${s7Price ? '฿' + s7Price.toLocaleString() : '-'}</td>
+        <td class="price-sell" style="color: var(--primary); font-weight: 700;">฿${sell.toLocaleString()}</td>
         <td>${disc > 0 ? `<span class="discount-badge">-${pct}%</span>` : '<span style="color:var(--muted)">—</span>'}</td>
         <td><span class="stock-badge ${stCls}">${stTxt}</span></td>
       </tr>`;
@@ -387,7 +483,7 @@ function renderCategory(cat, filterText = '') {
       <pre class="submodel-preview" id="prev-${sid}">${escapeHtml(copyText)}</pre>
       <div class="table-wrap">
         <table>
-          <thead><tr><th style="width:50px">รูป</th><th>รุ่น</th><th>สเปค</th><th>รหัส</th><th>SRP</th><th>Advice</th><th>ราคาขาย</th><th>ลด</th><th>สถานะ</th></tr></thead>
+          <thead><tr><th style="width:50px">รูป</th><th>รุ่น</th><th>สเปค</th><th>รหัส</th><th>SRP</th><th>Advice</th><th>Studio7</th><th>ราคาขาย</th><th>ลด</th><th>สถานะ</th></tr></thead>
           <tbody>${rows}</tbody>
         </table>
       </div>
