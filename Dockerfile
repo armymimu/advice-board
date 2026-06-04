@@ -1,24 +1,18 @@
 FROM node:20-slim
 
-# Install Chromium and dependencies for Puppeteer
-RUN apt-get update && apt-get install -y \
-    chromium \
-    fonts-thai-tlwg \
-    libxss1 \
-    --no-install-recommends \
-    && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
 
-WORKDIR /usr/src/app
-
+# Copy package files
 COPY package*.json ./
-RUN npm ci --omit=dev
 
+# Install dependencies (only express, cors, axios needed)
+RUN npm install --production
+
+# Copy application code
 COPY . .
 
-EXPOSE 10000
-ENV PORT=10000
-ENV NODE_ENV=production
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+# Expose port
+EXPOSE 3000
 
+# Start server
 CMD ["node", "server.js"]

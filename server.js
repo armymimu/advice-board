@@ -4,16 +4,6 @@ const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 
-// Only require puppeteer if available (for auto token refresh)
-let puppeteer, StealthPlugin;
-try {
-  puppeteer = require('puppeteer-extra');
-  StealthPlugin = require('puppeteer-extra-plugin-stealth');
-  puppeteer.use(StealthPlugin());
-} catch (e) {
-  console.log('⚠️ puppeteer ไม่ได้ติดตั้ง — จะใช้ manual token เท่านั้น');
-}
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 const TOKEN_FILE = path.join(__dirname, '.token_cache.json');
@@ -56,86 +46,34 @@ function saveTokenToFile(token, expiry) {
   } catch (e) { /* ignore */ }
 }
 
-// ─── AUTO TOKEN REFRESH via Puppeteer ───
+// ─── AUTO TOKEN REFRESH via Axios + Regex ───
 async function autoRefreshToken() {
-  if (!puppeteer) {
-    console.log('⚠️ ไม่สามารถรีเฟรช Token อัตโนมัติได้ (ไม่มี puppeteer)');
-    return false;
-  }
-
-  if (isRefreshing) {
-    console.log('⏳ กำลังรีเฟรชอยู่แล้ว...');
-    return false;
-  }
-
+  if (isRefreshing) return false;
   isRefreshing = true;
-  console.log('\n🔄 กำลังรีเฟรช Token อัตโนมัติ...');
+  console.log('🔄 ระบบกำลังรีเฟรช Token อัตโนมัติ...');
 
-  let browser;
   try {
-    browser = await puppeteer.launch({
-      headless: true,
-      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium',
-      args: [
-        '--no-sandbox', 
-        '--disable-setuid-sandbox', 
-        '--disable-dev-shm-usage',
-        '--disable-gpu',
-        '--no-zygote',
-        '--single-process',
-        '--disable-software-rasterizer',
-        '--mute-audio'
-      ]
-    });
-    const page = await browser.newPage();
-    
-    // Set matching User-Agent
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36');
-
-    await page.setRequestInterception(true);
-    let token = '';
-    page.on('request', (request) => {
-      // Abort images and CSS to save memory
-      const resourceType = request.resourceType();
-      if (['image', 'stylesheet', 'font', 'media'].includes(resourceType)) {
-        request.abort();
-        return;
-      }
-
-      if (request.url().includes('prodbackadvice') &&
-          request.url().includes('product/get') &&
-          request.method() === 'POST') {
-        const h = request.headers();
-        if (h['authorization'] && !token) {
-          token = h['authorization'];
-        }
-      }
-      request.continue();
+    const { data: html } = await axios.get('https://www.advice.co.th/product/search?keyword=iphone', {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+        'Accept-Language': 'th-TH,th;q=0.9,en;q=0.8'
+      },
+      timeout: 10000
     });
 
-    await page.setViewport({ width: 1366, height: 768 });
-    await page.goto('https://www.advice.co.th/product/search?keyword=iphone', {
-      waitUntil: 'domcontentloaded',
-      timeout: 60000
-    });
-
-    try {
-      await page.waitForSelector('.list-product', { timeout: 30000 });
-    } catch (e) { /* token might still be captured */ }
-
-    await browser.close();
-    browser = null;
-
-    if (token) {
-      cachedToken = token;
-      tokenExpiry = Date.now() + (90 * 60 * 1000); // 90 minutes
-      saveTokenToFile(token, tokenExpiry);
-      console.log(`✅ Token รีเฟรชสำเร็จ! หมดอายุ: ${new Date(tokenExpiry).toLocaleString('th-TH')}`);
-      scheduleNextRefresh();
+    const match = html.match(/"(eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.[a-zA-Z0-9_.-]+)"/);
+    if (match) {
+      const token = match[1];
+      console.log('✅ ได้รับ Token ใหม่สำเร็จ!');
+      cachedToken = 'Bearer ' + token;
+      tokenExpiry = Date.now() + (90 * 60 * 1000); // 90 นาที
+      fs.writeFileSync(TOKEN_FILE, JSON.stringify({ token: cachedToken, expiry: tokenExpiry }));
+      lastTokenError = null;
       isRefreshing = false;
       return true;
     } else {
-      console.log('❌ ไม่สามารถดึง Token ได้ — จะลองใหม่ใน 5 นาที');
+      console.log('❌ ไม่พบ Token ในหน้าเว็บ — จะลองใหม่ใน 5 นาที');
       setTimeout(() => autoRefreshToken(), 5 * 60 * 1000);
       isRefreshing = false;
       lastTokenError = "Token not found on page";
@@ -437,7 +375,7 @@ app.get('/api/health', (req, res) => {
     tokenValid: cachedToken && Date.now() < tokenExpiry,
     tokenExpires: tokenExpiry > 0 ? new Date(tokenExpiry).toISOString() : 'none',
     tokenMinutesLeft: minsLeft,
-    autoRefresh: !!puppeteer,
+    autoRefresh: true,
     uptime: Math.floor(process.uptime()) + 's',
     lastTokenError: lastTokenError
   });
