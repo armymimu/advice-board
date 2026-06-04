@@ -385,7 +385,10 @@ app.get('/api/prices/:category', async (req, res) => {
     }
 
     res.status(500).json({
-      error: 'เกิดข้อผิดพลาด กรุณารอสักครู่แล้วลองใหม่ (ระบบจะรีเฟรช Token ให้อัตโนมัติ)'
+      error: 'เกิดข้อผิดพลาด กรุณารอสักครู่แล้วลองใหม่ (ระบบจะรีเฟรช Token ให้อัตโนมัติ)',
+      detail: error.message,
+      status: error.response ? error.response.status : null,
+      data: error.response ? error.response.data : null
     });
   }
 });
