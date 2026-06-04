@@ -4,6 +4,15 @@ const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 
+let puppeteer, StealthPlugin;
+try {
+  puppeteer = require('puppeteer-extra');
+  StealthPlugin = require('puppeteer-extra-plugin-stealth');
+  puppeteer.use(StealthPlugin());
+} catch (e) {
+  console.log('⚠️ puppeteer ไม่ได้ติดตั้ง — จะใช้ manual token');
+}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 const TOKEN_FILE = path.join(__dirname, '.token_cache.json');
@@ -46,27 +55,75 @@ function saveTokenToFile(token, expiry) {
   } catch (e) { /* ignore */ }
 }
 
-// ─── AUTO TOKEN REFRESH via Axios + Regex ───
+// ─── AUTO TOKEN REFRESH via Puppeteer ───
 async function autoRefreshToken() {
+  if (!puppeteer) {
+    console.log('⚠️ ไม่สามารถรีเฟรช Token อัตโนมัติได้ (ไม่มี puppeteer)');
+    return false;
+  }
+
   if (isRefreshing) return false;
   isRefreshing = true;
-  console.log('🔄 ระบบกำลังรีเฟรช Token อัตโนมัติ...');
+  console.log('🔄 ระบบกำลังรีเฟรช Token อัตโนมัติด้วย Puppeteer...');
 
+  let browser;
   try {
-    const { data: html } = await axios.get('https://www.advice.co.th/product/search?keyword=iphone', {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-        'Accept-Language': 'th-TH,th;q=0.9,en;q=0.8'
-      },
-      timeout: 10000
+    browser = await puppeteer.launch({
+      headless: true,
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium',
+      args: [
+        '--no-sandbox', 
+        '--disable-setuid-sandbox', 
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+        '--no-zygote',
+        '--single-process',
+        '--disable-software-rasterizer',
+        '--mute-audio'
+      ]
+    });
+    const page = await browser.newPage();
+    
+    // Set matching User-Agent
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36');
+
+    await page.setRequestInterception(true);
+    let token = '';
+    page.on('request', (request) => {
+      // Abort images and CSS to save memory
+      const resourceType = request.resourceType();
+      if (['image', 'stylesheet', 'font', 'media'].includes(resourceType)) {
+        request.abort();
+        return;
+      }
+
+      if (request.url().includes('prodbackadvice') &&
+          request.url().includes('product/get') &&
+          request.method() === 'POST') {
+        const h = request.headers();
+        if (h['authorization'] && !token) {
+          token = h['authorization'];
+        }
+      }
+      request.continue();
     });
 
-    const match = html.match(/"(eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.[a-zA-Z0-9_.-]+)"/);
-    if (match) {
-      const token = match[1];
+    await page.setViewport({ width: 1366, height: 768 });
+    await page.goto('https://www.advice.co.th/product/search?keyword=iphone', {
+      waitUntil: 'domcontentloaded',
+      timeout: 60000
+    });
+
+    try {
+      await page.waitForSelector('.list-product', { timeout: 30000 });
+    } catch (e) { /* token might still be captured */ }
+
+    await browser.close();
+    browser = null;
+
+    if (token) {
       console.log('✅ ได้รับ Token ใหม่สำเร็จ!');
-      cachedToken = 'Bearer ' + token;
+      cachedToken = token;
       tokenExpiry = Date.now() + (90 * 60 * 1000); // 90 นาที
       fs.writeFileSync(TOKEN_FILE, JSON.stringify({ token: cachedToken, expiry: tokenExpiry }));
       lastTokenError = null;

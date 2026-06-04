@@ -1,0 +1,3199 @@
+{
+  "layout": "default",
+  "data": [
+    {}
+  ],
+  "fetch": [
+    {
+      "CATEGORY_CONTENT_MODE": {
+        "TOP": "top",
+        "BOTTOM": "bottom"
+      },
+      "PRODUCT_REFERENCE_SLUG": {
+        "FLASH_SALES": "flash-sales",
+        "BUNDLE": "bundle",
+        "SIMILAR": "similar",
+        "LIST": "list",
+        "SUGGESTION": "suggestion",
+        "MARKETING": "marketing",
+        "ADD_TO_CART": "add-to-cart",
+        "WISHLIST": "wish-list",
+        "CART": "cart",
+        "SEARCH_RESULT": "search-result",
+        "CATEGORY": "category",
+        "EQUIP": "equip",
+        "FREQUENTLY_BOUGHT": "frequently-bought",
+        "MUST_HAVE": "must-have",
+        "SET": "set"
+      },
+      "categorySlug": "apple-iphone-series",
+      "categoryContent": {
+        "id": 14,
+        "slug": "apple-iphone-series",
+        "name": "iPhone",
+        "descriptionTop": null,
+        "descriptionBottom": null,
+        "banners": {
+          "data": [
+            {
+              "src": {
+                "desktop1x": "https://media.studio7thailand.com/201498/Thumbnail_DAPP_Banner_Compare_1200x600_THA.jpg",
+                "desktop2x": "https://media.studio7thailand.com/201498/Thumbnail_DAPP_Banner_Compare_1200x600_THA.jpg",
+                "mobile1x": "https://media.studio7thailand.com/201705/Thumbnail_DAPP_Banner_Compare_600x500_THA.jpg",
+                "mobile2x": "https://media.studio7thailand.com/201705/Thumbnail_DAPP_Banner_Compare_600x500_THA.jpg"
+              },
+              "backgroundColor": "#fafafa",
+              "link": "https://studio7thailand.com/pages/comparison-iphone",
+              "alt": "Thumbnail_DAPP_Banner_Compare_1200x600_THA"
+            }
+          ]
+        },
+        "item": [
+          {
+            "name": "iPhone 17e",
+            "position": 1,
+            "badgeLabels": [
+              {
+                "id": 714,
+                "name": "Buy 2 & Save Extra",
+                "key": "normal",
+                "image": null,
+                "fontColor": "#5856D6"
+              },
+              {
+                "id": 711,
+                "name": "ใหม่",
+                "key": "new_product",
+                "image": null,
+                "fontColor": "#BF4800"
+              },
+              {
+                "id": 706,
+                "name": "ผ่อนสบาย 0%",
+                "key": "zero_installment",
+                "image": null,
+                "fontColor": "#0071BC"
+              }
+            ],
+            "title": "iPhone 17e",
+            "subtitle": "",
+            "isLowestPriceVisible": false,
+            "showLowestPriceType": "append_description",
+            "description": "เริ่มต้น ฿22,900",
+            "shortDescription": "เก่งล้นตัว คุ้มเหลือล้น",
+            "type": "category",
+            "destinationType": "plp",
+            "searchKeyword": null,
+            "lowestPrice": 2290000,
+            "src": {
+              "mobile": "https://media.studio7thailand.com/226749/iPhone_17e_Soft_Pink_Hero_Vertical_Screen__USEN_1500x.png",
+              "desktop": "https://media.studio7thailand.com/226749/iPhone_17e_Soft_Pink_Hero_Vertical_Screen__USEN_1500x.png"
+            },
+            "isHighlight": true,
+            "contentHTML": {
+              "title": "ดูรายละเอียดสินค้า",
+              "content": "<p style=\"width: 95%; justify-self: anchor-center;\"><iframe style=\"width: 100%; height: 10020px; margin: 0px 5px;\" src=\"https://media.studio7thailand.com/be6aad65-40ad-4725-82a6-b3c7277e85f4/index-fs-stu-1.html\" frameborder=\"0\" data-mce-fragment=\"1\"></iframe></p>"
+            },
+            "isActiveCustomButton": true,
+            "textCustomButton": "ซื้อสินค้า",
+            "customLink": null,
+            "id": 236,
+            "slug": "iphone-17e-series"
+          },
+          {
+            "name": "iPhone 17",
+            "position": 2,
+            "badgeLabels": [
+              {
+                "id": 714,
+                "name": "Buy 2 & Save Extra",
+                "key": "normal",
+                "image": null,
+                "fontColor": "#5856D6"
+              },
+              {
+                "id": 711,
+                "name": "ใหม่",
+                "key": "new_product",
+                "image": null,
+                "fontColor": "#BF4800"
+              },
+              {
+                "id": 706,
+                "name": "ผ่อนสบาย 0%",
+                "key": "zero_installment",
+                "image": null,
+                "fontColor": "#0071BC"
+              }
+            ],
+            "title": "iPhone 17",
+            "subtitle": "",
+            "isLowestPriceVisible": false,
+            "showLowestPriceType": "append_description",
+            "description": "เริ่มต้น ฿29,900",
+            "shortDescription": "สุดมหัศจรรย์ สุดสดใส",
+            "type": "category",
+            "destinationType": "plp",
+            "searchKeyword": null,
+            "lowestPrice": 2990000,
+            "src": {
+              "mobile": "https://media.studio7thailand.com/201946/IMG-18057261_m_jpeg_1_80397794-dcd2-4ed9-aa61-6ee0fca8d412.png",
+              "desktop": "https://media.studio7thailand.com/201946/IMG-18057261_m_jpeg_1_80397794-dcd2-4ed9-aa61-6ee0fca8d412.png"
+            },
+            "isHighlight": false,
+            "contentHTML": null,
+            "isActiveCustomButton": true,
+            "textCustomButton": "ซื้อสินค้า",
+            "customLink": null,
+            "id": 220,
+            "slug": "iphone-17-series"
+          },
+          {
+            "name": "iPhone 17 Pro",
+            "position": 3,
+            "badgeLabels": [
+              {
+                "id": 714,
+                "name": "Buy 2 & Save Extra",
+                "key": "normal",
+                "image": null,
+                "fontColor": "#5856D6"
+              },
+              {
+                "id": 711,
+                "name": "ใหม่",
+                "key": "new_product",
+                "image": null,
+                "fontColor": "#BF4800"
+              },
+              {
+                "id": 706,
+                "name": "ผ่อนสบาย 0%",
+                "key": "zero_installment",
+                "image": null,
+                "fontColor": "#0071BC"
+              }
+            ],
+            "title": "iPhone 17 Pro",
+            "subtitle": "",
+            "isLowestPriceVisible": false,
+            "showLowestPriceType": "append_description",
+            "description": "เริ่มต้น ฿43,900",
+            "shortDescription": "Pro ให้สุด",
+            "type": "category",
+            "destinationType": "plp",
+            "searchKeyword": null,
+            "lowestPrice": 4390000,
+            "src": {
+              "mobile": "https://media.studio7thailand.com/201947/IMG-18057367_m_jpeg_1_cf49231b-20c0-4724-9356-98d389216e78.png",
+              "desktop": "https://media.studio7thailand.com/201947/IMG-18057367_m_jpeg_1_cf49231b-20c0-4724-9356-98d389216e78.png"
+            },
+            "isHighlight": false,
+            "contentHTML": null,
+            "isActiveCustomButton": false,
+            "textCustomButton": null,
+            "customLink": null,
+            "id": 219,
+            "slug": "iphone-17-pro-series"
+          },
+          {
+            "name": "iPhone Air",
+            "position": 4,
+            "badgeLabels": [
+              {
+                "id": 714,
+                "name": "Buy 2 & Save Extra",
+                "key": "normal",
+                "image": null,
+                "fontColor": "#5856D6"
+              },
+              {
+                "id": 711,
+                "name": "ใหม่",
+                "key": "new_product",
+                "image": null,
+                "fontColor": "#BF4800"
+              },
+              {
+                "id": 706,
+                "name": "ผ่อนสบาย 0%",
+                "key": "zero_installment",
+                "image": null,
+                "fontColor": "#0071BC"
+              }
+            ],
+            "title": "iPhone Air",
+            "subtitle": "",
+            "isLowestPriceVisible": false,
+            "showLowestPriceType": "append_description",
+            "description": "เริ่มต้น ฿32,900",
+            "shortDescription": "iPhone ที่บางที่สุดเท่าที่เคยมีมา",
+            "type": "category",
+            "destinationType": "plp",
+            "searchKeyword": null,
+            "lowestPrice": 69000,
+            "src": {
+              "mobile": "https://media.studio7thailand.com/201949/IMG-18057459_m_jpeg_1_69143f9a-bdfe-4f55-94b8-b8fb078b4e87_550x.png",
+              "desktop": "https://media.studio7thailand.com/201949/IMG-18057459_m_jpeg_1_69143f9a-bdfe-4f55-94b8-b8fb078b4e87_550x.png"
+            },
+            "isHighlight": false,
+            "contentHTML": null,
+            "isActiveCustomButton": true,
+            "textCustomButton": "ซื้อสินค้า",
+            "customLink": null,
+            "id": 221,
+            "slug": "iphone-air-series"
+          },
+          {
+            "name": "iPhone 16e",
+            "position": 5,
+            "badgeLabels": [],
+            "title": "iPhone 16e",
+            "subtitle": "",
+            "isLowestPriceVisible": true,
+            "showLowestPriceType": "append_description",
+            "description": "",
+            "shortDescription": "ทุกสิ่งที่คุณจะรัก รวมถึงราคา",
+            "type": "category",
+            "destinationType": "plp",
+            "searchKeyword": null,
+            "lowestPrice": 1940000,
+            "src": {
+              "mobile": "https://media.studio7thailand.com/177337/iPhone_16e_White_2-up_Apple_Intelligence_Screen__USEN.webp",
+              "desktop": "https://media.studio7thailand.com/177337/iPhone_16e_White_2-up_Apple_Intelligence_Screen__USEN.webp"
+            },
+            "isHighlight": false,
+            "contentHTML": null,
+            "isActiveCustomButton": true,
+            "textCustomButton": "ซื้อสินค้า",
+            "customLink": null,
+            "id": 217,
+            "slug": "iphone-16e-series"
+          },
+          {
+            "name": "iPhone 16",
+            "position": 6,
+            "badgeLabels": [
+              {
+                "id": 714,
+                "name": "Buy 2 & Save Extra",
+                "key": "normal",
+                "image": null,
+                "fontColor": "#5856D6"
+              },
+              {
+                "id": 706,
+                "name": "ผ่อนสบาย 0%",
+                "key": "zero_installment",
+                "image": null,
+                "fontColor": "#0071BC"
+              }
+            ],
+            "title": "iPhone 16",
+            "subtitle": "",
+            "isLowestPriceVisible": true,
+            "showLowestPriceType": "append_short_description",
+            "description": "",
+            "shortDescription": "เร็วสุดแรง ฉลาดสุดล้ำ",
+            "type": "category",
+            "destinationType": "custom_link",
+            "searchKeyword": null,
+            "lowestPrice": 2650000,
+            "src": {
+              "mobile": "https://media.studio7thailand.com/154856/iPhone_16_Plus_Ultramarine_PDP_Image_Position_1a_Ultramarine_Color__TH-TH.jpg",
+              "desktop": "https://media.studio7thailand.com/154856/iPhone_16_Plus_Ultramarine_PDP_Image_Position_1a_Ultramarine_Color__TH-TH.jpg"
+            },
+            "isHighlight": false,
+            "contentHTML": null,
+            "isActiveCustomButton": false,
+            "textCustomButton": null,
+            "customLink": "https://www.studio7thailand.com/collection/iphone-16-series",
+            "id": 197,
+            "slug": "iphone-16-series"
+          },
+          {
+            "name": "iPhone 15",
+            "position": 7,
+            "badgeLabels": [
+              {
+                "id": 714,
+                "name": "Buy 2 & Save Extra",
+                "key": "normal",
+                "image": null,
+                "fontColor": "#5856D6"
+              },
+              {
+                "id": 706,
+                "name": "ผ่อนสบาย 0%",
+                "key": "zero_installment",
+                "image": null,
+                "fontColor": "#0071BC"
+              }
+            ],
+            "title": "iPhone 15",
+            "subtitle": "",
+            "isLowestPriceVisible": true,
+            "showLowestPriceType": "append_description",
+            "description": "",
+            "shortDescription": "รักครั้งใหม่",
+            "type": "category",
+            "destinationType": "plp",
+            "searchKeyword": null,
+            "lowestPrice": 2410000,
+            "src": {
+              "mobile": "https://media.studio7thailand.com/132840/iPhone-15-Pink.png",
+              "desktop": "https://media.studio7thailand.com/132840/iPhone-15-Pink.png"
+            },
+            "isHighlight": false,
+            "contentHTML": null,
+            "isActiveCustomButton": true,
+            "textCustomButton": null,
+            "customLink": null,
+            "id": 145,
+            "slug": "iphone-15-series"
+          },
+          {
+            "name": "iPhone 14",
+            "position": 8,
+            "badgeLabels": [
+              {
+                "id": 706,
+                "name": "ผ่อนสบาย 0%",
+                "key": "zero_installment",
+                "image": null,
+                "fontColor": "#0071BC"
+              }
+            ],
+            "title": "iPhone 14",
+            "subtitle": "",
+            "isLowestPriceVisible": true,
+            "showLowestPriceType": "append_description",
+            "description": "",
+            "shortDescription": "ได้ใจไปเต็ม ๆ",
+            "type": "category",
+            "destinationType": "plp",
+            "searchKeyword": null,
+            "lowestPrice": 1710000,
+            "src": {
+              "mobile": "https://media.studio7thailand.com/132791/iPhone_14_Blue_PDP_Image_Position-1A_Blue_1-square_medium.webp",
+              "desktop": "https://media.studio7thailand.com/132791/iPhone_14_Blue_PDP_Image_Position-1A_Blue_1-square_medium.webp"
+            },
+            "isHighlight": false,
+            "contentHTML": null,
+            "isActiveCustomButton": true,
+            "textCustomButton": null,
+            "customLink": null,
+            "id": 103,
+            "slug": "iphone-14-series"
+          },
+          {
+            "name": "iPhone 13",
+            "position": 9,
+            "badgeLabels": [
+              {
+                "id": 714,
+                "name": "Buy 2 & Save Extra",
+                "key": "normal",
+                "image": null,
+                "fontColor": "#5856D6"
+              },
+              {
+                "id": 706,
+                "name": "ผ่อนสบาย 0%",
+                "key": "zero_installment",
+                "image": null,
+                "fontColor": "#0071BC"
+              }
+            ],
+            "title": "iPhone 13",
+            "subtitle": "",
+            "isLowestPriceVisible": true,
+            "showLowestPriceType": "append_description",
+            "description": "",
+            "shortDescription": "มหัศจรรย์ ทุกครั้ง",
+            "type": "category",
+            "destinationType": "plp",
+            "searchKeyword": null,
+            "lowestPrice": 1490000,
+            "src": {
+              "mobile": "https://media.studio7thailand.com/132792/iPhone_13_PDP_Position-1A_Color_Midnight__1-square_medium.webp",
+              "desktop": "https://media.studio7thailand.com/132792/iPhone_13_PDP_Position-1A_Color_Midnight__1-square_medium.webp"
+            },
+            "isHighlight": false,
+            "contentHTML": null,
+            "isActiveCustomButton": true,
+            "textCustomButton": null,
+            "customLink": null,
+            "id": 60,
+            "slug": "iphone-13-series"
+          },
+          {
+            "name": "อุปกรณ์เสริม iPhone",
+            "position": 10,
+            "badgeLabels": [],
+            "title": "อุปกรณ์เสริม iPhone",
+            "subtitle": "",
+            "isLowestPriceVisible": false,
+            "showLowestPriceType": "append_description",
+            "description": "",
+            "shortDescription": "",
+            "type": "category",
+            "destinationType": "search_category",
+            "searchKeyword": null,
+            "lowestPrice": 5000,
+            "src": {
+              "mobile": "https://media.studio7thailand.com/201961/lobs_accessories_iphone17.png",
+              "desktop": "https://media.studio7thailand.com/201961/lobs_accessories_iphone17.png"
+            },
+            "isHighlight": false,
+            "contentHTML": null,
+            "isActiveCustomButton": true,
+            "textCustomButton": null,
+            "customLink": null,
+            "id": 118,
+            "slug": "all-iphone-accessories"
+          }
+        ],
+        "seo": {
+          "metaTitle": "iPhone (ไอโฟน) ครบทุกรุ่นใหม่ ราคาล่าสุด มีประกัน",
+          "metaDesc": "iPhone (ไอโฟน) ครบทุกรุ่นใหม่ ทุกสี ทุกความจุ กับราคาและโปรโมชันสุดพิเศษ สินค้าของแท้ คุณภาพดี พร้อมประกันจาก iCare กับโปรผ่อนไอโฟน 0% นานสูงสุด 24 เดือน",
+          "metaKeyword": "apple iPhone,iphone 13 pro max, iphone 13 mini, iphone 13, iphone 13 pro, apple iPhone 13, apple iPhone 13 mini, apple iPhone 13 Pro, apple iPhone 13 Pro Max, iphone 13 Pink,iphone 13 Blue,iphone 13 Midnight,iphone 13 Starlight,iphone 13 project red,new iphone,iphone13 new, iphone 13 mini, iphone 13 pro max,A15 Bionic, iphone 13 pro max, iphone 13 pro, iphone 13 5G, iphone 13 MagSafe, iphone 13 mini blue, iphone 13 mini Starlight, iphone 13 mini Pink, iphone 13 mini red, iphone 13, apple iPhone 11, apple iPhone 11 Pro, apple iPhone 11 Pro Max, apple iPhone 12, apple iPhone 12 mini, apple iPhone 12 Pro, apple iPhone 12 Pro Max, apple iPhone SE, apple iPhone X, apple iPhone XR, apple iPhone XS, apple iPhone XS Max, apple iPhone, apple iPhone 8, apple iPhone 8 plus, apple iPhone 7, apple iPhone 7 plus, apple iPhone 6, apple iPhone 6 plus, apple iPhone 6s, apple iPhone 6s plus,iPhone 13 Pro Max ราคาในไทย,iPhone 13 Pro ราคา ในไทย,iPhone 13 Pro Max เปิดตัว,iPhone 13 Pro Max ราคาเท่าไหร่,ขนาดหน้าจอ iPhone 13 Pro Max,ราคาไอโฟน13,สี iphone 13,ราคา เปิด ตัว iphone 13,ราคา iphone 13 pro max,ราคา iphone 13 pro,ราคา iphone 13,เปิด ตัว iphone 13,iphone13 pro max,iphone13 apple,iphone13 2021,iphone 13 สี ใหม่,iphone 13 สี,iphone 13 ราคา เปิด ตัว,iphone 13 ราคา,iphone 13 เปิด ตัว ราคา,iphone 13 เปิด ตัว,iphone 13 xs max,iphone 13 s pro,iphone 13 s,iphone 13 pro ราคา\n,iphone 13 pro rosa,iphone 13 pro plus,iphone 13 pro mini,iphone 13 pro max สี,iphone 13 pro max ราคา,iphone 13 pro max เปิด ตัว,iphone 13 pro max plus,iphone 13 pro max mini,iphone 13 pro max 2022,iphone 13 pro max 2021,iphone 13 pro max 2020,iphone 13 pro max 128gb,iphone 13 pro max 128,iphone 13 pro max 120hz,iphone 13 pro max\n,iphone 13 plus max,iphone 13 plus,iphone 13 mini ราคา,iphone 13 mini pro,iphone 13 mini apple,iphone 13 mini 64gb,iphone 13 mini 256gb,iphone 13 mini 2021,iphone 13 mini 128gb,iphone 13 mini 120hz,iphone 13 mini,ไอ โฟน 13,ไอ โฟน 13 ราคา,ไอ โฟน 13 pro max,ไอ โฟน 13 ราคา ล่าสุด 2564,ไอ โฟน 13 pro max ราคา,ราคา ไอ โฟน 13,ไอ โฟน 13 ราคา ล่าสุด 2563,ไอ โฟน 13 ราคา ล่าสุด\n,ไอ โฟน 13 สีชมพู,ไอ โฟน 13 pro,ไอ โฟน 13 ราคา กี่ บาท,ข่าว ไอ โฟน 13,ราคา ไอ โฟน 13 pro max,ไอ โฟน 13 ราคา ล่าสุด 2564 ราคา,ไอ โฟน 13 สีชมพู ราคา,ไอ โฟน 13 โปร แม็ ก,ราคา ไอ โฟน 13 ราคา,ราคา ไอ โฟน 13 pro max ราคา,ไอ โฟน 13 มิ นิ,ราคา ไอ โฟน 13 โปร แม็ ก,ข่าว ไอ โฟน 13 ล่าสุด,ไอ โฟน 13 โปร,ไอ โฟน 13 pro ราคา,ไอ โฟน 13 pro max สีชมพู,ไอ โฟน 13 mini\n,ราคา ไอ โฟน 13 ล่าสุด,ไอ โฟน 13 โปร แม็ ก ราคา,13 ไอ โฟน,ไอ โฟน 13 กี่ บาท,ไอ โฟน 13 ล่าสุด,ราคา ไอ โฟน 13 เครื่อง เปล่า,ราคา ไอ โฟน 13 pro,ไอ โฟน 13 ais,มือ ถือ ไอ โฟน 13,ราคา ไอ โฟน 13 โปร,iphone 13 ใหม่ล่าสุด,iPhone 13 สีเขียว,ไอโฟน 13 สีเขียว,iPhone SE 3,ไอโฟน 2022,iPhone 13 2022,ไอโฟน,ราคาไอโฟน 11,ราคาไอโฟน,iPhone,istudio,ไอโฟนพร้อมอะแดปเตอร์,ซื้อไอโฟนแถมอะแดปเตอร์,ซื้อ iPhone free Adapter,อะแดปเตอร์ ฟรี,ราคาสำหรับนักเรียน,ราคานักเรียน,ราคานักศึกษา,ราคาเครื่องเปล่า,iPhone 14 Series,iphone 14 ราคา,iphone 14 เปิดตัว,จอง ไอโฟน 14,ไอโฟน 14,ไอโฟน 14 2022,ไอโฟน 14 ราคา,ไอโฟน 14 ราคาเท่าไหร่,ไอโฟน 14 จอง,ส่วนลด ไอโฟน 14,พรีออเดอร์ iphone 14,A16 Bionic,14 พลัส,ไอโฟน 14 กี่บาท,Studio7,studio,,iphone 15,ไอโฟน 15,iphone 15 เปิดตัว,ไอโฟน 15 เปิด ตัว,ไอโฟน 15 ราคา เท่าไหร่,สี ไอโฟน 15,ไอโฟน 15 สี,ไอโฟน 15 ราคา ล่าสุด 2566,iphone 15 pro max 2023,ไอโฟน 15 ราคา ล่าสุด,ไอโฟนเครื่องเปล่า,iPhone เครื่องเปล่า,ไอโฟน15 Pro maxราคา,"
+        }
+      }
+    }
+  ],
+  "error": null,
+  "state": {
+    "auth": {
+      "isLoading": false,
+      "isLoggedIn": false,
+      "accessToken": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJzdHVkaW83dGhhaWxhbmQuY29tIiwianRpIjoiNDAxMmUxYTMxNWQ3NDg4MGFlNWRmY2ZkZTNkYzhjMTNmY2Y2ZGQxOTBmYTg1MjMwNDQyMTM5YmM4ZjA0MTYwNTNkNGQ4YjMwYzUwNzhhMzYiLCJpYXQiOjE3Nzk1MzM1OTksIm5iZiI6MTc3OTUzMzU5OSwiZXhwIjoxODExMDY5NTk5LCJzdWIiOiIiLCJzY29wZXMiOltdfQ.ovgkdkTIPae5-iIJA1TY_3S2PVvrSCyxOCUQpSO2UbUXPpJmyx_LdVR8BrQMaqFmjSC_L0TBCRzcq5hu001vqg",
+      "crmAccessToken": null,
+      "socialProfile": null,
+      "corporate": {}
+    },
+    "branchOrderDetail": {
+      "data": {},
+      "isLoading": false
+    },
+    "branchOrderHistory": {
+      "data": [],
+      "links": {},
+      "meta": {}
+    },
+    "braze": {
+      "cards": [],
+      "isLoading": false
+    },
+    "bundleDetail": {
+      "bundles": [],
+      "activeBundleId": null,
+      "isLoadingBundle": false,
+      "components": [],
+      "activeComponentId": null,
+      "fetchedBundlePrice": {},
+      "isFetchedPrice": false,
+      "isLoadingBundlePrice": false,
+      "preOrderType": "",
+      "productList": [],
+      "productMeta": {
+        "currentPage": 1,
+        "lastPage": 1,
+        "perPage": 24,
+        "total": 0
+      },
+      "isLoadingProduct": false
+    },
+    "cart": {
+      "promotions": {
+        "bundles": [],
+        "promotions": []
+      },
+      "coupons": [],
+      "cartData": {},
+      "temporaryCart": {},
+      "isLoading": false,
+      "isAddingProductToCart": false,
+      "isAddingCouponToCart": false,
+      "frequentlyBoughtProducts": [],
+      "isOpenMiniCart": false,
+      "isOpenDrawerCart": false,
+      "collectAtStoreBranchList": [],
+      "showRecentAddedMode": false,
+      "recentAddedProducts": []
+    },
+    "cartRecommendation": {
+      "cartRecommendation": [],
+      "isLoading": false
+    },
+    "categories": {
+      "isLoading": false,
+      "normalized": null,
+      "entities": {
+        "categories": {}
+      },
+      "categoryContent": {}
+    },
+    "categoryContent": {
+      "categoryContents": {
+        "apple-iphone-series": {
+          "id": 14,
+          "slug": "apple-iphone-series",
+          "name": "iPhone",
+          "descriptionTop": null,
+          "descriptionBottom": null,
+          "banners": {
+            "data": [
+              {
+                "src": {
+                  "desktop1x": "https://media.studio7thailand.com/201498/Thumbnail_DAPP_Banner_Compare_1200x600_THA.jpg",
+                  "desktop2x": "https://media.studio7thailand.com/201498/Thumbnail_DAPP_Banner_Compare_1200x600_THA.jpg",
+                  "mobile1x": "https://media.studio7thailand.com/201705/Thumbnail_DAPP_Banner_Compare_600x500_THA.jpg",
+                  "mobile2x": "https://media.studio7thailand.com/201705/Thumbnail_DAPP_Banner_Compare_600x500_THA.jpg"
+                },
+                "backgroundColor": "#fafafa",
+                "link": "https://studio7thailand.com/pages/comparison-iphone",
+                "alt": "Thumbnail_DAPP_Banner_Compare_1200x600_THA"
+              }
+            ]
+          },
+          "item": [
+            {
+              "name": "iPhone 17e",
+              "position": 1,
+              "badgeLabels": [
+                {
+                  "id": 714,
+                  "name": "Buy 2 & Save Extra",
+                  "key": "normal",
+                  "image": null,
+                  "fontColor": "#5856D6"
+                },
+                {
+                  "id": 711,
+                  "name": "ใหม่",
+                  "key": "new_product",
+                  "image": null,
+                  "fontColor": "#BF4800"
+                },
+                {
+                  "id": 706,
+                  "name": "ผ่อนสบาย 0%",
+                  "key": "zero_installment",
+                  "image": null,
+                  "fontColor": "#0071BC"
+                }
+              ],
+              "title": "iPhone 17e",
+              "subtitle": "",
+              "isLowestPriceVisible": false,
+              "showLowestPriceType": "append_description",
+              "description": "เริ่มต้น ฿22,900",
+              "shortDescription": "เก่งล้นตัว คุ้มเหลือล้น",
+              "type": "category",
+              "destinationType": "plp",
+              "searchKeyword": null,
+              "lowestPrice": 2290000,
+              "src": {
+                "mobile": "https://media.studio7thailand.com/226749/iPhone_17e_Soft_Pink_Hero_Vertical_Screen__USEN_1500x.png",
+                "desktop": "https://media.studio7thailand.com/226749/iPhone_17e_Soft_Pink_Hero_Vertical_Screen__USEN_1500x.png"
+              },
+              "isHighlight": true,
+              "contentHTML": {
+                "title": "ดูรายละเอียดสินค้า",
+                "content": "<p style=\"width: 95%; justify-self: anchor-center;\"><iframe style=\"width: 100%; height: 10020px; margin: 0px 5px;\" src=\"https://media.studio7thailand.com/be6aad65-40ad-4725-82a6-b3c7277e85f4/index-fs-stu-1.html\" frameborder=\"0\" data-mce-fragment=\"1\"></iframe></p>"
+              },
+              "isActiveCustomButton": true,
+              "textCustomButton": "ซื้อสินค้า",
+              "customLink": null,
+              "id": 236,
+              "slug": "iphone-17e-series"
+            },
+            {
+              "name": "iPhone 17",
+              "position": 2,
+              "badgeLabels": [
+                {
+                  "id": 714,
+                  "name": "Buy 2 & Save Extra",
+                  "key": "normal",
+                  "image": null,
+                  "fontColor": "#5856D6"
+                },
+                {
+                  "id": 711,
+                  "name": "ใหม่",
+                  "key": "new_product",
+                  "image": null,
+                  "fontColor": "#BF4800"
+                },
+                {
+                  "id": 706,
+                  "name": "ผ่อนสบาย 0%",
+                  "key": "zero_installment",
+                  "image": null,
+                  "fontColor": "#0071BC"
+                }
+              ],
+              "title": "iPhone 17",
+              "subtitle": "",
+              "isLowestPriceVisible": false,
+              "showLowestPriceType": "append_description",
+              "description": "เริ่มต้น ฿29,900",
+              "shortDescription": "สุดมหัศจรรย์ สุดสดใส",
+              "type": "category",
+              "destinationType": "plp",
+              "searchKeyword": null,
+              "lowestPrice": 2990000,
+              "src": {
+                "mobile": "https://media.studio7thailand.com/201946/IMG-18057261_m_jpeg_1_80397794-dcd2-4ed9-aa61-6ee0fca8d412.png",
+                "desktop": "https://media.studio7thailand.com/201946/IMG-18057261_m_jpeg_1_80397794-dcd2-4ed9-aa61-6ee0fca8d412.png"
+              },
+              "isHighlight": false,
+              "contentHTML": null,
+              "isActiveCustomButton": true,
+              "textCustomButton": "ซื้อสินค้า",
+              "customLink": null,
+              "id": 220,
+              "slug": "iphone-17-series"
+            },
+            {
+              "name": "iPhone 17 Pro",
+              "position": 3,
+              "badgeLabels": [
+                {
+                  "id": 714,
+                  "name": "Buy 2 & Save Extra",
+                  "key": "normal",
+                  "image": null,
+                  "fontColor": "#5856D6"
+                },
+                {
+                  "id": 711,
+                  "name": "ใหม่",
+                  "key": "new_product",
+                  "image": null,
+                  "fontColor": "#BF4800"
+                },
+                {
+                  "id": 706,
+                  "name": "ผ่อนสบาย 0%",
+                  "key": "zero_installment",
+                  "image": null,
+                  "fontColor": "#0071BC"
+                }
+              ],
+              "title": "iPhone 17 Pro",
+              "subtitle": "",
+              "isLowestPriceVisible": false,
+              "showLowestPriceType": "append_description",
+              "description": "เริ่มต้น ฿43,900",
+              "shortDescription": "Pro ให้สุด",
+              "type": "category",
+              "destinationType": "plp",
+              "searchKeyword": null,
+              "lowestPrice": 4390000,
+              "src": {
+                "mobile": "https://media.studio7thailand.com/201947/IMG-18057367_m_jpeg_1_cf49231b-20c0-4724-9356-98d389216e78.png",
+                "desktop": "https://media.studio7thailand.com/201947/IMG-18057367_m_jpeg_1_cf49231b-20c0-4724-9356-98d389216e78.png"
+              },
+              "isHighlight": false,
+              "contentHTML": null,
+              "isActiveCustomButton": false,
+              "textCustomButton": null,
+              "customLink": null,
+              "id": 219,
+              "slug": "iphone-17-pro-series"
+            },
+            {
+              "name": "iPhone Air",
+              "position": 4,
+              "badgeLabels": [
+                {
+                  "id": 714,
+                  "name": "Buy 2 & Save Extra",
+                  "key": "normal",
+                  "image": null,
+                  "fontColor": "#5856D6"
+                },
+                {
+                  "id": 711,
+                  "name": "ใหม่",
+                  "key": "new_product",
+                  "image": null,
+                  "fontColor": "#BF4800"
+                },
+                {
+                  "id": 706,
+                  "name": "ผ่อนสบาย 0%",
+                  "key": "zero_installment",
+                  "image": null,
+                  "fontColor": "#0071BC"
+                }
+              ],
+              "title": "iPhone Air",
+              "subtitle": "",
+              "isLowestPriceVisible": false,
+              "showLowestPriceType": "append_description",
+              "description": "เริ่มต้น ฿32,900",
+              "shortDescription": "iPhone ที่บางที่สุดเท่าที่เคยมีมา",
+              "type": "category",
+              "destinationType": "plp",
+              "searchKeyword": null,
+              "lowestPrice": 69000,
+              "src": {
+                "mobile": "https://media.studio7thailand.com/201949/IMG-18057459_m_jpeg_1_69143f9a-bdfe-4f55-94b8-b8fb078b4e87_550x.png",
+                "desktop": "https://media.studio7thailand.com/201949/IMG-18057459_m_jpeg_1_69143f9a-bdfe-4f55-94b8-b8fb078b4e87_550x.png"
+              },
+              "isHighlight": false,
+              "contentHTML": null,
+              "isActiveCustomButton": true,
+              "textCustomButton": "ซื้อสินค้า",
+              "customLink": null,
+              "id": 221,
+              "slug": "iphone-air-series"
+            },
+            {
+              "name": "iPhone 16e",
+              "position": 5,
+              "badgeLabels": [],
+              "title": "iPhone 16e",
+              "subtitle": "",
+              "isLowestPriceVisible": true,
+              "showLowestPriceType": "append_description",
+              "description": "",
+              "shortDescription": "ทุกสิ่งที่คุณจะรัก รวมถึงราคา",
+              "type": "category",
+              "destinationType": "plp",
+              "searchKeyword": null,
+              "lowestPrice": 1940000,
+              "src": {
+                "mobile": "https://media.studio7thailand.com/177337/iPhone_16e_White_2-up_Apple_Intelligence_Screen__USEN.webp",
+                "desktop": "https://media.studio7thailand.com/177337/iPhone_16e_White_2-up_Apple_Intelligence_Screen__USEN.webp"
+              },
+              "isHighlight": false,
+              "contentHTML": null,
+              "isActiveCustomButton": true,
+              "textCustomButton": "ซื้อสินค้า",
+              "customLink": null,
+              "id": 217,
+              "slug": "iphone-16e-series"
+            },
+            {
+              "name": "iPhone 16",
+              "position": 6,
+              "badgeLabels": [
+                {
+                  "id": 714,
+                  "name": "Buy 2 & Save Extra",
+                  "key": "normal",
+                  "image": null,
+                  "fontColor": "#5856D6"
+                },
+                {
+                  "id": 706,
+                  "name": "ผ่อนสบาย 0%",
+                  "key": "zero_installment",
+                  "image": null,
+                  "fontColor": "#0071BC"
+                }
+              ],
+              "title": "iPhone 16",
+              "subtitle": "",
+              "isLowestPriceVisible": true,
+              "showLowestPriceType": "append_short_description",
+              "description": "",
+              "shortDescription": "เร็วสุดแรง ฉลาดสุดล้ำ",
+              "type": "category",
+              "destinationType": "custom_link",
+              "searchKeyword": null,
+              "lowestPrice": 2650000,
+              "src": {
+                "mobile": "https://media.studio7thailand.com/154856/iPhone_16_Plus_Ultramarine_PDP_Image_Position_1a_Ultramarine_Color__TH-TH.jpg",
+                "desktop": "https://media.studio7thailand.com/154856/iPhone_16_Plus_Ultramarine_PDP_Image_Position_1a_Ultramarine_Color__TH-TH.jpg"
+              },
+              "isHighlight": false,
+              "contentHTML": null,
+              "isActiveCustomButton": false,
+              "textCustomButton": null,
+              "customLink": "https://www.studio7thailand.com/collection/iphone-16-series",
+              "id": 197,
+              "slug": "iphone-16-series"
+            },
+            {
+              "name": "iPhone 15",
+              "position": 7,
+              "badgeLabels": [
+                {
+                  "id": 714,
+                  "name": "Buy 2 & Save Extra",
+                  "key": "normal",
+                  "image": null,
+                  "fontColor": "#5856D6"
+                },
+                {
+                  "id": 706,
+                  "name": "ผ่อนสบาย 0%",
+                  "key": "zero_installment",
+                  "image": null,
+                  "fontColor": "#0071BC"
+                }
+              ],
+              "title": "iPhone 15",
+              "subtitle": "",
+              "isLowestPriceVisible": true,
+              "showLowestPriceType": "append_description",
+              "description": "",
+              "shortDescription": "รักครั้งใหม่",
+              "type": "category",
+              "destinationType": "plp",
+              "searchKeyword": null,
+              "lowestPrice": 2410000,
+              "src": {
+                "mobile": "https://media.studio7thailand.com/132840/iPhone-15-Pink.png",
+                "desktop": "https://media.studio7thailand.com/132840/iPhone-15-Pink.png"
+              },
+              "isHighlight": false,
+              "contentHTML": null,
+              "isActiveCustomButton": true,
+              "textCustomButton": null,
+              "customLink": null,
+              "id": 145,
+              "slug": "iphone-15-series"
+            },
+            {
+              "name": "iPhone 14",
+              "position": 8,
+              "badgeLabels": [
+                {
+                  "id": 706,
+                  "name": "ผ่อนสบาย 0%",
+                  "key": "zero_installment",
+                  "image": null,
+                  "fontColor": "#0071BC"
+                }
+              ],
+              "title": "iPhone 14",
+              "subtitle": "",
+              "isLowestPriceVisible": true,
+              "showLowestPriceType": "append_description",
+              "description": "",
+              "shortDescription": "ได้ใจไปเต็ม ๆ",
+              "type": "category",
+              "destinationType": "plp",
+              "searchKeyword": null,
+              "lowestPrice": 1710000,
+              "src": {
+                "mobile": "https://media.studio7thailand.com/132791/iPhone_14_Blue_PDP_Image_Position-1A_Blue_1-square_medium.webp",
+                "desktop": "https://media.studio7thailand.com/132791/iPhone_14_Blue_PDP_Image_Position-1A_Blue_1-square_medium.webp"
+              },
+              "isHighlight": false,
+              "contentHTML": null,
+              "isActiveCustomButton": true,
+              "textCustomButton": null,
+              "customLink": null,
+              "id": 103,
+              "slug": "iphone-14-series"
+            },
+            {
+              "name": "iPhone 13",
+              "position": 9,
+              "badgeLabels": [
+                {
+                  "id": 714,
+                  "name": "Buy 2 & Save Extra",
+                  "key": "normal",
+                  "image": null,
+                  "fontColor": "#5856D6"
+                },
+                {
+                  "id": 706,
+                  "name": "ผ่อนสบาย 0%",
+                  "key": "zero_installment",
+                  "image": null,
+                  "fontColor": "#0071BC"
+                }
+              ],
+              "title": "iPhone 13",
+              "subtitle": "",
+              "isLowestPriceVisible": true,
+              "showLowestPriceType": "append_description",
+              "description": "",
+              "shortDescription": "มหัศจรรย์ ทุกครั้ง",
+              "type": "category",
+              "destinationType": "plp",
+              "searchKeyword": null,
+              "lowestPrice": 1490000,
+              "src": {
+                "mobile": "https://media.studio7thailand.com/132792/iPhone_13_PDP_Position-1A_Color_Midnight__1-square_medium.webp",
+                "desktop": "https://media.studio7thailand.com/132792/iPhone_13_PDP_Position-1A_Color_Midnight__1-square_medium.webp"
+              },
+              "isHighlight": false,
+              "contentHTML": null,
+              "isActiveCustomButton": true,
+              "textCustomButton": null,
+              "customLink": null,
+              "id": 60,
+              "slug": "iphone-13-series"
+            },
+            {
+              "name": "อุปกรณ์เสริม iPhone",
+              "position": 10,
+              "badgeLabels": [],
+              "title": "อุปกรณ์เสริม iPhone",
+              "subtitle": "",
+              "isLowestPriceVisible": false,
+              "showLowestPriceType": "append_description",
+              "description": "",
+              "shortDescription": "",
+              "type": "category",
+              "destinationType": "search_category",
+              "searchKeyword": null,
+              "lowestPrice": 5000,
+              "src": {
+                "mobile": "https://media.studio7thailand.com/201961/lobs_accessories_iphone17.png",
+                "desktop": "https://media.studio7thailand.com/201961/lobs_accessories_iphone17.png"
+              },
+              "isHighlight": false,
+              "contentHTML": null,
+              "isActiveCustomButton": true,
+              "textCustomButton": null,
+              "customLink": null,
+              "id": 118,
+              "slug": "all-iphone-accessories"
+            }
+          ],
+          "seo": {
+            "metaTitle": "iPhone (ไอโฟน) ครบทุกรุ่นใหม่ ราคาล่าสุด มีประกัน",
+            "metaDesc": "iPhone (ไอโฟน) ครบทุกรุ่นใหม่ ทุกสี ทุกความจุ กับราคาและโปรโมชันสุดพิเศษ สินค้าของแท้ คุณภาพดี พร้อมประกันจาก iCare กับโปรผ่อนไอโฟน 0% นานสูงสุด 24 เดือน",
+            "metaKeyword": "apple iPhone,iphone 13 pro max, iphone 13 mini, iphone 13, iphone 13 pro, apple iPhone 13, apple iPhone 13 mini, apple iPhone 13 Pro, apple iPhone 13 Pro Max, iphone 13 Pink,iphone 13 Blue,iphone 13 Midnight,iphone 13 Starlight,iphone 13 project red,new iphone,iphone13 new, iphone 13 mini, iphone 13 pro max,A15 Bionic, iphone 13 pro max, iphone 13 pro, iphone 13 5G, iphone 13 MagSafe, iphone 13 mini blue, iphone 13 mini Starlight, iphone 13 mini Pink, iphone 13 mini red, iphone 13, apple iPhone 11, apple iPhone 11 Pro, apple iPhone 11 Pro Max, apple iPhone 12, apple iPhone 12 mini, apple iPhone 12 Pro, apple iPhone 12 Pro Max, apple iPhone SE, apple iPhone X, apple iPhone XR, apple iPhone XS, apple iPhone XS Max, apple iPhone, apple iPhone 8, apple iPhone 8 plus, apple iPhone 7, apple iPhone 7 plus, apple iPhone 6, apple iPhone 6 plus, apple iPhone 6s, apple iPhone 6s plus,iPhone 13 Pro Max ราคาในไทย,iPhone 13 Pro ราคา ในไทย,iPhone 13 Pro Max เปิดตัว,iPhone 13 Pro Max ราคาเท่าไหร่,ขนาดหน้าจอ iPhone 13 Pro Max,ราคาไอโฟน13,สี iphone 13,ราคา เปิด ตัว iphone 13,ราคา iphone 13 pro max,ราคา iphone 13 pro,ราคา iphone 13,เปิด ตัว iphone 13,iphone13 pro max,iphone13 apple,iphone13 2021,iphone 13 สี ใหม่,iphone 13 สี,iphone 13 ราคา เปิด ตัว,iphone 13 ราคา,iphone 13 เปิด ตัว ราคา,iphone 13 เปิด ตัว,iphone 13 xs max,iphone 13 s pro,iphone 13 s,iphone 13 pro ราคา\n,iphone 13 pro rosa,iphone 13 pro plus,iphone 13 pro mini,iphone 13 pro max สี,iphone 13 pro max ราคา,iphone 13 pro max เปิด ตัว,iphone 13 pro max plus,iphone 13 pro max mini,iphone 13 pro max 2022,iphone 13 pro max 2021,iphone 13 pro max 2020,iphone 13 pro max 128gb,iphone 13 pro max 128,iphone 13 pro max 120hz,iphone 13 pro max\n,iphone 13 plus max,iphone 13 plus,iphone 13 mini ราคา,iphone 13 mini pro,iphone 13 mini apple,iphone 13 mini 64gb,iphone 13 mini 256gb,iphone 13 mini 2021,iphone 13 mini 128gb,iphone 13 mini 120hz,iphone 13 mini,ไอ โฟน 13,ไอ โฟน 13 ราคา,ไอ โฟน 13 pro max,ไอ โฟน 13 ราคา ล่าสุด 2564,ไอ โฟน 13 pro max ราคา,ราคา ไอ โฟน 13,ไอ โฟน 13 ราคา ล่าสุด 2563,ไอ โฟน 13 ราคา ล่าสุด\n,ไอ โฟน 13 สีชมพู,ไอ โฟน 13 pro,ไอ โฟน 13 ราคา กี่ บาท,ข่าว ไอ โฟน 13,ราคา ไอ โฟน 13 pro max,ไอ โฟน 13 ราคา ล่าสุด 2564 ราคา,ไอ โฟน 13 สีชมพู ราคา,ไอ โฟน 13 โปร แม็ ก,ราคา ไอ โฟน 13 ราคา,ราคา ไอ โฟน 13 pro max ราคา,ไอ โฟน 13 มิ นิ,ราคา ไอ โฟน 13 โปร แม็ ก,ข่าว ไอ โฟน 13 ล่าสุด,ไอ โฟน 13 โปร,ไอ โฟน 13 pro ราคา,ไอ โฟน 13 pro max สีชมพู,ไอ โฟน 13 mini\n,ราคา ไอ โฟน 13 ล่าสุด,ไอ โฟน 13 โปร แม็ ก ราคา,13 ไอ โฟน,ไอ โฟน 13 กี่ บาท,ไอ โฟน 13 ล่าสุด,ราคา ไอ โฟน 13 เครื่อง เปล่า,ราคา ไอ โฟน 13 pro,ไอ โฟน 13 ais,มือ ถือ ไอ โฟน 13,ราคา ไอ โฟน 13 โปร,iphone 13 ใหม่ล่าสุด,iPhone 13 สีเขียว,ไอโฟน 13 สีเขียว,iPhone SE 3,ไอโฟน 2022,iPhone 13 2022,ไอโฟน,ราคาไอโฟน 11,ราคาไอโฟน,iPhone,istudio,ไอโฟนพร้อมอะแดปเตอร์,ซื้อไอโฟนแถมอะแดปเตอร์,ซื้อ iPhone free Adapter,อะแดปเตอร์ ฟรี,ราคาสำหรับนักเรียน,ราคานักเรียน,ราคานักศึกษา,ราคาเครื่องเปล่า,iPhone 14 Series,iphone 14 ราคา,iphone 14 เปิดตัว,จอง ไอโฟน 14,ไอโฟน 14,ไอโฟน 14 2022,ไอโฟน 14 ราคา,ไอโฟน 14 ราคาเท่าไหร่,ไอโฟน 14 จอง,ส่วนลด ไอโฟน 14,พรีออเดอร์ iphone 14,A16 Bionic,14 พลัส,ไอโฟน 14 กี่บาท,Studio7,studio,,iphone 15,ไอโฟน 15,iphone 15 เปิดตัว,ไอโฟน 15 เปิด ตัว,ไอโฟน 15 ราคา เท่าไหร่,สี ไอโฟน 15,ไอโฟน 15 สี,ไอโฟน 15 ราคา ล่าสุด 2566,iphone 15 pro max 2023,ไอโฟน 15 ราคา ล่าสุด,ไอโฟนเครื่องเปล่า,iPhone เครื่องเปล่า,ไอโฟน15 Pro maxราคา,"
+          }
+        }
+      },
+      "isLoading": false
+    },
+    "checkout": {
+      "status": {},
+      "shipmentData": [],
+      "shippingMethods": {},
+      "shipmentStatuses": [],
+      "paymentMethodListToGetOnTopPaymentPromotion": [],
+      "payments": [],
+      "isError": false,
+      "isLoading": false,
+      "isClickedEditBtn": false,
+      "isLoadingCheckout": false,
+      "isLoadingBranchList": false,
+      "isDefaultPickup": false
+    },
+    "compareProducts": {
+      "products": [],
+      "isLoadingProductsData": false,
+      "maximumCompareProducts": 3
+    },
+    "familyStripe": {
+      "products": {},
+      "categories": {},
+      "isLoading": true
+    },
+    "flashSale": {
+      "products": [],
+      "sold": [],
+      "information": {}
+    },
+    "footers": {
+      "services": {},
+      "applications": {},
+      "information": {}
+    },
+    "hashed": {
+      "hashedCart": null,
+      "hashedPromotion": null,
+      "promotionIds": []
+    },
+    "home": {
+      "widgetList": [],
+      "widgetMeta": {
+        "currentPage": 0,
+        "lastPage": 1,
+        "perPage": 6,
+        "total": 0
+      }
+    },
+    "mainMenu": {
+      "isActive": false
+    },
+    "marketingCampaign": {
+      "currentDataKey": null,
+      "currentDataLang": null,
+      "data": {},
+      "isLoading": false,
+      "isRedirect": false
+    },
+    "me": {
+      "profile": {},
+      "address": {},
+      "createdAddressId": null,
+      "isSuccess": null,
+      "isError": null,
+      "guestCustomer": null,
+      "isFetchedGustCustomerError": false
+    },
+    "mobileApp": {
+      "isMobileApp": false
+    },
+    "orderDetail": {
+      "data": {},
+      "payments": [],
+      "reselectPayment": {},
+      "isLoading": false
+    },
+    "orderHistory": {
+      "data": [],
+      "links": {},
+      "meta": {}
+    },
+    "pdpa": {
+      "cookieConsents": [],
+      "isRequireConsent": true
+    },
+    "pickupDateTimes": {
+      "data": [],
+      "isLoading": false
+    },
+    "productList": {
+      "data": {},
+      "categoryBanners": [],
+      "meta": {
+        "currentPage": 1,
+        "lastPage": 1,
+        "perPage": 24,
+        "total": 0
+      },
+      "view": "grid",
+      "isLoading": false
+    },
+    "productListFilters": {
+      "isLoadingCategoryOptions": false,
+      "isLoadingPriceRangeOptions": false,
+      "isLoadingAttributesOptions": false,
+      "isLoadingTagFilterOptions": false,
+      "currentFilterOptions": {
+        "categoryOptionsNormalized": null,
+        "categoryOptionsEntities": {},
+        "priceRangeOptions": {
+          "min": 0,
+          "max": 200000,
+          "step": 100
+        },
+        "attributeOptions": [],
+        "tagFilterOptions": []
+      },
+      "tempFilterOptions": null
+    },
+    "productSuggestionMobile": {
+      "isLoading": false,
+      "data": {}
+    },
+    "province": {
+      "isLoading": false,
+      "normalized": [],
+      "entities": {
+        "provinces": {},
+        "districts": {},
+        "subdistricts": {}
+      }
+    },
+    "search": {
+      "suggestions": {},
+      "isLoading": false
+    },
+    "staticPages": {
+      "data": [],
+      "page": {},
+      "isLoading": false,
+      "isSidebarVisible": true,
+      "verificationCoupon": {}
+    },
+    "storeBranch": {
+      "list": [],
+      "pickupableType": null,
+      "pickupableList": {},
+      "branchDetail": {},
+      "isLoadingBranchDetail": false,
+      "isCollectAtStore": false,
+      "collectAtStoreBranchId": null,
+      "collectAtStoreBranchList": [],
+      "isBusinessHourActive": false,
+      "selectedBranchId": null,
+      "defaultMarker": {
+        "lat": 13.749675,
+        "lng": 100.5329442
+      },
+      "lastPositionRequest": null,
+      "appleMapToken": null
+    },
+    "subHeaders": {
+      "homepage": {
+        "data": [],
+        "isLoading": false
+      },
+      "cart": {
+        "data": [],
+        "isLoading": false
+      }
+    },
+    "thailandAddress": {
+      "isLoading": false,
+      "normalized": [],
+      "entities": {
+        "provinces": {},
+        "districts": {},
+        "subdistricts": {}
+      }
+    },
+    "twoFactor": {
+      "isLoading": false,
+      "data": {
+        "verify": {
+          "verified": false,
+          "error": null,
+          "message": null,
+          "provider": null,
+          "requestExpiredAt": null
+        },
+        "requestOtp": {
+          "verified": false,
+          "error": null,
+          "message": null,
+          "provider": null,
+          "requestExpiredAt": null
+        }
+      }
+    },
+    "userLocation": {
+      "location": null
+    },
+    "verify": {
+      "isLoading": false,
+      "code": null,
+      "uuid": null
+    },
+    "wishlist": {
+      "wishlistProducts": []
+    },
+    "productDetail": {
+      "isError": false,
+      "currentGroupSlug": "",
+      "currentUid": "",
+      "productGroupData": {},
+      "productDetailData": {},
+      "frequentlyBoughtProducts": [],
+      "installment": null,
+      "installmentWithExtraSKUs": null,
+      "priceSummary": null,
+      "priceSummaryWithExtraSKUs": null,
+      "shippingMethods": [],
+      "promotions": {
+        "promotions": [],
+        "bundles": [],
+        "bundlesV2": [],
+        "isLoading": false,
+        "selectedBundleId": null,
+        "isLoadingSelectedBundleStock": false,
+        "bundleSetProductsAvailableList": [],
+        "preOrderType": "",
+        "productSets": {}
+      }
+    },
+    "crm": {
+      "me": {
+        "isLoading": false,
+        "profile": {
+          "memberProfile": []
+        },
+        "orders": [],
+        "meta": {
+          "total": 10,
+          "perPage": 10,
+          "currentPage": 1,
+          "lastPage": 1
+        },
+        "error": null
+      },
+      "member": {
+        "isLoading": false,
+        "membership": {
+          "requestCode": {
+            "code": null,
+            "message": null
+          },
+          "link": {
+            "message": null,
+            "success": false
+          },
+          "unlink": {
+            "message": null,
+            "success": false
+          },
+          "error": null
+        }
+      }
+    },
+    "mocks": {
+      "mock-home-service-highlight": {},
+      "mock-product-detail-accordion-options": {}
+    },
+    "i18n": {
+      "routeParams": {}
+    }
+  },
+  "serverRendered": true,
+  "routePath": "/th/view-all/apple-iphone-series",
+  "config": {},
+  "__i18n": {
+    "langs": {
+      "th": {
+        "locale": {
+          "th": "ไทย",
+          "en": "English"
+        },
+        "common": {
+          "loading": "กำลังโหลด...",
+          "home": "หน้าหลัก",
+          "search": "ค้นหา",
+          "create": "สร้าง",
+          "foundCustomerInfo": "พบข้อมูลลูกค้า (ID: {id})",
+          "findOurStoreLocation": "ค้นหาร้านใกล้คุณ",
+          "iCare": "iCare",
+          "login": "เข้าสู่ระบบ",
+          "staffLogin": "เข้าสู่ระบบสำหรับพนักงาน",
+          "logout": "ออกจากระบบ",
+          "signIn": "ลงชื่อเข้าใช้",
+          "account": "บัญชีผู้ใช้",
+          "loginInfo": "(ลูกค้าที่มีบัญชี BNN.in.th อยู่แล้ว สามารถล็อคอินใช้งานได้ทันที)",
+          "loginInfoFacebook": "เนื่องจากทางเว็บไซต์มีปัญหาระหว่างการเชื่อมต่อบัญชี Facebook ลูกค้าที่ทำการสั่งซื้อผ่านบัญชี Facebook สามารถติดตามสถานะการสั่งซื้อสินค้าได้ที่ แผนกลูกค้าออนไลน์ 02-017-7788 ทางทีมงาน ฯ จะเร่งแก้ปัญหาโดยเร็วที่สุด",
+          "welcomeMessage": "Welcome to Studio 7 Online Store",
+          "viewAllInCategory": "เลือกดูสินค้าตามหมวดหมู่",
+          "selectLanguage": "TH/EN",
+          "language": "ภาษา",
+          "brand": "แบรนด์",
+          "sku": "รหัสสินค้า",
+          "buyNow": "ซื้อสินค้า",
+          "shopNow": "ช้อปเลย",
+          "addToCart": "หยิบใส่ตะกร้า",
+          "addItemsToCart": "เลือกสินค้าจำนวน {length} ชิ้น ลงตะกร้า",
+          "buyBundleNow": "ซื้อเซทสินค้า",
+          "addBundleToCart": "เพิ่มเซทลงตะกร้า",
+          "compare": "เปรียบเทียบ {categoryName} ทุกรุ่น",
+          "addToWishlist": "บันทึกรายการโปรด",
+          "addedToWishlist": "บันทึกรายการโปรดเรียบร้อย",
+          "share": "แชร์",
+          "year": "ปี",
+          "month": "เดือน",
+          "day": "วัน",
+          "days": "วัน",
+          "hours": "ชั่วโมง",
+          "shortHours": "ชั่วโมง",
+          "minutes": "นาที",
+          "shortMinutes": "นาที",
+          "secs": "วินาที",
+          "kilometer": "กม.",
+          "qty": "จำนวน",
+          "filter": "กรองข้อมูลสินค้า",
+          "filterPriceRangeMax": "The highest price is {price}",
+          "product": "สินค้า",
+          "allProducts": "สินค้าทั้งหมด",
+          "clearFilters": "ล้างทั้งหมด",
+          "filterBy": "กรองด้วย",
+          "applyFilter": "ใช้การกรองสินค้าที่เลือก",
+          "filterTitles": {
+            "clear": "ลบ",
+            "inStockOnly": "แสดงสินค้าพร้อมขาย",
+            "availability": "ความพร้อมของสินค้า",
+            "categories": "หมวดหมู่สินค้า",
+            "tags": "แท็กสินค้า",
+            "priceRange": "เลือกช่วงราคา"
+          },
+          "save": "บันทึก",
+          "saveChanges": "Save changes",
+          "searchPlaceholder": "ค้นหาสินค้า",
+          "item": "ชิ้น",
+          "success": "สำเร็จ",
+          "viewShoppingCart": "ดูตะกร้าสินค้า",
+          "apply": "ใช้ส่วนลด",
+          "discount": "ส่วนลด",
+          "continueShopping": "ดูสินค้าอื่นๆ",
+          "quantity": "จำนวน",
+          "all": "ทั้งหมด",
+          "backToShoppingCart": "กลับไปที่ตะกร้าสินค้า",
+          "edit": "แก้ไข",
+          "delete": "ลบ",
+          "name": "ชื่อ",
+          "namePlaceholder": "กรอกชื่อ",
+          "email": "อีเมล",
+          "subscribeToOurEmails": "รับจดหมายข่าวสารจากเรา",
+          "thanksForSubscribe": "ขอบคุณสำหรับการสมัครรับข่าวสาร",
+          "taxEmail": "อีเมลสำหรับ E-Tax",
+          "emailPlaceholder": "กรอกอีเมล",
+          "password": "รหัสผ่าน",
+          "confirmPassword": "ยืนยันรหัสผ่าน",
+          "phoneNumber": "เบอร์โทรศัพท์",
+          "phoneNumberPlaceholder": "กรอกเบอร์โทรศัพท์",
+          "firstname": "ชื่อ",
+          "firstnamePlaceholder": "กรอกชื่อ",
+          "lastName": "นามสกุล",
+          "lastNamePlaceholder": "กรอกนามสกุล",
+          "dateOfBirth": "วันเดือนปีเกิด",
+          "dateOfBirthPlaceholder": "กรอกวันเดือนปีเกิด",
+          "nameTitle": {
+            "text": "คำนำหน้าชื่อ",
+            "mr": "นาย",
+            "mrs": "นาง",
+            "miss": "นางสาว"
+          },
+          "nameTitlePlaceholder": "กรอกคำนำหน้าชื่อ",
+          "gender": {
+            "text": "เพศ",
+            "male": "ชาย",
+            "female": "หญิง",
+            "lgbtq": "LGBTQ+",
+            "other": "อื่น ๆ"
+          },
+          "genderPlaceholder": "กรอกเพศ",
+          "occupation": "อาชีพ",
+          "occupationPlaceholder": "กรอกอาชีพ",
+          "optional": "ถ้ามี",
+          "cancel": "ยกเลิก",
+          "free": "ฟรี",
+          "address": "ที่อยู่",
+          "addressPlaceholder": "กรอกที่อยู่",
+          "clickHere": "กดที่นี่",
+          "second": "วินาที",
+          "field": "field",
+          "showMore": "ดูเพิ่มเติม",
+          "showLess": "ซ่อนเนื้อหา",
+          "showMoreWithSymbol": "+ ดูเพิ่มเติม",
+          "showLessWithSymbol": "- ซ่อนเนื้อหา",
+          "goBackToCart": "กลับไปที่ตะกร้าสินค้า",
+          "contactSupport": "ติดต่อเรา",
+          "myAccount": "บัญชีของฉัน",
+          "myOrder": "คำสั่งซื้อของฉัน",
+          "compareProductsBar": {
+            "compareProductsNotice": "โปรดเลือกสินค้าเพื่อทำการเปรียบเทียบ | เปรียบเทียบสินค้า",
+            "compareProducts": "เปรียบเทียบสินค้า"
+          },
+          "clearAll": "ล้างข้อมูล",
+          "promotion": "โปรโมชั่น",
+          "more_promotion_and_coupon": "โปรโมชั่นเพิ่มเติม & คูปอง Studio7",
+          "code": "CODE",
+          "applyCoupon": "ใช้คูปองส่วนลด",
+          "applied": "ใช้งาน",
+          "valid": "หมดเขต",
+          "expire": "หมดเขต",
+          "sortBy": "เรียงตาม",
+          "coupon": "คูปองส่วนลด",
+          "enterCouponCode": "กรอกคูปองส่วนลด",
+          "total": "ยอดรวมสุทธิ",
+          "forgotPassword": {
+            "handle": "ลืมรหัสผ่าน?",
+            "title": "รีเซ็ตรหัสผ่านของคุณ",
+            "subTitle": "เราจะส่งอีเมลเพื่อรีเซ็ตรหัสผ่านของคุณ"
+          },
+          "register": "สมัครสมาชิก",
+          "verificationCode": "รหัสยืนยันตัวตน",
+          "privacyPolicy": "นโยบายความเป็นส่วนตัว",
+          "termsOfUse": "ข้อกำหนดการใช้",
+          "termsOfSale": "เงื่อนไขการส่งเสริมการขาย",
+          "regis7ClubMember": "7CLUB PLUS",
+          "existingUser": "ท่านได้เป็นสมาชิก 7CLUB PLUS อยู่แล้ว",
+          "see_detail": "ดูรายละเอียด",
+          "price": {
+            "text": "ราคา",
+            "save": "ประหยัด",
+            "saveUpTo": "ประหยัดไป",
+            "sellingPrice": "Special Price",
+            "normal": "Normal Price",
+            "unavailable": "สินค้ายังไม่มีการระบุราคา",
+            "installmentWithPrice": "จาก {price} หรือ {pricePerMonth}/ด. เป็นเวลา {month} ด.*",
+            "installment": "{pricePerMonth}/ด. เป็นเวลา {month} ด."
+          },
+          "resetPassword": {
+            "title": "เปลี่ยนรหัสผ่านของคุณ",
+            "subTitle": "เปลี่ยนรหัสผ่านใหม่สำหรับอีเมล {email}",
+            "submit": "ขอเปลี่ยนรหัสผ่าน",
+            "back": "กลับเข้าสู่ระบบ",
+            "sentTitle": "โปรดเช็กลิงก์เปลี่ยนรหัสที่อีเมลของคุณ",
+            "sentContent1": "โปรดเช็กลิงก์เปลี่ยนรหัสที่อีเมล {email} ของคุณ เพื่อดำเนินการต่อ",
+            "sentContent2": "ดำเนินการเปลี่ยนรหัสตามขั้นตอนที่แจ้งในอีเมล",
+            "reset": "เปลี่ยนรหัสผ่าน"
+          },
+          "redirectToHomePage": "กำลังกลับไปหน้าหลักใน {count}",
+          "clickToRedirectToHomePage": "{clickHere}เพื่อกลับสู่หน้าหลัก",
+          "ifThisPageDoesnotRedirect": "ถ้าไม่ไปยังหน้าหลัก โปรด{clickHere}.",
+          "personalTax": "ภาษีบุคคลธรรมดา",
+          "companyTax": "ภาษีนิติบุคคล",
+          "confirm": "ยืนยัน",
+          "submit": "ยืนยัน",
+          "termsAndCond": "รายละเอียดเงื่อนไขการส่งเสริมการขาย",
+          "proceed": "ดำเนินการต่อ",
+          "payNow": "ชำระเงิน",
+          "rePayment": "ชำระเงิน",
+          "branch": "สาขา",
+          "or": "หรือ",
+          "subject": "เรื่อง",
+          "selection": "กรุณาเลือก",
+          "send": "ส่งข้อความ",
+          "message": "ข้อความ",
+          "messagePlaceholder": "กรอกรายละเอียด",
+          "phone": "เบอร์ติดต่อ",
+          "callCenter": "ศูนย์บริการลูกค้า",
+          "storeLocation": "ที่ตั้งสาขา ฯ",
+          "workingHour": "เวลาทำการ",
+          "allProvince": "ทุกจังหวัด",
+          "totalResults": "{total} รายการ",
+          "openInGoogleMap": "ดูเพิ่มเติมในแผนที่กูเกิ้ล",
+          "storeBranch": {
+            "workingDay": "วันทำการ",
+            "workingTime": "เวลาทำการ",
+            "closed": "ปิดทำการ"
+          },
+          "dayOfWeek": {
+            "sunday": "วันอาทิตย์",
+            "monday": "วันจันทร์",
+            "tuesday": "วันอังคาร",
+            "wednesday": "วันพุธ",
+            "thursday": "วันพฤหัสบดี",
+            "friday": "วันศุกร์",
+            "saturday": "วันเสาร์"
+          },
+          "contactUs": "ติดต่อเรา",
+          "back": "ย้อนกลับ",
+          "promotions": {
+            "seeFreeGifts": "รายการของแถม",
+            "freeGiftsRemark": "ขอสงวนสิทธิ์ในการเปลี่ยนแปลงของแถมโดยไม่ต้องแจ้งให้ทราบล่วงหน้า",
+            "backToPromotions": "กลับสู่โปรโมชั่นหลัก",
+            "minimumSpendOf": "ยอดสั่งซื้อขั้นต่ำ {amount}",
+            "everyMinimumSpendOf": "ทุกๆ ยอดสั่งซื้อขั้นต่ำ {amount}",
+            "minimumSpendItemOf": "ยอดสั่งซื้อสินค้าขั้นต่ำ {quantity} ชิ้น",
+            "everyMinimumSpendItemOf": "ทุกๆ ยอดสั่งซื้อสินค้าขั้นต่ำ {quantity} ชิ้น"
+          },
+          "viewAll": "ดูทั้งหมด",
+          "seeZeroInstallment": "โปรโมชั่นผ่อน 0% ที่ร่วมรายการ",
+          "tryAgain": "กรุณาลองอีกครั้ง",
+          "meta": {
+            "title": "Studio 7 สินค้าอุปกรณ์ IT ราคาถูก มีครบ ช้อปไอที ต้องที่ studio7thailand.com"
+          },
+          "franchise": "แฟรนไชส์",
+          "freeGift": "ฟรีของแถม",
+          "shipping": {
+            "shippingFee": "ค่าจัดส่ง",
+            "additionalFee": "ค่าขนส่งพิเศษ(เพิ่มเติม)",
+            "shippingFeeDiscount": "ส่วนลดค่าจัดส่ง",
+            "estimateAmount": "ยอดที่ต้องชำระโดยประมาณ",
+            "pointRedemptionPlan": "จำนวนคะแนนที่ใช้"
+          },
+          "shipment": {
+            "standard": "การจัดส่งแบบปกติ",
+            "express": "การจัดส่งด่วน",
+            "pickUpAtStore": "รับสินค้าที่สาขา",
+            "pickUpAndPay": "รับสินค้าและชำระที่ Warehouse",
+            "grabAndGo": "Grab and Go",
+            "collectInOneHour": "รับที่ร้านภายใน 1 ชั่วโมง"
+          },
+          "pdpaConsent": {
+            "bar": {
+              "title": "ความยินยอมข้อมูลส่วนบุคคลของคุณ",
+              "detail": "บริษัท คอมเซเว่น จำกัด (มหาชน) และบริษัทในเครือ หรือ บริษัทในกลุ่ม ใช้คุกกี้เพื่อมอบประสบการณ์การใช้งานเว็บไซต์ที่ดีที่สุดให้กับคุณ {privacyPolicy}",
+              "seePrivacyPolicy": "ดูรายละเอียดนโยบายความเป็นส่วนตัว",
+              "seeDetail": "ตั้งค่าความเป็นส่วนตัว",
+              "accept": "ให้ความยินยอมทั้งหมด"
+            },
+            "modal": {
+              "summaryInfo": "<a href='https://www.comseven.com/th/pdpa/privacypolicy' target='_blank' class='link'>บริษัท คอมเซเว่น จำกัด (มหาชน) และ บริษัทในเครือ หรือ บริษัทในกลุ่ม</a><span>ให้ความสำคัญต่อความเป็นส่วนตัวของลูกค้า เราจะทำงานอย่างดีที่สุดเพื่อรักษาความลับ และควบคุมข้อมูลส่วนบุคคลของคุณให้ปลอดภัย โดยที่คุณเลือกจะให้หรือไม่ให้ความยินยอมก็ได้ โดยความยินยอมและการจัดการข้อมูลส่วนบุคคลจะถูกแบ่งเป็นสามหัวข้อเพื่อให้สิทธิอย่างเต็มที่</span><ol class='ol-info'><li class='li-info'>ความยินยอมในการให้ข้อมูลส่วนบุคคล เพื่อใช้สมัครสมาชิกและรับบริการต่างๆ รวมถึงการทำเอกสาร หรือ สัญญาใดๆ ตามความประสงค์ของลูกค้า</li><li class='li-info'>ความยินยอมให้นำข้อมูลไปใช้พัฒนาให้เกิดการพัฒนาสินค้าหรือบริการให้ดียิ่งขึ้น</li><li class='li-info'>ความยินยอมให้บริษัทนำเสนอผลิตภัณฑ์ บริการ หรือโปรโมชั่น พิเศษต่าง ๆ</li></ol><span class='see-more-summary-detail'>อ่านรายละเอียดเพิ่มเติมได้<a href='https://www.comseven.com/th/pdpa/privacypolicy' target='_blank' class='link'>ที่นี่</a></span>",
+              "options": {
+                "personalInformationTitle": "ความยินยอมในการให้ข้อมูลส่วนบุคคล",
+                "personalInformationDetail": "ข้อมูลส่วนบุคคลของลูกค้าทุกท่านเป็นสิ่งสำคัญต่อเรา เราขอรับรองว่าข้อมูลของท่านจะได้รับการปกป้องและรักษาเป็นอย่างดี การอนุญาตให้เข้าถึงข้อมูลจะไม่มีผลกระทบใด ๆ ต่อผลิตภัณฑ์หรือบริการที่พึงได้รับ คุณสามารถอ่านรายละเอียดเพิ่มเติมได้ที่ <a href='https://www.comseven.com/th/pdpa/privacypolicy' target='_blank' class='link'>https://www.comseven.com/th/pdpa/privacypolicy</a> หรือติดต่อ <a href='tel:02-017-7788' class='link'>02-017-7788</a>",
+                "improveServiceTitle": "ความยินยอมให้นำข้อมูลไปใช้พัฒนาให้เกิดการพัฒนาสินค้าหรือบริการให้ดียิ่งขึ้น",
+                "improveServiceDetail": "เพื่อให้ท่านได้รับความพึงพอใจต่อบริการของเราอย่างต่อเนื่อง ทางบริษัทจะปรับปรุงและพัฒนาสินค้าและบริการให้ดียิ่งขึ้น โดยอาจพึ่งข้อมูลของท่านในการวิเคราะห์ วิจัย และทำสถิติ เพียงท่านมอบความเห็นพ้องและอนุญาตให้บริษัทจัดเก็บ ใช้ และเปิดเผยข้อมูลของท่าน ตามวัตถุประสงค์ที่ได้ระบุไว้ คุณสามารถอ่านรายละเอียดเพิ่มเติมได้ที่ <a href='https://www.comseven.com/th/pdpa/privacypolicy' target='_blank' class='link'>https://www.comseven.com/th/pdpa/privacypolicy</a> หรือติดต่อ <a href='tel:02-017-7788' class='link'>02-017-7788</a>",
+                "warningImproveService": "ในกรณีที่ท่านไม่ยินยอมให้นําข้อมูลส่วนบุคคลในข้อนี้ ทางเราอาจจะพัฒนาสินค้าหรือบริการไม่ตรงกับความต้องการของท่าน",
+                "offerPromotionTitle": "ความยินยอมให้บริษัทนำเสนอผลิตภัณฑ์ บริการ หรือโปรโมชั่นพิเศษต่างๆ",
+                "offerPromotionDetail": "เพื่อให้ท่านไม่พลาดข้อเสนอพิเศษของผลิตภัณฑ์หรือบริการ ทางเราขอเรียนเชิญให้ท่านเข้าร่วมกิจกรรมต่างๆ รับข้อเสนอพิเศษเฉพาะ รวมถึงข่าวสารใหม่ๆ จากทางเรา เพียงท่านเห็นพ้องและอนุญาตให้ทางบริษัท รวมรวม นำไปใช้และเปิดเผยข้อมูลของท่าน เพื่อใช้นำเสนอผลิตภัณฑ์ คุณสามารถอ่านรายละเอียดเพิ่มเติมได้ที่ <a href='https://www.comseven.com/th/pdpa/privacypolicy' target='_blank' class='link'>https://www.comseven.com/th/pdpa/privacypolicy</a> หรือติดต่อ <a href='tel:02-017-7788' class='link'>02-017-7788</a>",
+                "warningOfferPromotionTitle": "ในกรณีที่ท่านไม่ยินยอมให้นําข้อมูลส่วนบุคคลในข้อนี้ ท่านอาจจะไม่ได้รับข้อเสนอพิเศษ โปรโมชั่นหรือบริการพิเศษจากทางเรา"
+              }
+            }
+          },
+          "agree": "ยินยอม",
+          "disagree": "ไม่ยินยอม",
+          "readMore": "อ่านต่อ",
+          "soldOut": "สินค้าหมด",
+          "outOfStock": "สินค้าหมด",
+          "unavailable": "Unavailable",
+          "cookiePreferences": "การจัดการ Cookies",
+          "date": "วันที่",
+          "time": "เวลา",
+          "similarProductYouMayLike": "สินค้าใกล้เคียงที่คุณอาจสนใจ",
+          "policyUpdates": {
+            "title": "แจ้งเปลี่ยนแปลงนโยบายบน studio7thailand.com",
+            "lastUpdated": "เปลี่ยนแปลง ณ วันที่",
+            "acceptPolicy": "ทางบริษัท ฯ ได้มีการเปลี่ยนแปลง{privacyPolicy}และ{termsOfUse} โปรดอ่านเพิ่มเติม",
+            "acceptPolicyInfo": "เมื่อคุณอ่านและยอมรับ นโยบายความเป็นส่วนตัวและข้อกำหนดการใช้งานฉบับปรับปรุง โปรดส่งคำยินยอมของคุณโดยคลิกปุ่ม \"ยอมรับ\" ด้านล่าง",
+            "accept": "ยอมรับ",
+            "decline": "ปฏิเสธ"
+          },
+          "selectAnOption": "เลือกหัวข้อ",
+          "additionalComment": "ความคิดเห็นเพิ่มเติม",
+          "typeOtherCommentsHere": "พิมพ์ข้อคิดเห็น/ข้อแนะนำเพิ่มเติม",
+          "upload": "Upload",
+          "uploadFile": "Upload file",
+          "maximumFileSize": "Maximum file size: {fileSize}.",
+          "yourOrderNumber": "เลขที่คำสั่งซื้อ:",
+          "unavailableProduct": "สินค้าไม่พร้อมขาย",
+          "hasCollectAtStore": "ซื้อสินค้า (1ชม.)",
+          "comingSoon": "พร้อมจำหน่ายเร็วๆ นี้",
+          "select": "เลือก",
+          "education": "สำหรับการศึกษา",
+          "SMEBusiness": "SME Business",
+          "variant": {
+            "_comment": "TODO: lang th",
+            "name": "Choose Your {name} :"
+          },
+          "new": "ใหม่",
+          "compareModel": "เปรียบเทียบ {category} รุ่น >",
+          "shopByBrand": "Shop by Brand",
+          "notifyMe": "เตือนฉันเมื่อพร้อมจำหน่าย",
+          "notifyMeButton": "แจ้งเตือนฉัน",
+          "redemption": "แลกคะแนน",
+          "orderNumber": "เลขที่คำสั่งซื้อ",
+          "orderNumberPlaceholder": "กรอกเลขที่คำสั่งซื้อ",
+          "from": "เริ่มต้น",
+          "to": "ถึง",
+          "learnMore": "เรียนรู้เพิ่มเติม",
+          "searchSuggestionProducts": "สินค้า",
+          "searchSuggestionKeywords": "แนะนำ",
+          "categoryViewAll": "ดู {category} ทั้งหมด",
+          "yearPlan": "(แผน {year} ปี)",
+          "add": "เพิ่ม",
+          "searchSuggestionNotFound": "ขออภัยไม่มีพบสิ่งที่เกี่ยวข้องกับ",
+          "searchSuggestionFor": "ค้นหาสำหรับ \"{value}\"",
+          "getDirections": "ดูเส้นทาง",
+          "viewCollection": "ดูรายการสินค้า",
+          "unlink": "ยกเลิกการเชื่อมต่อ",
+          "link": "เชื่อมต่อ",
+          "items": "สินค้า"
+        },
+        "pages": {
+          "mustHave": {
+            "title": "สินค้าต้องมี"
+          },
+          "searchPage": {
+            "meta": {
+              "title": "studio7thailand.com Online shopping for Mac, Apple watch, iPhone, iPad, iPod and Gadgets",
+              "categoriesTitle": "{category} - Studio7 Online",
+              "description": "ซื้อ {category} มีสเปคและตัวเลือกมากมายให้ช้อปได้ที่ Studio 7 Online",
+              "totalResults": "รายการ",
+              "searchTitle": "ผลการค้นหา \"{keyword}\" | ของแท้ ส่งฟรีทั่วไทย"
+            },
+            "title": "ผลการค้นหา",
+            "addFilter": "เพิ่มตัวกรอง",
+            "search": {
+              "resultFor": "ผลการค้นหา"
+            },
+            "sorting": {
+              "relevance": "เกี่ยวข้อง",
+              "newProduct": "สินค้าใหม่",
+              "priceASC": "ราคาต่ำ - สูง",
+              "priceDESC": "ราคาสูง - ต่ำ"
+            },
+            "filter": {
+              "attribute": {
+                "brand": "แบรนด์",
+                "capacity": "ความจุ",
+                "dimension": "ขนาด",
+                "color": "สี"
+              }
+            },
+            "notFound": {
+              "title": "ไม่พบข้อมูลที่คุณกำลังค้นหา",
+              "description": "โปรดลองเปลี่ยนคำหรือกรองข้อมูลสินค้าใหม่อีกครั้ง"
+            }
+          },
+          "marketingCampaign": {
+            "meta": {
+              "title": "studio7thailand.com Online shopping for Mac, Apple watch, iPhone, iPad, iPod and Gadgets",
+              "categoriesTitle": "{category} - Studio7 Online",
+              "description": "ซื้อ {category} มีสเปคและตัวเลือกมากมายให้ช้อปได้ที่ Studio 7 Online",
+              "totalResults": "รายการ",
+              "searchTitle": "ผลการค้นหา \"{keyword}\" | ของแท้ ส่งฟรีทั่วไทย"
+            },
+            "title": "ผลการค้นหา",
+            "addFilter": "เพิ่มตัวกรอง",
+            "search": {
+              "resultFor": "ผลการค้นหา"
+            },
+            "sorting": {
+              "relevance": "เกี่ยวข้อง",
+              "newProduct": "สินค้าใหม่",
+              "priceASC": "ราคาต่ำ - สูง",
+              "priceDESC": "ราคาสูง - ต่ำ"
+            },
+            "filter": {
+              "attribute": {
+                "brand": "แบรนด์",
+                "capacity": "ความจุ",
+                "dimension": "ขนาด",
+                "color": "สี"
+              }
+            },
+            "notFound": {
+              "title": "ไม่พบข้อมูลที่คุณกำลังค้นหา",
+              "description": "โปรดลองเปลี่ยนคำหรือกรองข้อมูลสินค้าใหม่อีกครั้ง"
+            }
+          },
+          "productDetail": {
+            "meta": {
+              "title": "ช้อปเลยที่ Studio 7 Online"
+            },
+            "tab": {
+              "overAll": "ภาพรวม",
+              "description": "รายละเอียดสินค้า",
+              "specification": "คุณสมบัติ"
+            },
+            "overview": "ภาพรวมสินค้า",
+            "specification": "คุณสมบัติสินค้า",
+            "seeDetail": "ดูเพิ่มเติม",
+            "selected": "เลือก",
+            "notSelected": "ไม่เลือก",
+            "totalValueOf": "มูลค่าทั้งหมด",
+            "copyLink": "คัดลอกลิงก์",
+            "customerAlsoBought": "ซื้อรวมกันบ่อย",
+            "yourItemHasBeenAddedToCart": "รายการสินค้าได้ถูกเพิ่มในตระกร้า",
+            "warrantyAvailable": "รับประกัน {warrantyDuration}",
+            "lifetimeWarranty": "รับประกันตลอดอายุการใช้งาน",
+            "bundleProduct": "ซื้อคู่กัน ถูกกว่า!",
+            "addBundleToCart": "หยิบรายการสินค้าทั้งเซตลงตระกร้า",
+            "buyBundle": "ซื้อสินค้าทั้งหมดในเซต",
+            "bundlePrice": "ราคารวมสินค้าทั้งเซท",
+            "bundleNotAvailable": "สินค้าบางชิ้นในเซตหมด กรุณากด \"เลือกสินค้าในเซต\" เพื่อเปลี่ยนสินค้า",
+            "bundleFreeGift": "ฟรีของแถม(เพิ่ม)ในเซต",
+            "bundlePromotion": "คู่กันคุ้มกว่า",
+            "bundleDetail": "ช้อปอุปกรณ์เสริมราคาพิเศษ กับข้อเสนอเฉพาะตอนนี้เท่านั้น",
+            "btnCustomizeBundle": "เลือกสินค้าในเซต",
+            "btnCustomizeThisBundle": "เปลี่ยนสินค้าในเซต",
+            "qty": "จำนวน",
+            "seePromotionDetail": "ดูรายละเอียดโปรโมชั่นและสิทธิพิเศษเพิ่มเติม",
+            "customizeBundle": "ซื้อคู่กัน ถูกกว่า!",
+            "collectAtStore": "พร้อมรับสินค้าใน 1 ชม.",
+            "pickup": "ประมาณ 2 - 4 วัน*",
+            "collectProduct": "สามารถมารับสินค้าที่ร้านได้ภายใน 1 ชั่วโมง",
+            "checkStock": "เช็กสินค้าที่ร้าน",
+            "inStock": "มีสินค้า",
+            "outOfStock": "สินค้าหมด",
+            "installmentProduct": "{price} / เดือน ผ่อน {percent}% นานสูงสุด {period} เดือน",
+            "installmentProductLearnMore": "ดูเพิ่มเติมเกี่ยวกับการผ่อนชำระ",
+            "variantNotExist": "ไม่พร้อมใช้งาน",
+            "selectedVariantNotExist": "ตัวเลือกบางรายการมีการเปลี่ยนแปลง เนื่องจากสินค้าไม่ตรงตามเงื่อนไข",
+            "notifyMe": "เตือนฉันเมื่อพร้อมจำหน่าย",
+            "buyNow1Hr": "ซื้อสินค้า (1ชม.)",
+            "oneHourUnavailable": "ไม่พร้อมรับสินค้า",
+            "storeAvailability": "สินค้าพร้อมรับที่สาขา",
+            "oneHourPickup": "รับที่สาขา 1 ชั่วโมง",
+            "pickupTitle": "รับที่สาขา",
+            "shippingTitle": "การจัดส่ง",
+            "coupon": {
+              "loadingCoupon": "กำลังโหลดคูปอง...",
+              "title": "คูปอง ({value})",
+              "viewMore": "ดูเพิ่มเติม",
+              "item": {
+                "expire": "หมดเขต",
+                "condition": "เงื่อนไข",
+                "code": "รหัส",
+                "button": {
+                  "collected": "เก็บแล้ว",
+                  "outOfQuota": "หมด",
+                  "loading": "กำลังเก็บ",
+                  "collect": "เก็บ"
+                }
+              },
+              "rewardItem": {
+                "freeShipping": "ส่งฟรี",
+                "freeGift": "ของแถม",
+                "free": "ฟรี",
+                "fullDiscount": "ลดเต็มจำนวน",
+                "fixedValue": "ส่วนลด",
+                "discount": "ส่วนลด",
+                "only": "เหลือเพียง"
+              }
+            },
+            "deliveryOption": {
+              "selectedBranchPreOrderDate": "เริ่มรับสินค้าวันที่"
+            }
+          },
+          "preOrder": {
+            "tag": "สั่งซื้อล่วงหน้า เร็วๆนี้",
+            "tagForWishlist": "สั่งซื้อล่วงหน้า",
+            "title": "เงื่อนไข สั่งซื้อล่วงหน้า",
+            "isAcceptTermsAndCond": "ฉันรับทราบว่าฉันได้อ่านและยอมรับข้อกำหนดและเงื่อนไขการสั่งซื้อล่วงหน้าของ studio7thailand.com",
+            "proceedNewCart": {
+              "title": "เลือกสินค้าใหม่ลงในตระกร้า",
+              "info": "มีรายการสินค้า ที่ไม่เข้าเงื่อนไขการสั่งซื้อกำหนด ถ้าต้องการทำรายการต่อ กรุณาเลือกหรือลบสินค้าในตระกร้าใหม่ คุณต้องการดำเนินการต่อหรือไม่"
+            },
+            "preOrderStart": "สั่งซื้อล่วงหน้า",
+            "preOrderEnds": "สิ้นสุดเวลาการสั่งซื้อล่วงหน้า",
+            "totalView": "{numberOfView} คน สนใจสินค้ารายการนี้",
+            "totalPurchase": "สินค้าถูกซื้อไปแล้ว {numberOfPurchase} ชิ้น เมื่อ 3 ชั่วโมงที่แล้ว",
+            "orderWithFullPrice": "จองพร้อมจ่ายเต็ม",
+            "orderWithReservePrice": "จองพร้อมมัดจำ",
+            "productWillBeAvailable": "สินค้าเริ่มวางจำหน่าย {date}",
+            "price": {
+              "fullPrice": "สั่งซื้อล่วงหน้า : ชำระเต็มจำนวน",
+              "reservePrice": "สั่งซื้อล่วงหน้า : ชำระแบบมัดจำ"
+            },
+            "mustBePaidOn": "{remainingPrice} ภายในวันที่ {paidDate}",
+            "redemption": {
+              "redeemPoint": "แลกคะแนน {remainingPointRedemption} คะแนน",
+              "remainingAmount": "ยอดที่ต้องชำระที่เหลือ {remainingPrice} ภายในวันที่ {paidDate}"
+            },
+            "limitPreOrder": "จำกัดการสั่งซื้อล่วงหน้า จำนวน {quota} ชิ้น/รายการสั่งซื้อ",
+            "expectedShipOn": "เริ่มจัดส่ง {date}.",
+            "openingHours": "เวลาเปิด - ปิดสาขา ฯ",
+            "alreadySaveIdentityDocument": "ข้อมูลถูกบันทึกไว้ในคำสั่งซื้อนี้แล้ว",
+            "continueToInitialPayment": "ดำเนินการต่อเพื่อชำระเงินมัดจำล่วงหน้า",
+            "continueToRemainingPayment": "ดำเนินการต่อเพื่อชำระเงินส่วนที่เหลือ",
+            "initialPayment": "การชำระเงินมัดจำล่วงหน้า",
+            "remainingPayment": "การชำระเงินส่วนที่เหลือ",
+            "initialBalance": "ยอดคงเหลือที่ต้องชำระเงินมัดจำล่วงหน้า",
+            "remainingBalance": "ยอดคงเหลือที่ต้องชำระเงินส่วนที่เหลือ",
+            "initialTotal": "ยอดที่ต้องชำระเงินมัดจำล่วงหน้า",
+            "remainingTotal": "ยอดที่ต้องชำระเงินส่วนที่เหลือ",
+            "pickupAtStore": {
+              "pickupTime": "เวลาที่รับสินค้า (โดยประมาณ)",
+              "pickupDate": "วันที่รับสินค้า (โดยประมาณ)",
+              "selectDate": "โปรดเลือกวันที่",
+              "selectTime": "โปรดเลือกเวลา",
+              "noDateAndTimeSelected": "ยังไม่ได้เลือกวันที่และเวลา",
+              "fullyBooked": "| สิทธิ์เต็มแล้ว"
+            },
+            "cart": {
+              "productUpdateWarning": "รายการสินค้าสั่งจองล่วงหน้า เต็มจำนวนแล้ว โปรดนำออกจากตระกร้าสินค้า"
+            },
+            "orderHistory": {
+              "remainingBalance": "{price} ครบกำหนดชำระวันที่ {date}",
+              "payInitialBalance": "ชำระเงินมัดจำล่วงหน้า",
+              "rePayInitialBalance": "เลือกชำระเงินมัดจำล่วงหน้าอีกครั้ง",
+              "payRemainingBalance": "ชำระเงินส่วนที่เหลือ",
+              "rePayRemainingBalance": "เลือกชำระเงินส่วนที่เหลือ",
+              "needHelpContactOutSupport": "สอบถามเพิ่มเติม ติดต่อ {contactUs}"
+            },
+            "payment": {
+              "initialPaymentMethod": "วิธีการชำระเงินแบบมัดจำล่วงหน้า",
+              "remainingPaymentMethod": "วิธีการชำระเงินแบบส่วนที่เหลือ"
+            },
+            "bundle": {
+              "warning": "มีสินค้าบางรายการ ที่ไม่สามารถชำระเงินพร้อมกับ สินค้าสั่งซื้อล่วงหน้าได้",
+              "orderWithFullPrice": "ซื้อสินค้าทั้งเซต",
+              "orderWithReservePrice": "ซื้อสินค้าทั้งเซต (ราคามัดจำ)"
+            }
+          },
+          "notSupported": {
+            "header": "ขออภัย หน้าเว็บไม่ซัพพอร์ตเบราว์เซอร์ของคุณ",
+            "description": "เพื่อประสบการณ์การท่องเว็บไซต์ที่ดีกว่า โปรดอัปเดตเบราว์เซอร์ของคุณเป็น {chrome} หรือ {firefox}",
+            "chrome": "Google Chrome",
+            "firefox": "Firefox"
+          },
+          "cart": {
+            "meta": {
+              "title": "ตะกร้าสินค้าของฉัน"
+            },
+            "cart": "ตะกร้าสินค้า",
+            "qty": "จำนวน",
+            "includesFreeItem": "รวมของแถม {free} ชิ้น",
+            "includesFreeItemOfCart": "รวมของแถมในตะกร้า {free} ชิ้น",
+            "freeItem": "ฟรี! ของแถม",
+            "freeGiftTitle": "สินค้าของแถมในตระกร้า",
+            "empty": {
+              "header": "ตะกร้าสินค้าของคุณว่างเปล่า",
+              "content": "คุณไม่มีสินค้าในตะกร้า โปรดเลือกหยิบสินค้าที่ต้องการซื้อลงตะกร้า"
+            },
+            "startShopping": "ทำการช็อปปิ้งต่อ",
+            "gotoCart": "ไปที่ตะกร้า",
+            "viewCart": "ดูตะกร้าสินค้า ({amount})",
+            "subtotal": "ยอดรวม",
+            "product": "สินค้า",
+            "remove": "ลบออก",
+            "removing": "กำลังลบ",
+            "continueShopping": "ช้อปสินค้าต่อ",
+            "proceedToCheckout": "ดำเนินการสั่งซื้อ",
+            "preOrderReservePrice": "ยอดมัดจำที่ต้องชำระ",
+            "useCoupon": "ใช้คูปอง",
+            "applyCoupon": "ใช้อยู่",
+            "installmentButton": "ดูแผนการผ่อนชำระ",
+            "installment": "{amount}/เดือน นานสูงสุด {period} เดือน*",
+            "installmentDescription": "รายการผ่อนชำระ {amount} ต่อเดือน(รวมค่าสินค้าราคาปกติ เงินดาวน์ ค่าจัดส่ง และภาษีแล้ว)",
+            "payInFull": "ยอดรวมสุทธิ {amount}",
+            "payInFullDescription": "ชำระเต็มจำนวน",
+            "installmentCheckoutButton": "ชำระเงิน",
+            "error": {
+              "productUnavailable": "สินค้าบางชิ้นในตะกร้าไม่สามารถซื้อได้ โปรดลบสินค้าที่ไม่ตรงตามเงื่อนไขโปรโมชั่น และลองอีกครั้ง",
+              "productUnavailableSingle": "{productName} (SKU: {sku}) ไม่สามารถซื้อได้ กรุณาลบออกก่อนทำการชำระเงิน",
+              "productUnavailableWithQuantity": "มีสินค้าทั้งหมด {quantity} รายการที่ไม่สามารถซื้อได้: {productList} กรุณาลบสินค้าดังกล่าวออกก่อนทำการชำระเงิน",
+              "freeGiftUnavailable": "โปรโมชั่นคูปองส่วนลด / ของแถมอาจมีการเปลี่ยนแปลงตามเงื่อนไขฯ (หมดหรือสิทธิ์เต็ม) โปรดตรวจสอบอีกครั้งในหน้าก่อนชำระเงิน หรือสอบถามเพิ่มเติมที่ Line : @studio7thailand",
+              "productPriceUnavailable": "สินค้าบางชิ้นในตะกร้าไม่สามารถซื้อได้ โปรดลบสินค้าที่ไม่ตรงตามเงื่อนไข และลองอีกครั้ง"
+            },
+            "componentList": "Component list",
+            "cartChange": {
+              "title": "ราคาสินค้าและโปรโมชั่นมีการเปลี่ยนแปลง",
+              "content": "มีการเปลี่ยนแปลงราคาสินค้าหรือโปรโมชั่นบางอย่างกับสินค้าที่คุณเลือก โปรดรีเฟรชเพื่อดูรายละเอียดอัปเดตล่าสุด หรือสอบถามเพิ่มเติมที่ Line : @studio7thailand",
+              "submit": "อัพเดทล่าสุด"
+            },
+            "invalidCoupon": {
+              "title": "คูปองไม่สามารถใช้ได้",
+              "content": "คูปองมีการใช้สิทธ์ครบแล้ว หมดระยะเวลาโปรโมชั่นหรือไม่ตรงตามเงื่อนไข",
+              "submit": "กลับไปที่ตะกร้าสินค้า"
+            },
+            "promotionExceed": {
+              "title": "ไม่สามารถรวมโปรโมชั่นได้",
+              "content": "โปรโมชั่นมีการใช้สิทธ์ครบแล้ว หรือหมดระยะเวลาโปรโมชั่นหรือไม่ตรงตามเงื่อนไข",
+              "submit": "กลับไปที่ตะกร้าสินค้า"
+            },
+            "generalError": {
+              "title": "สินค้าบางรายการมีปัญหา",
+              "content": "สินค้าบางรายการไม่ตรงตามเงื่อนไขในการขนส่งหรือชำระเงิน โปรดดำเนินการสั่งซื้อใหม่อีกครั้ง",
+              "submit": "กลับไปที่ตะกร้าสินค้า"
+            },
+            "boughtProductLimitReached": {
+              "title": "สินค้าบางรายการมีปัญหา",
+              "content": "สินค้า {productName} ที่คุณเลือก เกินจำนวนจำกัดการสั่งซื้อสูงสุด {quantity} ชิ้นต่อ 1 บัญชีอีเมล",
+              "submit": "กลับไปที่ตะกร้าสินค้า"
+            },
+            "bundleSetsTitle": "รายการสินค้าในเซตสุดคุ้ม",
+            "bundleCartItems": "สินค้าทั้งหมด {item} ชิ้น",
+            "includesBundleCartFreeItem": "รวมของแถม {free} ชิ้น",
+            "bundleListQuantity": "{item} เซ็ต",
+            "collectInOneHour": {
+              "title": "รับที่ร้านภายใน 1 ชั่วโมง:"
+            },
+            "temporaryCart": {
+              "title": "สร้าง QR Code สำหรับตะกร้านี้",
+              "enterStaffId": "กรอกรหัสพนักงานขาย",
+              "create": "สร้าง",
+              "inputStaffIdError": "กรุณากรอกรหัสพนักงานขาย",
+              "modal": {
+                "title": "แสกน QR Code",
+                "caption": "แสกน QR Code เพื่อเพิ่มสินค้าลงในตะกร้าสินค้าของคุณ",
+                "createdBy": "สร้างโดย"
+              }
+            },
+            "freeGifts": "ของแถม",
+            "freeGift": "ฟรี",
+            "productSetFreeGiftTitle": "สินค้าของแถม",
+            "orderSummary": "สรุปคำสั่งซื้อ",
+            "frequentlyBought": "สินค้าซื้อคู่กัน",
+            "recentAdded": "รายการสินค้าได้ถูกเพิ่มในตระกร้า",
+            "protection": "เพิ่มความคุ้มครอง",
+            "miniCart": {
+              "title": {
+                "empty": "ตะกร้าสินค้าของคุณว่างเปล่า",
+                "notEmpty": "รายการที่เพิ่มในตะกร้าสินค้าของคุณ"
+              }
+            },
+            "learnMoreAboutFinancing": "ดูเพิ่มเติมเกี่ยวกับการผ่อนชำระ"
+          },
+          "me": {
+            "account": {
+              "meta": {
+                "title": "ข้อมูลส่วนตัวผู้ใช้"
+              },
+              "title": "จัดการบัญชีผู้ใช้",
+              "menus": {
+                "overview": "ข้อมูลส่วนตัว",
+                "accountInformation": "จัดการข้อมูลส่วนตัว",
+                "shippingAddress": "จัดการข้อมูลที่อยู่จัดส่ง",
+                "billingAddress": "จัดการข้อมูลใบเสร็จ",
+                "taxInvoiceAddress": "จัดการข้อมูลใบกำกับภาษี",
+                "changePassword": "เปลี่ยนรหัสผ่าน",
+                "reselectPayment": "เลือกการชำระเงินรูปแบบอื่น",
+                "privacySettings": "ตั้งค่าความเป็นส่วนตัว",
+                "sevenClubMember": "7CLUB PLUS"
+              },
+              "personalInformation": "ข้อมูลส่วนตัว",
+              "accountManagement": "ข้อมูลบัญชี",
+              "privilegeExpired": "สถานะหมดอายุ",
+              "privilegeExpiredTooltip": "โปรด 'ยืนยันสิทธ์พนักงาน' เพื่อกลับมารับสิทธิพิเศษอีกครั้งในอีเมลของคุณ",
+              "verify": {
+                "verified": "ยืนยันแล้ว",
+                "notVerify": "รอยืนยัน",
+                "verificationTimer": "ขอรหัสอีกครั้งได้ใน {count}"
+              },
+              "verifyModal": {
+                "title": "ยืนยันรหัสผ่าน OTP",
+                "detail": "เราได้ส่งรหัสไปที่ <b>{to}</b> แล้ว",
+                "notReceiveVerificationCode": "คุณไม่ได้รับรหัส OTP?",
+                "sendVerificationCode": "ขอรหัสยืนยันตัวตนอีกครั้ง",
+                "verificationCodeTimer": "ส่งขอรหัสยืนยันตัวตนอีกครั้งได้ใน {count}",
+                "submit": "ยืนยันรหัส OTP",
+                "changePhoneNumber": "เปลี่ยนเบอร์โทรศัพท์",
+                "changeEmail": "เปลี่ยนอีเมล"
+              },
+              "sevenClubMember": {
+                "title": "7CLUB PLUS",
+                "memberId": "หมายเลขสมาชิก",
+                "phone": "เบอร์โทร",
+                "email": "อีเมล",
+                "orders": "รายการคําสั่งซื้อ"
+              }
+            },
+            "overview": {
+              "meta": {
+                "title": "จัดการบัญชีผู้ใช้"
+              },
+              "contactInfo": "ติดต่อสอบถามเพิ่มเติมได้ที่ โทร <a href='tel:02-017-7788' class='link'>02-017-7788</a> หรือ Line : <a href='https://lin.ee/mU7F5eJ' target='_blank'>@Studio7</a>"
+            },
+            "order": {
+              "title": "คำสั่งซื้อของฉัน",
+              "menus": {
+                "orderHistory": "ดูประวัติการซื้อ",
+                "orderDetail": "รายละเอียดการสั่งซื้อ",
+                "returnAndRefund": "คืนสินค้าและคืนเงิน",
+                "branchOrderHistory": "รายการคำสั่งซื้อของสาขา"
+              }
+            },
+            "wishlist": {
+              "meta": {
+                "title": "รายการโปรดที่บันทึกไว้"
+              },
+              "title": "รายการสินค้าโปรด",
+              "content": "ไม่มีสินค้าในรายการโปรด",
+              "description": "ไปช้อปปิ้งกันเถอะ",
+              "remove": "ลบ"
+            },
+            "address": {
+              "meta": {
+                "billingAddressTitle": "ที่อยู่สำหรับการออกใบเสร็จ",
+                "shippingAddressTitle": "ที่อยู่สำหรับรับสินค้า",
+                "taxInvoiceAddressTitle": "ที่อยู่สำหรับออกใบกำกับภาษี"
+              },
+              "edit": "แก้ไขที่อยู่",
+              "add": "เพิ่มที่อยู่ใหม่",
+              "defaultAddress": "ที่อยู่ปัจจุบัน",
+              "addressName": "ระบุประเภทที่อยู่",
+              "addressNamePlaceholder": "ตั้งค่าที่อยู่ของคุณ เช่น ออฟฟิศ, บ้าน ฯลฯ",
+              "addressOne": "ที่อยู่บรรทัด 1 (บ้านเลขที่/หมู่บ้าน/อาคาร/ซอย/ถนน)",
+              "addressOnePlaceholder": "บ้านเลขที่/หมู่บ้าน/อาคาร/ซอย/ถนน",
+              "addressTwo": "ที่อยู่บรรทัด 2",
+              "addressTwoPlaceholder": "กรอกข้อมูลที่อยู่บรรทัด 2",
+              "receiverName": "ชื่อผู้รับ",
+              "deliveryAddress": "ที่อยู่จัดส่ง",
+              "deliveryDetail": "รายละเอียด(เพิ่มเติม)/จุดสังเกต",
+              "noDefaultAddress": "ไม่มีที่อยู่จัดส่ง",
+              "contactInformation": "ข้อมูลผู้ติดต่อ",
+              "addressInformation": "ข้อมูลที่อยู่",
+              "setAsDefaultAddress": "ตั้งค่าที่อยู่ปัจจุบัน",
+              "setAsDefaultTaxInvoiceAddress": "ตั้งค่าที่อยู่ใบกำกับภาษีปัจจุบัน",
+              "setAsCheckAndComfirmData": "ตรวจสอบและยืนยันข้อมูลการออกแบบใบกำกับภาษี",
+              "seePreview": "ดูตัวอย่าง",
+              "receiverFirstname": "ชื่อผู้รับ",
+              "receiverFirstnamePlaceholder": "กรอกชื่อผู้รับ",
+              "receiverLastname": "นามสกุลผู้รับ",
+              "receiverLastnamePlaceholder": "กรอกนามสกุลผู้รับ",
+              "postcode": "รหัสไปรษณีย์",
+              "postcodePlaceholder": "กรอกรหัสไปรษณีย์ 5 หลัก",
+              "province": "จังหวัด",
+              "provincePlaceholder": "เลือกจังหวัด",
+              "district": "อำเภอ/เขต",
+              "districtPlaceholder": "เลือกอำเภอ/เขต",
+              "subDistrict": "ตำบล/แขวง",
+              "subDistrictPlaceholder": "เลือกตำบล/แขวง",
+              "addressDetail": "รายละเอียด(เพิ่มเติม)/จุดสังเกต",
+              "addressDetailPlaceholder": "บอกเรา (เพิ่มเติม) เช่น ใกล้กับ ...",
+              "componyReserved": "บริษัทฯ ขอสงวนสิทธิ์ ในการแก้ไขและเปลี่ยนแปลงข้อมูล",
+              "taxInvoice": {
+                "type": "ประเภทของใบกำกับภาษี",
+                "addInformation": "เพิ่มข้อมูลใบกำกับภาษี",
+                "personal": "บุคคลธรรมดา",
+                "personalLabel": "(บุคคลธรรมดา)",
+                "company": "นิติบุคคล",
+                "companyLabel": "(นิติบุคคล)",
+                "idCard": "เลขประจำตัวผู้เสียภาษี (บัตรประชาชน)",
+                "idCardPlaceholder": "กรอกเลขประจำตัวผู้เสียภาษี (บัตรประชาชน)",
+                "companyName": "ชื่อบริษัท",
+                "companyNamePlaceholder": "กรอกชื่อบริษัท",
+                "taxId": "เลขประจำตัวผู้เสียภาษี (บริษัท)",
+                "taxIdPlaceholder": "กรอกเลขเลขประจำตัวผู้เสียภาษี (บริษัท)",
+                "branch": "สาขา",
+                "branchName": "ชื่อสาขา",
+                "branchNamePlaceholder": "กรอกชื่อสาขา",
+                "branchId": "เลขที่สาขา/รหัสสาขา",
+                "branchIdPlaceholder": "กรอกเลขที่สาขา (5 หลัก)",
+                "eTaxNotice": "<b>สำคัญ!</b> เอกสารใบกำกับภาษี e-Tax จะถูกส่งไปที่ email: <span><b>{email}</b></span>"
+              },
+              "deleteAddress": {
+                "title": "ต้องการลบที่อยู่?",
+                "subtitle": "ที่อยู่จะถูกลบออกจากสมุดที่อยู่"
+              }
+            },
+            "changePassword": {
+              "meta": {
+                "title": "เปลี่ยนรหัสบัญชี"
+              },
+              "currentPassword": {
+                "title": "รหัสผ่านปัจจุบัน",
+                "placeholder": "กรอกรหัสผ่านปัจจุบัน"
+              },
+              "newPassword": {
+                "title": "รหัสผ่านใหม่",
+                "placeholder": "กรอกรหัสผ่านใหม่"
+              },
+              "cannotChange": {
+                "title": "ขออภัย ไม่สามารถเปลี่ยนรหัสผ่านได้",
+                "content": "เนื่องจาก บัญชีของคุณสมัครผ่าน Google, Facebook หรือ Apple ID หากต้องการเปลี่ยนรหัสผ่านโปรดไปที่บัญชีของคุณบน Google, Facebook หรือ Apple ID"
+              },
+              "hint": "รหัสต้องมี อักขระขั้นต่ำ 8 ตัวต้องประกอบด้วยตัวอักษรพิมพ์เล็ก (a-z) อย่างน้อยหนึ่งตัวอักษรตัวพิมพ์ใหญ่ (A-Z) หนึ่งตัวและตัวเลขหนึ่งตัว (0-9)"
+            },
+            "orderHistory": {
+              "meta": {
+                "title": "ประวัติการซื้อสินค้า"
+              },
+              "menus": {
+                "all": "ดูคำสั่งซื้อทั้งหมดของฉัน",
+                "toPay": "ที่ต้องชำระ",
+                "toReceive": "ที่ต้องได้รับ",
+                "completed": "คำสั่งซื้อที่สำเร็จแล้ว",
+                "canceled": "คำสั่งซื้อที่ยกเลิก"
+              },
+              "list": {
+                "orderId": "เลขคำสั่งซื้อ",
+                "placedOn": "วันที่สั่งซื้อ",
+                "deliveryMethod": "ประเภทการจัดส่ง",
+                "pickUpAtStoreDetail": "(สาขา {storeName} วันที่ {date}, เวลา {time})",
+                "collectInOneHour": "รับที่ร้านภายใน 1 ชั่วโมง",
+                "qty": "ชิ้น",
+                "preparing": "จัดเตรียมสินค้า",
+                "shipping": "อยู่ระหว่างการจัดส่ง",
+                "delivered": "จัดส่งเรียบร้อย",
+                "pickedUp": "รับสินค้าแล้ว",
+                "viewMore": "ดูสินค้าเพิ่ม {amount} ชิ้น",
+                "itemsInThisOrder": "สินค้าในรายการสั่งซื้อ",
+                "grandTotal": "ยอดรวมสุทธิ",
+                "orderTotal": "ยอดรวมการสั่งซื้อ",
+                "viewOrderDetail": "ดูข้อมูลคำสั่งซื้อ",
+                "payNow": "ชำระเงิน",
+                "empty": "ยังไม่มีรายการคำสั่งซื้อ",
+                "startShopping": "ช้อปสินค้าอื่นๆ",
+                "componentItems": "({item} component item) | ({item} component items)"
+              },
+              "status": "สถานะ",
+              "customer": "ลูกค้า",
+              "payment": "การชำระเงิน"
+            },
+            "branchOrderHistory": {
+              "meta": {
+                "title": "ประวัติการซื้อสินค้า"
+              },
+              "menus": {
+                "all": "คำสั่งซื้อทั้งหมด",
+                "preparing": "กำลังดำเนินการ",
+                "completed": "คำสั่งซื้อที่สำเร็จแล้ว"
+              }
+            },
+            "orderDetail": {
+              "meta": {
+                "title": "เลขที่คำสั่งซื้อ"
+              },
+              "contactSupport": "ติดต่อเรา",
+              "showQrCode": "ยืนยันรับสินค้า",
+              "additionalInformation": "ข้อมูลเพิ่มเติม",
+              "modal": {
+                "title": "แสกน QR Code",
+                "caption": "กรุณาแสดง QR Code นี้ให้พนักงานเพื่อรับสินค้า"
+              },
+              "payment": {
+                "paymentMethod": "วิธีการชำระเงิน",
+                "paid": "ชำระเงินแล้ว",
+                "unpaid": "ยังไม่ได้ชำระเงิน",
+                "unpaidWarning": "โปรดดำเนินการชำระเงินภายใน {dateTime} เพื่อป้องกันการยกเลิกคำสั่งซื้ออัตโนมัติ",
+                "reselect": "เปลี่ยนวิธีชำระเงิน",
+                "cancel": "ยกเลิกคำสั่งซื้อ",
+                "returnAndRefund": "คืนสินค้า และ ขอคืนเงิน",
+                "paidOn": "ชำระเงินวันที่",
+                "printPaymentSlip": "พิมพ์ใบชำระเงิน",
+                "installment": "(ผ่อนชำระ โดย ธนาคาร {bankName} ,อัตราดอกเบี้ยผ่อนชำระ {interestRate}%, {monthCount} เดือน)",
+                "codAndPayAtStoreWarning": "โปรดชำระเงินสดกับพนักงานที่สาขา ฯ เพื่อรับสินค้าตามรายการสั่งซื้อ",
+                "notAllowReselectPayment": "คำสั่งซื้อนี้ไม่สามารถเลือกวิธีการชำระเงินใหม่ได้เนื่องจากโปรโมชั่นนี้สามารถใช้ได้กับวิธีการชำระเงินที่ระบุเท่านั้น"
+              },
+              "package": {
+                "title": "แพ็กเกจ",
+                "deliveryBy": "จัดส่งโดย",
+                "deliveryExpected": "ประมาณการที่จะได้รับสินค้าภายในวันที่ {date}",
+                "pickupAt": "รับที่",
+                "pickupWithin": "สินค้าถูกจัดส่ง เข้าสาขาที่คุณเลือกแล้ว คุณสามารถเข้าไปรับสินค้าได้ภายใน 14วันในช่วงเวลาที่ร้านค้าเปิดทำการ",
+                "pickupWithinPreparing": "สินค้ากำลังดำเนินการจัดส่งไปที่สาขาที่คุณเลือก",
+                "showItemsInThisPackage": "ดูสินค้าในแพ็กเกจจำนวน {item} ชิ้น",
+                "hideItemsInThisPackage": "ซ่อนสินค้าในแพ็กเกจจำนวน {item} ชิ้น",
+                "qty": "ชิ้น",
+                "free": "ฟรี",
+                "empty": "การจัดส่งอยู่ระหว่างดำเนินการ",
+                "preOrderEmpty": "นี่คือการสั่งซื้อสินค้าล่วงหน้าเราจะดำเนินการจัดส่ง เมื่อสินค้าของคุณมาถึงคลังสินค้าแล้ว",
+                "preOrderPickUp": "คาดว่าสินค้าจะพร้อมรับในวันที่ {date} เวลา {time}",
+                "componentList": "อื่นๆ"
+              },
+              "summary": {
+                "title": "สินค้าทั้งหมดในรายการสั่งซื้อ",
+                "itemsInThisOrder": "สินค้าในรายการสั่งซื้อ"
+              },
+              "status": {
+                "preparing": "กำลังจัดเตรียมสินค้า",
+                "shipped": "กำลังจัดส่งสินค้า",
+                "readyToPickUp": "สินค้าพร้อมรับที่สาขา ฯ",
+                "pickedUp": "รับสินค้าแล้ว",
+                "delivered": "จัดส่งสำเร็จ",
+                "toReceive": "ที่ต้องได้รับ",
+                "canceled": "คำสั่งซื้อถูกยกเลิก",
+                "expired": "คำสั่งซื้อหมดอายุ",
+                "completed": "คำสั่งซื้อสำเร็จ",
+                "toPay": "ที่ต้องชำระ",
+                "paymentFailed": "ชำระเงินไม่สำเร็จ"
+              },
+              "total": {
+                "subtotal": "ราคา",
+                "promotion": "โปรโมชั่น",
+                "coupon": "คูปอง",
+                "discount": "ส่วนลด",
+                "standardDelivery": "จัดส่งธรรมดา",
+                "grandTotal": "ยอดสุทธิ",
+                "includeVat": "รวมภาษีมูลค่าเพิ่ม (ถ้ามี)",
+                "redemption": {
+                  "title": "แลกคะแนน",
+                  "exchange": "แลกคะแนน {redemption} คะแนน"
+                }
+              },
+              "address": {
+                "title": "ข้อมูลที่อยู่",
+                "shipping": "ที่อยู่จัดส่ง",
+                "billing": "ที่อยู่ในการออกใบเสร็จ",
+                "tax": "ที่อยู่ใบกำกับภาษี",
+                "personalTax": "ภาษีเงินได้บุคคลธรรมดา",
+                "companyTax": "ภาษีเงินได้นิติบุคคล",
+                "pickUpAtStore": "รับสินค้าที่สาขา",
+                "pickUpAndPay": "รับสินค้าและชำระที่คลังสินค้า",
+                "collectInOneHour": "รับที่ร้านภายใน 1 ชั่วโมง",
+                "grabAndGo": "Grab and go"
+              },
+              "returnRequest": {
+                "title": "คำสั่งขอคืนสินค้าของคุณกำลังอยู่ระหว่างจัดการ",
+                "content": "ทางเราจะรีวิวและทำการตรวจสอบ",
+                "gotIt": "ตกลง",
+                "warning": "รายการสั่งซื้อนี้ได้ถูกขอคืนสินค้า โปรดเช็กสถานะการขอคืน",
+                "modal": {
+                  "title": "กรุณาแจ้งเหตุผลในการคืนสินค้า/คืนเงิน",
+                  "returnReason": {
+                    "title": "เหตุผลในการคืนสินค้า",
+                    "changingMind": "เปลี่ยนใจ",
+                    "productDoesNotMatch": "สินค้าไม่ตรงตามสเปคที่ระบุไว้",
+                    "incorrectProduct": "สินค้าผิดสี/ผิดรุ่น",
+                    "damaged": "สินค้าเสียหาย",
+                    "productNotFunctional": "สินค้าไม่สามารถใช้งานได้",
+                    "others": "อื่นๆ"
+                  },
+                  "submit": "ขอคืนสินค้าและคืนเงิน"
+                }
+              },
+              "cencelOrder": {
+                "title": "รายละเอียดการยกเลิกคำสั่งซื้อ",
+                "requestOn": "คำขอยกเลิกเมื่อ"
+              },
+              "returnHistory": {
+                "title": "Return history",
+                "caseNo": "Case no.",
+                "viewReturnDetail": "View return detail",
+                "requestOn": "Request on",
+                "refund": "Refund"
+              },
+              "cartTemporary": {
+                "staffTitle": "พนักงานขาย",
+                "staffId": "รหัสพนักงาน :",
+                "staffName": "ชื่อพนักงาน :",
+                "staffBranchName": "ประจำสาขา :"
+              },
+              "pickUpAtStoreNotice": "สามารถเข้าไปรับที่สาขา {storeName}<br>ได้ตั้งแต่วันที่ {pickUpDateBKK}<br><br>**สำหรับกรุงเทพและปริมณฑลทำการ 3 วัน และ 5 วัน สำหรับต่างจังหวัด หรือติดต่อเจ้าหน้าที่ {storePhoneNumber}",
+              "hideDetails": "Hide Details",
+              "showDetails": "Show Details"
+            },
+            "reselectPayment": {
+              "backToOrderDetail": "กลับสู่หน้าข้อมูลรายการสั่งซื้อ",
+              "success": "สำเร็จ!",
+              "information": "วิธีการชำระเงินถูกบันทึกแล้ว"
+            },
+            "returnAndRefund": {
+              "meta": {
+                "title": "คืนสินค้าและขอคืนเงิน",
+                "description": "เปลี่ยนใจได้ ไม่ว่ากัน เปลี่ยนคืนสินค้า ได้ภายใน 7 วัน เพื่อให้เกิดความพึงพอใจสูงสุดในการเลือกซื้อสินค้า เราพร้อมมอบนโยบายการให้การบริการคืนสินค้าภายใน 7 วัน"
+              },
+              "list": {
+                "caseNo": "Case no",
+                "requestOn": "Request on",
+                "empty": "There are no return & refund orders.",
+                "startShopping": "Start shopping",
+                "viewReturnAndRefundDetail": "View return & refund detail",
+                "orderId": "Order ID",
+                "inProgress": "In progress",
+                "completed": "Completed",
+                "rejected": "Rejected"
+              },
+              "yourReturnReason": "Your return reason",
+              "yourConversationWasStartedHere": "Your conversation was started here.",
+              "viewLessConversation": "View less conversation",
+              "contactAdmin": "Contact admin",
+              "typeYourMessage": "Type your message...",
+              "admin": "Admin",
+              "you": "You",
+              "returnAndRefundItem": "Return & Refund item",
+              "returnType": "Return type",
+              "returnReason": "Return reason",
+              "qty": "Qty",
+              "maximum10FilesAllowedToUpload": "Maximum 10 files allowed to upload.",
+              "someFilesExceedTheMaximumAllowedSize": "Some files exceed the maximum allowed size.",
+              "returnAndRefundDetail": "Return & Refund detail"
+            },
+            "sevenClubMember": {
+              "meta": {
+                "title": "7CLUB PLUS"
+              },
+              "title": "7CLUB PLUS",
+              "article": {
+                "title": "มาเป็นครอบครัว 7CLUB PLUS รับสิทธิประโยชน์มากมาย",
+                "description": "Lorem ipsum dolor sit amet consectetur. Facilisis suspendisse purus elementum nulla in vestibulum imperdiet amet orci. Nisl faucibus sit at ut eu pellentesque tellus pellentesque. Duis elementum proin massa tempor.",
+                "button": "เชื่อมต่อ 7 CLUB+"
+              },
+              "orderList": {
+                "title": "ข้อมูลคำสั่งซื้อ",
+                "header": {
+                  "billID": "คำสั่งซื้อ",
+                  "boughtAt": "วันที่สั่งซื้อ",
+                  "bu": "คำสั่งซื้อจาก",
+                  "channelName": "ช่องทางการซื้อ"
+                },
+                "footer": {
+                  "totalAmount": "สินค้าในรายการสั่งซื้อ",
+                  "totalPrice": "ยอดรวมการสั่งซื้อ"
+                },
+                "empty": "ยังไม่มีคำสั่งซื้อในขณะนี้"
+              },
+              "userInfo": {
+                "empty": {
+                  "title": "เชื่อมต่อสมาชิก 7CLUB PLUS",
+                  "description": "เข้าร่วมตอนนี้ 🎁 🎊 เพื่อสิทธิประโยชน์ระดับพรีเมียม และรับรีวอร์ดสำหรับสมาชิกใหม่ทันที — สมัครเลย!",
+                  "button": {
+                    "benefit": "ดูสิทธิประโยชน์สมาชิก",
+                    "link": "เชื่อมต่อบัญชี 7CLUB+"
+                  }
+                }
+              }
+            }
+          },
+          "checkout": {
+            "meta": {
+              "title": "สินค้าในตะกร้าของฉัน",
+              "completeTitle": "ทำการซื้อสินค้าเรียบร้อยแล้ว",
+              "informationTitle": "ข้อมูล ที่อยู่ ผู้สั่งซื้อ",
+              "reviewOrderTitle": "ตรวจสอบออเดอร์ก่อนชำระเงิน"
+            },
+            "shipping": "ข้อมูลสำหรับจัดส่ง",
+            "additionalInformation": "ข้อมูลเพิ่มเติมสำหรับจุดจัดส่ง",
+            "grandTotal": "ยอดสุทธิ",
+            "reviewOrder": "ตรวจสอบคำสั่งซื้อและชำระเงิน",
+            "placeOrder": "ดำเนินการสั่งซื้อ",
+            "warning": "สินค้าบางรายการไม่สามารถเข้าร่วมวิธีการขนส่งหรือวิธีการจ่ายเงินบางชนิดได้",
+            "orderSummary": "สรุปรายการสั่งซื้อ",
+            "showOrderSummary": "แสดงรายการสั่งซื้อ",
+            "hideOrderSummary": "ซ่อนรายการสั่งซื้อ",
+            "returnToInformation": "แก้ไขข้อมูล",
+            "stepper": {
+              "information": "รายการสั่งซื้อ",
+              "review": "สรุปรายการสั่งซื้อ",
+              "complete": "สั่งซื้อสำเร็จ",
+              "failed": "สร้างออร์เดอร์สำเร็จ<br>และรอการชำระ"
+            },
+            "breadcrumb": {
+              "cart": "ตะกร้าสินค้า",
+              "information": "รายการสั่งซื้อ",
+              "payment": "ชำระเงิน"
+            },
+            "address": {
+              "addAddress": "เพิ่มที่อยู่ใหม่",
+              "editAddress": "แก้ไขที่อยู่",
+              "backToAddressBook": "กลับไปที่รายละเอียดที่อยู่",
+              "shippingAddressBook": "ที่อยู่จัดส่งของฉัน",
+              "billingAddressBook": "ที่อยู่ออกใบเสร็จของฉัน",
+              "taxAddressBook": "ที่อยู่ออกใบกำกับภาษี ของฉัน",
+              "useSelectedAddress": "เลือกที่อยู่นี้สำหรับจัดส่ง",
+              "useDifferentAddress": "เลือกที่อยู่อื่นสำหรับจัดส่ง",
+              "useSelectedTaxInvoice": "เลือกที่อยู่ออกใบกำกับภาษี",
+              "useSelectedBillingAddress": "เลือกที่อยู่ออกใบเสร็จ",
+              "listEmpty": {
+                "noAddress": {
+                  "shipping": "ไม่มีข้อมูลที่อยู่จัดส่ง",
+                  "billing": "ไม่มีข้อมูลในการออกใบเสร็จ",
+                  "tax": "ไม่มีข้อมูลในการออกใบกำกับภาษี"
+                },
+                "clickButtonAbove": "เพิ่มโดยการกดปุ่ม \"+เพิ่มที่อยู่\" ด้านบน"
+              },
+              "invalidAddress": {
+                "title": "ความยาวที่อยู่เกินระบบกำหนด",
+                "content": "ความยาวที่อยู่ {addressName} เกินระบบกำหนด"
+              }
+            },
+            "shippingDetail": {
+              "shippingType": "เลือกประเภทการจัดส่ง",
+              "guestCustomer": "ค้นหาข้อมูลลูกค้า",
+              "shippingAddress": "ที่อยู่จัดส่ง",
+              "billingAddress": "ที่อยู่ในการออกใบเสร็จ",
+              "taxInvoiceAddress": "ที่อยู่ใบกำกับภาษี",
+              "shippingBranch": "สาขาที่ต้องการให้จัดส่ง",
+              "needFullTaxInvoice": "ต้องการออกใบกำกับภาษี",
+              "checkShippingAddressAndTaxInvoice": "ตรวจสอบข้อมูลที่อยู่การจัดส่ง, ที่อยู่ใบเสร็จของลูกค้าให้ถูกต้อง",
+              "billingAddressSameShippingAddress": "ข้อมูลใบเสร็จใช้ที่อยู่เดียวกับที่อยู่จัดส่ง",
+              "editBillingAddress": "ต้องการแก้ไขที่อยู่ใบเสร็จ",
+              "additionalInformation": "ข้อมูลเพิ่มเติมสำหรับจุดจัดส่ง",
+              "additionalPlaceHolder": "ตัวอย่าง โปรดวางสินค้าไว้ที่หน้าแผนกต้อนรับ",
+              "continueToPayment": "ดำเนินการชำระเงิน",
+              "termsAndConditions": "ข้อกำหนดและเงื่อนไข",
+              "organizationPurpose": "คุณซื้อสินค้าเพื่อการทำงานในองค์กรหรือไม่",
+              "taxInvoiceNotice": {
+                "important": "สำคัญ!",
+                "title": "ใบกำกับภาษีของท่านจะถูกจัดส่งทางอีเมล",
+                "detail": "กรุณาตรวจสอบชื่อและที่อยู่ในการออกใบกำกับภาษีให้ถูกต้องทุกครั้ง ทางบริษัทฯขอสงวนสิทธิ์ในการแก้ไขใบกำกับภาษี",
+                "moreInformation": "สอบถามข้อมูลเพิ่มเติม",
+                "tel": "โทร: 02-0177788",
+                "line": "Line: @bananaitshop"
+              },
+              "conditionETax": "หากเลือกรับสินค้าที่สาขา กรุณาแจ้งพนักงานอีกครั้งเพื่อขอใบกำกับภาษี E-Tax เพื่อลดหย่อน Easy E-Receipt",
+              "organizationPurposeChoices": {
+                "yes": "ใช่",
+                "no": "ไม่ใช่"
+              },
+              "pickUpAt": "สาขาที่ต้องการเลือกรับสินค้า",
+              "selectStore": "เลือกสาขา"
+            },
+            "shippingType": {
+              "delivery": "รับสินค้าตามที่อยู่จัดส่ง",
+              "pickup": "รับที่สาขา",
+              "pickupAndPay": "รับสินค้าและชำระที่ Warehouse",
+              "grabAndGo": "รับสินค้าจุดบริการพิเศษ",
+              "collectInOneHour": "รับที่สาขา 1 ชั่วโมง"
+            },
+            "shippingMethod": {
+              "title": "เลือกวิธีจัดส่งสินค้า",
+              "warning": {
+                "allShippingDisabled": "สินค้านี้ไม่สามารถเลือกขนส่งประเภทนี้ได้ โปรด{goBackToCart}เพื่อจัดการสินค้า",
+                "allShippingInactive": "สินค้านี้ไม่สามารถเลือกขนส่งประเภทนี้ได้ {contactSupport}"
+              },
+              "estimatedDeliveryTimes": {
+                "toHour": "ประมาณการที่จะได้รับสินค้าภายใน {time} ชั่วโมง",
+                "toDay": "ประมาณการที่จะได้รับสินค้าภายใน {time} วัน"
+              },
+              "estimatedShortDeliveryTimes": {
+                "toHour": "ประมาณ {time} ชั่วโมง",
+                "toDay": "ประมาณ {time} วัน"
+              },
+              "estimatedCollectInOneHour": {
+                "name": "รับหน้าร้าน",
+                "toHour": "ใน 1 ชั่วโมง"
+              }
+            },
+            "pickupAtStore": {
+              "searchBranch": "ค้นหาสาขา",
+              "selectBranch": "เลือกสาขาที่รับ",
+              "noBranchesAvailable": "ไม่พบสาขาที่ให้บริการ",
+              "availablePickupTime": "เวลาที่สะดวกรับสินค้า",
+              "onwards": "เป็นต้นไป เจ้าหน้าที่จะติดต่อเพื่อแจ้งเวลารับสินค้าอีกครั้ง",
+              "pickupTime": "ระบบจะจัดส่ง SMS เพื่อยืนยันวันและเวลาการรับสินค้า",
+              "openingHours": {
+                "title": "เวลาเปิด-ปิดทำการของสาขา",
+                "link": "ดูเวลาเปิด-ปิดทำการของสาขา"
+              }
+            },
+            "payment": {
+              "title": "วิธีการชำระเงิน",
+              "paymentType": "ประเภทการชำระเงิน",
+              "installmentOptionsLabel": "เลือกวิธีการผ่อนชำระ",
+              "installmentOptionFormat": "ผ่อน {interestRate} ({monthCount})",
+              "installmentEstimatedPrice": "ราคาโดยประมาณ {price} x {monthCount} (ดอกเบี้ย {interestRate})",
+              "acceptConsent": "ฉันรับทราบว่าฉันได้อ่านและยอมรับ {termsOfSale} และ {privacyPolicy} ของ Com7 เรียบร้อยแล้ว",
+              "warning": {
+                "allPaymentDisabled": "สินค้านี้ไม่สามารถเลือกวิธีการชำระเงินได้ โปรด{goBackToCart}เพื่อจัดการสินค้า",
+                "allPaymentInactive": "สินค้านี้ไม่สามารถเลือกวิธีการชำระเงินได้ {contactSupport}"
+              },
+              "redemptionPointOptionsLabel": "เลือกแพลนรับส่วนลด",
+              "redemptionPointEstimatedPrice": "ราคาโดยประมาณคือ {point} Point + {amount}",
+              "method": {
+                "ktc": {
+                  "forever": "ใช้คะแนน KTC FOREVER",
+                  "foreverWithMoney": "ใช้คะแนน KTC FOREVER + เงิน"
+                }
+              }
+            },
+            "review": {
+              "orderDetailTitle": "Order detail",
+              "sameAsShippingAddress": "ที่อยู่เดียวกันกับที่อยู่จัดส่ง",
+              "notSpecified": "ไม่ระบุ",
+              "installmentPlanLabel": "งวดการผ่อนชำระ (เดือน)",
+              "installmentEstimatedPriceLabel": "ประมาณการผ่อนชำระต่อเดือน",
+              "installmentEstimatedPriceFormat": "{price} x {monthCount} (ดอกเบี้ย {interestRate})",
+              "paymentMethod": "วิธีการชำระเงิน",
+              "pointRedemptionPlanLabel": "จำนวนคะแนนที่ใช้:",
+              "estimateAmountLabel": "ยอดที่ต้องชำระโดยประมาณ",
+              "paymentAmountForKTCLabel": "ยอดที่ต้องชำระผ่าน",
+              "methodName": {
+                "ktc": {
+                  "forever": "บัตรเครดิต KTC",
+                  "foreverWithMoney": "บัตรเครดิต KTC"
+                }
+              }
+            },
+            "complete": {
+              "header": "ขอบคุณสำหรับการสั่งซื้อ",
+              "receiveEmail": "คุณจะได้รับอีเมลยืนยันคำสั่งซื้อเร็วๆ นี้",
+              "yourOrderConfirm": "เราได้รับคำสั่งซื้อของคุณแล้ว",
+              "needHelp": "หากพบปัญหา"
+            },
+            "pending": {
+              "header": "รายการคำสั่งซื้อของท่านอยู่ระหว่างการตรวจสอบการชำระเงิน",
+              "disregard": "ขออภัยหากชำระแล้ว",
+              "sendConfirmEmail": "รายละเอียดคำสั่งซื้อจะถูกส่งไปในอีเมลของคุณ",
+              "emailAddress": "รายละเอียดคำสั่งซื้อจะถูกส่งไปในอีเมล"
+            },
+            "failed": {
+              "header": "ชำระเงินไม่สำเร็จ",
+              "information": "เกิดข้อผิดพลาดขึ้นกับขั้นตอนการชำระเงิน โปรดลองใหม่อีกครั้ง {reselectPaymentMethod}.",
+              "informationWithPromotion": "เกิดข้อผิดพลาดขึ้นกับขั้นตอนการชำระเงิน โปรดลองใหม่อีกครั้ง",
+              "reselectPaymentMethod": "หรือเลือกการชำระเงินรูปแบบอื่น"
+            },
+            "guestCustomer": {
+              "shipping": "ข้อมูลสำหรับจัดส่งลูกค้า",
+              "payment": {
+                "title": "วิธีการชำระเงิน"
+              }
+            }
+          },
+          "pageNotFound": {
+            "meta": {
+              "title": "ขออภัย หน้าเว็บนี้ไม่สามารถใช้งานได้"
+            },
+            "header": "ขออภัย ไม่พบหน้าที่คุณต้องการในระบบ",
+            "homePage": "หน้าหลัก",
+            "continueShopping": "ช้อปสินค้าต่อ"
+          },
+          "pageServerError": {
+            "header": "ระบบขัดข้องชั่วคราว",
+            "homepage": "กลับสู่หน้าหลัก"
+          },
+          "staticPages": {
+            "helpAndInformation": "ช่วยเหลือ & ข้อมูลเพิ่มเติม",
+            "contactUs": {
+              "header": "ข้อมูลบริษัท และสอบถามข้อมูล",
+              "form": {
+                "title": "ส่งข้อความหาเรา",
+                "subtitle": "คุณสามารถส่งข้อความ หรือข้อเสนอแนะ ทางเราจะติดต่อกลับไปโดยเร็วที่สุด",
+                "subjectList": {
+                  "promotions": "โปรโมชั่น",
+                  "ordering": "ติดตามข้อมูลคำสั่งซื้อ",
+                  "myAccount": "เรื่องบัญชี/เข้าระบบ/สมัครสมาชิก",
+                  "returnRefundCancelOrder": "คืนสินค้า/ขอคืนเงิน/ยกเลิกการสั่งซื้อ",
+                  "noticeSuggestionComplaint": "ข้อเสนอแนะ/ร้องเรียนการบริการ",
+                  "other": "อื่นๆ"
+                }
+              },
+              "officeInfomation": {
+                "name": "บริษัท คอมเซเว่น จำกัด (มหาชน)",
+                "address": "549/1 ถนนสรรพาวุธ แขวงบางนา เขตบางนา กรุงเทพมหานคร 10260",
+                "workinghour": "ทุกวันทำการ 09:00 - 18:00",
+                "getDirection": "การเดินทาง"
+              },
+              "callCenterInfomation": {
+                "workingHour": "ทุกวันทำการ 09:00 - 18:00",
+                "onlineCustomer": "ลูกค้าออนไลน์",
+                "branchCustomer": "ลูกค้าหน้าร้าน/สาขา"
+              },
+              "errorRecaptcha": "โปรดกรอกเพื่อยืนยันตัวตนผ่าน CAPTCHA",
+              "helpertxt": "เพื่อบริการที่รวดเร็ว กรุณากรอกรายละเอียดของท่านให้ครบถ้วน เช่น ข้อมูลที่ต้องการติดต่อ เลขที่การสั่งซื้อ ชื่อ เบอร์โทร e-mail"
+            },
+            "shopD": {
+              "content": {
+                "title": "พิเศษเฉพาะคุณ!",
+                "subtitle": "รับส่วนลดพิเศษ",
+                "barcodeToStaff": "แสดงบาร์โค้ด ให้กับพนักงาน",
+                "scanWhenShop": "สแกนเมื่อช้อปที่สาขา",
+                "discountNotification": "หรือแจ้งโค้ดส่วนสด",
+                "forShoppingAtStore": "สำหรับช้อปที่ <b>ร้านบานาน่า</b> ทุกสาขาทั่วประเทศ",
+                "condition1": "1. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce euismod dapibus sapien, ac congue velit dapibus a. Nulla facilisi. Mauris non ante eget ligula dignissim tincidunt.",
+                "condition2": "2. Aliquam erat volutpat. Integer aliquam sem quis quam fermentum, a dapibus ligula efficitur. ",
+                "condition3": "3. Vestibulum nec lacus eu urna aliquam ultricies. Aenean nec pharetra lectus, id pretium mauris. Suspendisse rutrum malesuada nisi, id pulvinar enim ultrices ac. ",
+                "condition4": "4. Vivamus auctor nisl ut enim consequat, vel sagittis neque tempor. Sed et nunc nec mi lacinia pretium. "
+              },
+              "verify": {
+                "verified": "ยืนยันแล้ว",
+                "notVerify": "ส่ง OTP",
+                "verificationTimer": "ขอรหัสอีกครั้งได้ใน {count}"
+              },
+              "form": {
+                "phoneNumberPlaceholder": "กรอกเบอร์โทรศัพท์"
+              },
+              "error": {
+                "form": {
+                  "verifyMobilePhoneNumber": "โปรดยืนยันหมายเลขโทรศัพท์"
+                }
+              }
+            },
+            "support": {
+              "tradeIn": {
+                "label": "เก่าแลกใหม่เป็นส่วนลดมูลค่าสูงสุด",
+                "highlight": "xx,xxx.-",
+                "labelAfter": "ให้ราคาเทรด A",
+                "text": "Trade-in"
+              },
+              "true": {
+                "label": "รับส่วนลด",
+                "highlight": "10,000.-",
+                "labelAfter": "เมื่อเปิดเบอร์ใหม่ทรู",
+                "text": "เปิดเบอร์ทรูมูฟ"
+              }
+            }
+          },
+          "register": {
+            "dontHaveAccount": "ยังไม่มีบัญชีผู้ใช้?",
+            "signUp": "สมัครสมาชิกใหม่",
+            "alreadyHaveMember": "เป็นสมาชิกอยู่แล้ว,",
+            "sendVerificationCode": "ส่งรหัสยืนยันตัวตน",
+            "resendVerificationCode": "ส่งรหัสยืนยันตัวตนอีกครั้ง",
+            "verificationCodeTimer": "ส่งขอรหัสยืนยันตัวตนอีกครั้งได้ใน {count}",
+            "acceptPolicy": "ฉันได้อ่านและยอมรับ{privacyPolicy}และ{termsOfUse}ของบริษัท Com7",
+            "receiveUpdates": "ฉันต้องการรับข้อเสนอสุดพิเศษและโปรโมชั่นจาก Studio 7 Online ดูข้อมูลเพิ่มเติม {privacyPolicy}",
+            "regis7ClubMember": "ฉันต้องการสมัครสมาชิก {regis7ClubMember} ของบริษัท Com7",
+            "verificationCodeHint": "กำลังโหลด... กรุณาลองใหม่อีกครั้ง",
+            "helper": {
+              "verificationCode": "อย่างน้อย 6 หลัก",
+              "verificationCodeSend": "ส่งรหัสยืนยันตัวตนสำเร็จแล้ว",
+              "password": "อย่างน้อย 8 ตัวอักษร"
+            },
+            "success": {
+              "title": "สมัครสมาชิกเรียบร้อย ขอต้อนรับสู่ประสบการณ์ช้อปปิ้งกับ Studio 7 Online",
+              "subtitle": "ขอบคุณที่สมัครสมาชิกกับ Studio 7 ช้อปกันเลย! กลับสู่หน้าหลักใน {count}"
+            },
+            "social": {
+              "loginWith": {
+                "apple": "เข้าระบบด้วยบัญชี Apple",
+                "facebook": "เข้าระบบด้วยบัญชี Facebook",
+                "google": "เข้าระบบด้วยบัญชี Google",
+                "line": "เข้าระบบด้วยบัญชี Line",
+                "iteasy": "เข้าระบบด้วยบัญชี IT Easy",
+                "7clubplus": "เข้าระบบด้วยบัญชี 7Club+"
+              },
+              "signup": {
+                "apple": "สมัครสมาชิกด้วย บัญชี Apple",
+                "facebook": "สมัครสมาชิกด้วย บัญชี Facebook",
+                "google": "สมัครสมาชิกด้วย บัญชี Google",
+                "line": "สมัครสมาชิกด้วย บัญชี Line",
+                "iteasy": "สมัครสมาชิกด้วย บัญชี IT Easy",
+                "7clubplus": "เข้าระบบด้วยบัญชี 7Club+"
+              },
+              "subtitle": "คุณยังไม่มีบัญชี กรุณาสมัครใหม่"
+            },
+            "sevenClubMember": {
+              "title": "ข้อมูลของคุณ",
+              "form": {
+                "generalInfo": "ข้อมูลส่วนบุคคล",
+                "corporateInfo": "ข้อมูลบริษัท",
+                "emailPlaceholder": "กรอกอีเมล",
+                "phoneNumberPlaceholder": "กรอกเบอร์โทรศัพท์",
+                "firstnamePlaceholder": "กรอกชื่อ",
+                "lastNamePlaceholder": "กรอกนามสกุล",
+                "addressTaxInvoice": "ที่อยู่ใบกำกับภาษี",
+                "isTaxInvoice": "เพิ่มหรือแก้ไขใบกำกับภาษี",
+                "idCardPlaceholder": "กรอกเลขที่บัตรประชาชน/พาสปอร์ต",
+                "addressPlaceholder": "กรอกที่อยู่",
+                "companyGroupId": "กลุ่มสาขา",
+                "companyGroupIdPlaceholder": "เลือกรหัสกลุ่มสาขา",
+                "companyNamePlaceholder": "กรอกชื่อบริษัท",
+                "taxIdPlaceholder": "กรอกเลขเลขประจำตัวผู้เสียภาษี (บริษัท)",
+                "branchNamePlaceholder": "กรอกชื่อสาขา",
+                "branchIdPlaceholder": "กรอกเลขที่สาขา (5 หลัก)"
+              },
+              "signUp": {
+                "success": {
+                  "title": "สร้างบัญชีผู้ใช้งานสำเร็จ",
+                  "subtitle": "สร้างบัญชีผู้ใช้งาน สมาชิก 7CLUB PLUS สำเร็จ กลับสู่หน้าบัญชีของฉันใน {count}"
+                },
+                "processing": {
+                  "title": "สร้างบัญชีผู้ใช้งาน",
+                  "subtitle": "ระบบกำลังสร้างบัญชีผู้ใข้งาน กรุณารอประมาณ 1 - 2 นาที กลับสู่หน้าบัญชีของฉันใน {count}"
+                }
+              }
+            }
+          },
+          "activatedAccount": {
+            "success": {
+              "title": "บัญชีของคุณได้รับการยืนยันแล้ว",
+              "subtitle": "เพื่อจัดการบัญชีของคุณ"
+            },
+            "failed": {
+              "title": "ยืนยันบัญชีไม่สำเร็จ",
+              "subtitle": "ลิงก์ยืนยันหมดอายุหรือไม่ถูกต้อง",
+              "link": "กลับสู่หน้าหลัก {homePage} หรือ ติดต่อเจ้าหน้าที่ {contactUs}"
+            }
+          },
+          "resetPassword": {
+            "complete": {
+              "header": "ดำเนินการเปลี่ยนรหัสสำเร็จ"
+            },
+            "invalid": {
+              "header": "ลิงก์เปลี่ยนรหัสไม่ถูกต้อง",
+              "content": "กรุณากรอกอีเมลเพื่อขอลิงก์เปลี่ยนรหัสผ่านอีกครั้ง"
+            }
+          },
+          "storeLocation": {
+            "title": "สาขาของเรา",
+            "searchStore": "ป้อนชื่อสาขาหรือจังหวัดหรือรหัสไปรษณีย์",
+            "selectProvince": "เลือกจังหวัด",
+            "useCurrentLocation": "ใช้ตำแหน่งปัจจุบันของคุณ",
+            "myStore": "สาขาที่เลือก",
+            "makeThisMyStore": "เลือกสาขานี้",
+            "filterDistance": {
+              "allStore": "สาขาทั้งหมด",
+              "byDistance": "{distance} กม."
+            }
+          },
+          "flashSale": {
+            "title": "Flash sales",
+            "timer": {
+              "endingIn": "จบใน..."
+            },
+            "modal": {
+              "title": "ขอบคุณลูกค้าที่สนใจ!",
+              "info": "สินค้าโปรโมชั่นหมดแล้ว โปรดกดติดตาม เพื่อไม่ให้พลาดโปรโมชั่นต่อไป",
+              "btnExploreMoreProduct": "ดูสินค้าอื่นเพิ่มเติม",
+              "btnStayConnect": "สมัครสมาชิกเพื่อรับข่าวสาร"
+            },
+            "seeMore": "ดูเพิ่มเติม",
+            "noProductSold": "คว้าด่วน ก่อนจะหมด!",
+            "productSoldOut": "สินค้าหมด",
+            "numberOfProductSold": "ขายไปแล้ว {numberOfProductSold}",
+            "numberOfRemainingStock": "สินค้าเหลือเพียง {numberOfRemainingStock}",
+            "countdownInfoTile": "ลดทั้งวัน มีทุกวัน"
+          },
+          "bundleDetail": {
+            "backToProductDetail": "กลับไปหน้ารายละเอียดสินค้า",
+            "bundleProductFor": "เลือกซื้อสินค้านี้พร้อมสินค้าอื่นๆ",
+            "productListTitle": "เลือกซื้อสินค้าคู่กัน ประหยัดกว่า!",
+            "searchProductName": "ค้นหาสินค้าที่ซื้อคู่กัน",
+            "resultsFound": "0 รายการ | {item} รายการ | {item} รายการ",
+            "bannerValidDate": "ระยะเวลาโปรโมชั่นถึง: {date}",
+            "bundlePrice": "ราคา เซทซื้อคู่กันสุดคุ้ม",
+            "checkReward": "คลิก! เพื่อรับส่วนลด",
+            "haveNoReward": "ไม่มีส่วนลดเพิ่มเติม",
+            "rewardSave": "ยินดีด้วย! คุณได้รับส่วนลด/ประหยัดไป {price}",
+            "buyBundle": "เพิ่มเซทซื้อคู่กันสุดคุ้ม ลงตะกร้า",
+            "buyBundleWarning": "สินค้าในตระกร้าไม่ถูกต้อง กรุณาเลือกสินค้าเพิ่มเติม หรือปรับเปลี่ยนจำนวนที่ซื้อ เพื่อให้ได้รับส่วนลดตามเงื่อนไขโปรโมชั่น",
+            "addProduct": "เลือกสินค้าซื้อคู่กันสุดคุ้ม",
+            "productItem": {
+              "addProduct": "เพิ่มสินค้า",
+              "viewDetail": "ดูรายละเอียด"
+            },
+            "error": {
+              "general": "เกิดข้อผิดพลาดบางอย่าง โปรดลองใหม่อีกครั้ง",
+              "bundleUpdate": "มีการเปลี่ยนแปลงรายการสินค้า เซตบันเดิลที่คุณเลือก โปรดรีเฟรชเพื่อดูรายละเอียดอัปเดตล่าสุด"
+            }
+          },
+          "appleCare": {
+            "headline": "เพิ่มความคุ้มครอง AppleCare+ ?",
+            "title": "AppleCare+",
+            "description": "ปกป้องผลิตภัณฑ์ Apple ของคุณ",
+            "label": "เพิ่มความคุ้มครองรวมถึงอุบัติเหตุสูงสุด {warrantyDuration}",
+            "warrantyPlan": "แผน {warrantyDuration}",
+            "button": {
+              "add": "เพิ่ม",
+              "added": "เพิ่มแล้ว"
+            }
+          },
+          "lob": {
+            "notFound": "ไม่พบผลิตภัณฑ์<br>ใช้ตัวกรองน้อยลงหรือล้างทั้งหมด"
+          },
+          "plp": {
+            "notFound": "ไม่พบผลิตภัณฑ์<br>ใช้ตัวกรองน้อยลงหรือล้างทั้งหมด"
+          },
+          "twoFactor": {
+            "title": "Two-Factor Authentication",
+            "subtitle": "กรุณากรอกรหัส OTP ที่ได้รับจาก <a href='https://staff-app.com7.in/it-easy/index.html' target='_blank' rel='noopener noreferrer'>ITEasy</a> ของคุณ",
+            "inputError": "รหัสไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง",
+            "cancel": "ยกเลิก",
+            "verify": "ยืนยัน",
+            "resend": "ขอรหัสใหม่",
+            "resendWait": "สามารถขอรหัสใหม่ได้ในอีก {count} วินาที",
+            "noCode": "ไม่ได้รับรหัสใช่หรือไม่?",
+            "success": "ยืนยันรหัส OTP สำหรับ ITEASY สำเร็จแล้ว",
+            "resendSuccess": "ขอรหัส OTP สำหรับ ITEASY สำเร็จแล้ว",
+            "resendFailed": "ไม่สามารถยืนยันรหัส OTP สำหรับ ITEASY ได้ โปรดรออีก {countdown} วินาทีก่อนจึงจะสามารถขอรหัส OTP ใหม่ได้",
+            "verificationFailed": "ไม่สามารถยืนยันรหัส OTP สำหรับ ITEASY ได้ รหัสไม่ถูกต้องหรือหมดอายุ"
+          }
+        },
+        "footer": {
+          "studio7Info": "Studio7 Thailand ร้านค้าออนไลน์ ของ บริษัท คอมเซเว่น จำกัด (มหาชน) จำหน่ายสินค้าแอปเปิ้ล สินค้าไอที อุปกรณ์เสริมต่างๆ รวมทั้งสินค้าไลฟ์สไตล์ พร้อมโปรโมชั่นสินค้าราคาพิเศษอีกมากมาย",
+          "information": {
+            "title": "Studio 7",
+            "address": "บริษัท คอมเซเว่น จำกัด (มหาชน) สํานักงานใหญ่ 549/1 ถนนสรรพาวุธ, แขวงบางนาใต้, เขตบางนา, กรุงเทพมหานคร 10260, ประเทศไทย",
+            "menu": {
+              "customerServices": "บริการหลังการขาย",
+              "callCenter": "Call center"
+            }
+          },
+          "paymentMethod": {
+            "title": "วิธีการชำระเงิน",
+            "seeAllLabel": "ดูวิธีการชำระเงินทั้งหมด"
+          },
+          "stayConnected": "ติดต่อเรา",
+          "copyRight": "© {currentYear}, Com7 Public Company Limited All rights reserved.",
+          "services": {
+            "shipping": {
+              "title": "ส่งฟรีทั่วไทย",
+              "subtitle": "ช้อปครบ 3,000.- ขึ้นไป",
+              "mobileTitle": "ส่งฟรีทั่วไทย"
+            },
+            "fastDelivery": {
+              "title": "ส่งด่วนภายใน 3 ชั่วโมง",
+              "subtitle": "กรุงเทพฯ และพื้นที่ให้บริการ",
+              "mobileTitle": "ส่งด่วนภายใน 3 ชม."
+            },
+            "clickAndCollect": {
+              "title": "รับเองที่ร้าน",
+              "subtitle": "รับสินค้าใกล้บ้าน 99 สาขาทั่วประเทศ",
+              "mobileTitle": "รับเองที่ร้าน"
+            },
+            "changeYourMind": {
+              "title": "บริการซ่อม iPhone และ iPad",
+              "subtitle": "รับ - ส่งฟรีถึงบ้าน",
+              "mobileTitle": "บริการหลังการขาย"
+            }
+          },
+          "collapseInformation": {
+            "hideInformation": "ซ่อนข้อมูล",
+            "showMoreInformation": "แสดงข้อมูลเพิ่มเติม"
+          },
+          "blank": {
+            "callCenter": "ศูนย์บริการข้อมูลลูกค้า:",
+            "workingHour": "เวลาทำการ:"
+          }
+        },
+        "error": {
+          "form": {
+            "required": "กรุณากรอกข้อมูล",
+            "email": "อีเมลไม่ถูกต้อง",
+            "requiredDropdown": "โปรดเลือก",
+            "minLength": "{fieldName} ไม่ถูกต้อง",
+            "maxLength": "{fieldName} ไม่ถูกต้อง",
+            "verificationCodeMinLength": "อย่างน้อย 6 หลัก",
+            "passwordMinLength": "อย่างน้อย 8 ตัวอักษร",
+            "currentPasswordInvalid": "รหัสผ่านปัจจุบันไม่ถูกต้อง โปรดลองอีกครั้ง",
+            "newPasswordDuplicated": "ไม่สามารถใช้รหัสผ่านเดียวกันกับรหัสผ่านปัจจุบัน โปรดเปลี่ยนรหัสผ่านใหม่",
+            "isAcceptPolicy": "โปรดอ่านและยอมรับเงื่อนไขและข้อตกลง",
+            "duplicatedEmail": "อีเมลนี้มีการลงทะเบียนแล้ว",
+            "invalidCode": "รหัสยืนยันตัวตนไม่ถูกต้อง",
+            "strongPassword": "รหัสต้องมี อักขระขั้นต่ำ 8 ตัวต้องประกอบด้วยตัวอักษรพิมพ์เล็ก (a-z) อย่างน้อยหนึ่งตัวอักษรตัวพิมพ์ใหญ่ (A-Z) หนึ่งตัวและตัวเลขหนึ่งตัว (0-9)",
+            "nationalId": "ข้อมูลบัตรประชาชนไม่ถูกต้อง",
+            "nationalIdMaxLength": "ต้องเป็นตัวเลข 13 หลัก",
+            "nationalIdMinLength": "ต้องเป็นตัวเลข 13 หลัก",
+            "nationalIdMustBeNumber": "ต้องเป็นตัวเลขเท่านั้น",
+            "phoneNumberMinLength": "ต้องเป็นตัวเลข 10 หลัก",
+            "phoneNumberMustBeNumber": "ต้องเป็นตัวเลขเท่านั้น",
+            "phoneNumberMustStartWithZero": "หมายเลขโทรศัพท์ควรเริ่มต้นด้วยศูนย์ (0xxxxxxxx)",
+            "consent": "โปรดรับทราบเงื่อนไขการขายและนโยบายความเป็นส่วนตัวก่อนส่งแบบฟอร์ม",
+            "addressMaxLength": "ที่อยู่ต้องน้อยกว่า {maxLength} ตัวอักษร",
+            "verifyMobilePhoneNumber": "โปรดยืนยันหมายเลขโทรศัพท์",
+            "verifyEmail": "โปรดยืนยันอีเมล",
+            "checkAndComfirmData": "โปรดยืนยันว่าคุณได้ตรวจสอบข้อมูลแล้ว",
+            "taxIdMustStartWithZero": "เลขประจำตัวผู้เสียภาษีควรเริ่มต้นด้วยศูนย์",
+            "taxIdMustBeNumber": "ต้องเป็นตัวเลขเท่านั้น",
+            "passportId": "ข้อมูลพาสปอร์ตไม่ถูกต้อง",
+            "passwordNotMatch": "รหัสผ่านที่กรอกจะต้องตรงกัน",
+            "postcodeMustBeNumber": "ต้องเป็นตัวเลขเท่านั้น",
+            "nonSpecialCharsAndEmojiForAddress": "ข้อความต้องประกอบด้วยตัวอักษรเท่านั้น และอนุญาตให้อักขระพิเศษบางตัว ได้แก่ /, -, และ .",
+            "nonSpecialCharsAndEmoji": "ต้องเป็นตัวอักษรเท่านั้น",
+            "checkGuestCustomer": "โปรดยืนยันว่าคุณได้ตรวจสอบข้อมูลแล้ว",
+            "branchIdMinLength": "ต้องเป็นตัวเลข 5 หลัก",
+            "branchIdMustBeNumber": "ต้องเป็นตัวเลขเท่านั้น"
+          },
+          "auth": {
+            "401": "อีเมลหรือรหัสผ่านไม่ถูกต้อง โปรดลองใหม่อีกครั้ง",
+            "500": "ขออภัยระบบขัดข้องชั่วคราว โปรดลองใหม่อีกครั้ง",
+            "unknown": "มีความผิดปกติในระบบ โปรดลองใหม่อีกครั้ง",
+            "deletedAccount": "ไม่สามารถสมัครใช้งานใหม่ด้วย Email เนื่องจากข้อจำกัดของการปกป้องข้อมูลส่วนบุคคล",
+            "notFoundEmail": "ไม่พบอีเมลในระบบ."
+          },
+          "unsellableProduct": {
+            "productStockNotEnough": "สินค้าหมด | เหลือสินค้า 1 ชิ้น | เหลือสินค้า {qty} ชิ้น",
+            "outOfStock": "สินค้าหมด",
+            "unavailableProduct": "สินค้าไม่พร้อมขาย",
+            "quantityPerSkuLimit": "จำกัดจำนวนซื้อสูงสุดที่ {limit} ชิ้น",
+            "moreInfo": "สามารถดูสินค้าที่สาขาหรือ{contactUs}เพื่อเช็กสินค้า",
+            "comingSoon": "สินค้าจะพร้อมจำหน่ายเร็วๆ นี้"
+          },
+          "removeItem": "ลบรายการสินค้าไม่สำเร็จ โปรดลองอีกครั้ง",
+          "checkout": {
+            "summary": "สินค้าบางรายการมีปัญหาในการขนส่งหรือชำระเงิน โปรดดำเนินการสั่งซื้อใหม่อีกครั้ง",
+            "shipment": {
+              "requiredShipmentMethod": "โปรดเลือกวิธีการขนส่ง",
+              "requiredShippingAddress": "โปรดเลือกที่อยู่จัดส่งสินค้า",
+              "requiredBillingAddress": "โปรดเลือกที่อยู่ออกใบเสร็จ",
+              "requiredTaxAddress": "โปรดเลือกที่อยู่ใบกำกับภาษี",
+              "requiredShippingBranch": "โปรดเลือกสาขาที่ต้องการรับสินค้า",
+              "requiredShipmentDate": "โปรดเลือกเวลาที่ต้องการรับสินค้า",
+              "requiredIsOrganizationPurpose": "โปรดเลือก คุณซื้อสินค้าเพื่อการทำงานในองค์กรหรือไม่"
+            },
+            "payment": {
+              "requiredPaymentMethod": "โปรดเลือกวิธีการชำระสินค้า"
+            },
+            "consent": "โปรดรับทราบเงื่อนไขการขายและนโยบายความเป็นส่วนตัวก่อนดำเนินการสั่งซื้อ",
+            "form": {
+              "nationalId": "เลขบัตรประชาชนไม่ถูกต้อง",
+              "taxId": "เลขประจำตัวผู้เสียภาษีไม่ถูกต้อง"
+            }
+          },
+          "promotion": {
+            "couponCodeInvalid": "โค้ด/คูปอง {code} ไม่ถูกต้อง",
+            "codeInvalid": "โค้ด/คูปองไม่ถูกต้อง",
+            "codeDuplicate": "โค้ด/คูปองร่วมรายการแล้ว"
+          },
+          "compareProducts": {
+            "fetchDataFailed": "สินค้าไม่สามารถทำการเปรียบเทียบได้"
+          },
+          "productSet": {
+            "fullyRedeemed": "สิทธิ์ครบแล้ว",
+            "minQuantityNotReached": "เพิ่มสินค้าเพื่อรับรีวอร์ด",
+            "minAmountNotReached": "เพิ่มยอดคำสั่งซื้อเพื่อรับรีวอร์ด",
+            "limitPerOrderReached": "คุณได้รับสิทธิ์รีวอร์ดของโปรโมชั่นนี้แล้ว",
+            "limitPerCustomerReached": "คุณได้สิทธิ์รีวอร์ดของโปรโมชั่นนี้ครบแล้ว",
+            "limitQtyPerCustomerReached": "คุณได้สิทธิ์รีวอร์ดของโปรโมชั่นนี้ครบแล้ว",
+            "limitRewardAmountReached": "คุณได้สิทธิ์รีวอร์ดของโปรโมชั่นนี้ครบแล้ว",
+            "outOfStock": "สินค้าหมด",
+            "skuMismatch": "สินค้าไม่เข้าร่วมเงื่อนไข",
+            "maxRewardQuantityExceeded": "จำนวนรีวอร์ดเกินที่กำหนด",
+            "buttonSoldOut": "หมด",
+            "buttonOutOfStock": "หมด"
+          }
+        },
+        "modal": {
+          "cancelOrder": {
+            "title": "กรุณาแจ้งเหตุผลในการยกเลิก",
+            "cancelationReason": "เหตุผลในการยกเลิก",
+            "cancelationReasonPlaceholder": "เลือกหัวข้อ",
+            "additionalComment": "ความคิดเห็นเพิ่มเติม",
+            "additionalCommentPlaceholder": "พิมพ์ข้อคิดเห็น/ข้อแนะนำเพิ่มเติม",
+            "btnCancel": "ส่งคำขอเพื่อยกเลิกคำสั่งซื้อ",
+            "reasonOption": {
+              "changeOfMind": "เปลี่ยนใจ",
+              "productNotReadyForSale": "สินค้าไม่พร้อมขาย",
+              "promotionProblem": "สินค้าไม่ตรงตามโปรโมชั่น",
+              "others": "อื่นๆ"
+            }
+          },
+          "collectInOneHour": {
+            "searchCollectAtStore": "ค้นหาชื่อสาขา",
+            "showOnlyStoreAvailable": "แสดงเฉพาะสาขาที่มีสินค้า",
+            "stockNotFound": "We can’t find the store with available stock for all of your items. Please add to cart and choose another delivery option.",
+            "selectPickup": "เลือกรับสินค้าที่ร้าน",
+            "checkStork": "เช็กสินค้าที่ร้าน"
+          },
+          "notify": {
+            "title": "คุณจะไม่พลาดเมื่อสินค้านี้พร้อมจำหน่ายอีกครั้ง!",
+            "subtitle": "กรุณากรอกข้อมูลของคุณเพื่อรับการแจ้งเตือนเมื่อสินค้านี้พร้อมจำหน่ายอีกครั้ง",
+            "submit": "ลงชื่อเพื่อรับการติดต่อกลับ"
+          },
+          "confirmOrder": {
+            "title": "ยืนยันรับสินค้า",
+            "isAcceptTermsAndCond": "ลูกค้าได้ตรวจสอบและยืนยันรับออเดอร์นี้"
+          },
+          "promotionCoupon": {
+            "title": "โปรโมชั่นและสิทธิพิเศษ",
+            "item": {
+              "freeGift": {
+                "remark": "ของแถมจำนวนจำกัด",
+                "quantity": "จํานวน",
+                "soldOut": "หมด"
+              },
+              "title": "ของแถมฟรี",
+              "price": "มูลค่ารวม {value} บาท",
+              "remark": "ของแถมฟรีอาจมีการเปลี่ยนแปลงโดยไม่ต้องแจ้งให้ทราบล่วงหน้า",
+              "expire": "หมดเขต"
+            },
+            "coupon_detail": "รายละเอียดการใช้คูปอง",
+            "termsandpromotion": "เงื่อนไขและข้อกำหนดของโปรโมชั่น",
+            "general": "ทั่วไป",
+            "coupon": "คูปอง",
+            "no_promotion": "สินค้านี้ไม่มีโปรโมชั่น",
+            "no_coupon": "สินค้านี้ไม่มีคูปอง"
+          },
+          "installmentsDetail": {
+            "title": "ผ่อนชำระ 0%",
+            "remark": "**ตรวจสอบการคำนวณยอดผ่อนต่อเดือน ได้ที่หน้าชำระเงิน",
+            "table": {
+              "month": "เดือน",
+              "bank": "ธนาคาร",
+              "minimumPurchase": "ยอดชำระขั้นต่ำ",
+              "noMinimumPurchase": "ไม่มียอดขั้นต่ำ"
+            },
+            "button": {
+              "startFinancing": "เริ่มจัดหาเงินทุน",
+              "learnMore": "ดูเพิ่มเติมเกี่ยวกับการผ่อนชำระ"
+            }
+          },
+          "clearance": {
+            "title": "เงื่อนไขสั่งซื้อสินค้า Clearance Sale",
+            "clearanceSale": "Clearance Sale",
+            "clearance1": "การสั่งซื้อสินค้าในหมวด Clearance Sale ",
+            "clearance2": "โปรดทราบว่าสินค้าที่ได้รับอาจมีตำหนิที่กล่องหรือบนตัวเครื่อง และอาจอยู่ในสภาพไม่สมบูรณ์ 100% สินค้าประเภทนี้ไม่มีการรับประกัน ลูกค้าไม่สามารถขอยกเลิก คืนเงิน เปลี่ยนสินค้า หรือเข้าร่วมโปรโมชั่นอื่นๆ ได้ กรุณาตรวจสอบรายละเอียดสินค้าให้ครบถ้วนก่อนทำรายการ ",
+            "clearance3": "หากมีข้อสงสัยสามารถติดต่อฝ่ายบริการลูกค้าสัมพันธ์ หากชำระเงินแล้วจะถือว่าท่านยอมรับเงื่อนไขข้างต้นเรียบร้อยแล้ว",
+            "isAcceptTermsAndCond": "ฉันรับทราบว่าฉันได้อ่านและยอมรับข้อกำหนดและเงื่อนไขการสั่งซื้อสินค้า Clearance ของ studio7thailand.com"
+          },
+          "confirmUnlink": {
+            "able": {
+              "title": "ยกเลิกเชื่อมต่อบัญชี ",
+              "description": "อยากยกเลิกการเชื่อมต่อ 7CLUB+ กับ Studio7 ใช่ไหม?",
+              "button": {
+                "yes": "ใช่ ฉันต้องการยกเลิก",
+                "no": "ไม่ ฉันต้องการเชื่อมต่อ"
+              }
+            },
+            "unable": {
+              "title": "ไม่สามารถยกเลิกการเชื่อมต่อได้",
+              "description": "บัญชีนี้เข้าสู่ระบบด้วย 7CLUB+ จึงไม่สามารถยกเลิกการเชื่อมต่อได้ หากต้องการยกเลิก กรุณาออกจากระบบ",
+              "button": {
+                "ok": "ฉันเข้าใจแล้ว"
+              }
+            }
+          }
+        },
+        "badge": {
+          "new": "ใหม่",
+          "sale": "ลดราคา",
+          "store-related": "เกี่ยวข้องกับร้านค้า",
+          "in-store": "ร้านค้า",
+          "in-stock": "มีสินค้า",
+          "affordability": "ความสามารถในการจ่าย",
+          "preorder": "สั่งของล่วงหน้า"
+        },
+        "toast": {
+          "success": {
+            "address": {
+              "create": "เพิ่มที่อยู่สำเร็จแล้ว",
+              "edit": "แก้ไขที่อยู่สำเร็จแล้ว",
+              "delete": "ลบที่อยู่สำเร็จแล้ว"
+            },
+            "wishlist": {
+              "add": "เพิ่มไปยังรายการโปรดเรียบร้อย",
+              "delete": "ลบรายการโปรดเรียบร้อย"
+            },
+            "changePassword": "เปลี่ยนรหัสผ่านสำเร็จ",
+            "compareProducts": {
+              "add": "เพิ่มสินค้าในรายการเปรียบเทียบสำเร็จ"
+            },
+            "updateProfile": "อัปเดทข้อมูลบัญชีของคุณเรียบร้อย",
+            "contactUs": "ส่งข้อความสำเร็จ",
+            "confirmOrder": "เราได้ทำการยืนคำสั่งซื้อของคุณแล้ว",
+            "cancelOrder": "เราได้ทำการยกเลิกคำสั่งซื้อของคุณเรียบร้อย",
+            "copyToClipboard": "คัดลอกลิงก์สำเร็จ",
+            "notifyMe": "ขอบคุณที่สนใจสินค้าของเรา เราจะติดต่อกลับเมื่อสินค้าพร้อมจำหน่าย",
+            "verify": {
+              "create": "รหัสยืนยันตัวตนได้ถูกส่งแล้ว",
+              "phoneNumberVerified": "เบอร์โทรของคุณได้รับการยืนยันแล้ว",
+              "emailVerified": "อีเมลของคุณได้รับการยืนยันแล้ว"
+            },
+            "switchProfile": "สลับบัญชีผู้ใช้งานสำเร็จ",
+            "sevenClubMember": {
+              "createProfile": "เพิ่มบัญชีผู้ใช้งานสำเร็จ"
+            },
+            "addToCart": "เพิ่มสินค้าลงในตระกร้าสำเร็จ",
+            "coupon": {
+              "remove": "ลบคูปองสำเร็จ",
+              "apply": "ใช้โปรโมชั่นโค้ดนี้สำเร็จ",
+              "collect": "เก็บคูปองสำเร็จ"
+            }
+          },
+          "warning": {
+            "compareProducts": {
+              "maximum": "คุณไม่สามารถเพิ่มรายการสินค้า เพื่อเปรียบเทียบได้แล้ว กรุณาเลือกใหม่",
+              "minimum": "โปรดเลือกสินค้าเพื่อทำการเปรียบเทียบ",
+              "duplicate": "คุณมีรายการสินค้านี้ ในรายการเปรียบเทียบแล้ว"
+            },
+            "bundleDetail": {
+              "add": "รายการสินค้าในตระกร้าของคุณเต็มแล้ว"
+            }
+          },
+          "error": {
+            "address": {
+              "create": "เพิ่มที่อยู่ไม่สำเร็จ โปรดลองอีกครั้ง",
+              "edit": "แก้ไขที่อยู่ไม่สำเร็จ โปรดลองอีกครั้ง",
+              "delete": "ลบที่อยู่ไม่สำเร็จ โปรดลองอีกครั้ง",
+              "invalidTaxId": "เลขบัตรประชาชน/เลขประจำตัวผู้เสียภาษี ไม่ถูกต้อง"
+            },
+            "cart": {
+              "addProduct": {
+                "outOfStock": "ขออภัย สินค้าหมด",
+                "notEnoughInStock": "ขออภัย คุณสามารถมีสินค้าชิ้นนี้ในตะกร้าได้สูงสุด {stockQuantity} ชิ้น",
+                "quantityPerSkuLimit": "ขออภัย จำนวนสูงสุดที่คุณสามารถสั่งซื้อได้คือ {limit} ชิ้น หากต้องการสั่งซื้อในปริมาณมาก กรุณา{contactUs}เพื่อสอบถามข้อมูลเพิ่มเติม",
+                "skuPerCartLimit": "ขออภัย สินค้าในตะกร้าเกินจำนวนที่กำหนด กรุณาลบและจ่ายเงินก่อนเพิ่มสินค้าใหม่",
+                "unknown": {
+                  "addToCart": "เพิ่มรายการสินค้าในตระกร้าไม่สำเร็จ โปรดลองอีกครั้ง",
+                  "buyNow": "ซื้อรายการสินค้าไม่สำเร็จ โปรดลองอีกครั้ง"
+                },
+                "flashSale": {
+                  "limitPerUser": "ขออภัยไม่สามารถเพิ่มสินค้า Flash sale ในตระกร้าได้ เนื่องจากเกินสิทธิ์ที่ระบุไว้",
+                  "limitPerOrder": "ขออภัยไม่สามารถเพิ่มสินค้าราคาพิเศษในตระกร้าได้ เนื่องจากเกิน {limit} สิทธิ์ที่ระบุไว้"
+                },
+                "preOrder": {
+                  "limitPerUser": "ขออภัยไม่สามารถเพิ่มสินค้าสั่งซื้อล่วงหน้าในตระกร้าได้ เนื่องจากเกินสิทธิ์ที่ระบุไว้",
+                  "limitPerOrder": "ขออภัยไม่สามารถเพิ่มสินค้าสั่งซื้อล่วงหน้าในตระกร้าได้ เนื่องจากเกิน {limit} สิทธิ์ที่ระบุไว้",
+                  "exceedQuota": "ขออภัยไม่สามารถสั่งสินค้าสั่งซื้อล่วงหน้าได้ เนื่องจากหมดโควต้าที่กำหนด"
+                },
+                "collectAtStore": {
+                  "branchUnavailable": "ไม่สามารถเลือกรับที่สาขานี้ได้",
+                  "invalidCollectAtStore": "ขออภัยไม่สามารถรับสินค้าที่เลือกได้ที่ร้านภายใน 1 ชั่วโมง"
+                }
+              },
+              "updateProduct": {
+                "preOrder": {
+                  "limitPerUser": "ขออภัยไม่สามารถทำรายการสั่งซื้อสินค้ารายการนี้ เนื่องจากเกินจำนวนที่กำหนด/รายการสั่งซื้อ",
+                  "limitPerOrder": "ขออภัยไม่สามารถเพิ่มสินค้าสั่งซื้อล่วงหน้าในตระกร้าได้ เนื่องจากเกินสิทธิ์ที่ระบุไว้",
+                  "exceedQuota": "ขออภัยไม่สามารถสั่งสินค้าสั่งซื้อ Pre-order ได้ เนื่องจาก หมดโควต้าที่กำหนด",
+                  "invalidCampaign": "ขออภัยไม่สามารถสั่งสินค้าสั่งซื้อ Pre-order พร้อมกับสินค้าปกติบางรายการได้",
+                  "isNotActive": "ขออภัย ไม่สามารถเพิ่มสินค้าสั่งซื้อล่วงหน้าในตระกร้าได้ เนื่องจากหมดระยะเวลาสั่งซื้อล่วงหน้า"
+                },
+                "flashSale": {
+                  "limitPerUser": "ขออภัยไม่สามารถเพิ่มสินค้า Flash sale ในตระกร้าได้ เนื่องจากเกินสิทธิ์ที่ระบุไว้",
+                  "limitPerOrder": "ขออภัยไม่สามารถเพิ่มสินค้า Flash sale ในตระกร้าได้ เนื่องจากเกินสิทธิ์ที่ระบุไว้"
+                },
+                "appleCare": {
+                  "quantityInCart": "- {productName}: สูงสุด {maximumQuantity} ชิ้น",
+                  "quantityZeroInCart": "- คุณต้องมีสินค้าหลักของ '{productName}' ในตะกร้า"
+                }
+              },
+              "invalidData": "ข้อมูลบางอย่างไม่ถูกต้อง"
+            },
+            "checkout": "ขออภัยไม่สามารถสั่งซื้อสินค้าได้",
+            "wishlist": {
+              "add": "เพิ่มไปยังรายการโปรดไม่สำเร็จ โปรดลองอีกครั้ง",
+              "delete": "ลบรายการสินค้าไม่สำเร็จ โปรดลองอีกครั้ง"
+            },
+            "changePassword": "ไม่สามารถเปลี่ยนรหัสผ่านได้ โปรดลองอีกครั้ง",
+            "updateProfile": "เกิดข้อผิดพลาด ไม่สามารถอัปเดตข้อมูลบัญชีได้ กรุณาลองใหม่อีกครั้ง",
+            "contactUs": "เกิดข้อผิดพลาด ไม่สามารถส่งข้อความได้ กรุณาลองใหม่อีกครั้ง",
+            "reselectPayment": "เกิดข้อผิดพลาด ไม่สามารถเปลี่ยนวิธีการชำระเงินได้ กรุณาลองใหม่อีกครั้ง",
+            "shippingMethodRequired": "กรุณาเลือกวิธีการจัดส่งก่อนนะคะ เราพาคุณกลับไปยังขั้นตอนนั้นแล้ว",
+            "createPayments": "ชำระเงินไม่สำเร็จ กรุณาดำเนินการใหม่",
+            "confirmOrder": "เกิดข้อผิดพลาด ไม่สามารถทำการยืนคำสั่งซื้อได้ กรุณาลองอีกครั้ง",
+            "bundleDetail": {
+              "create": "เพิ่มรายการเซตซื้อคู่ประหยัดกว่าไม่สำเร็จ โปรดลองอีกครั้ง",
+              "update": "แก้ไขรายการไม่สำเร็จ โปรดลองอีกครั้ง",
+              "remove": "ลบรายการไม่สำเร็จ โปรดลองอีกครั้ง",
+              "checkReward": "ไม่สามารถใช้โปรโมชั่นนี้ได้ โปรดลองใหม่อีกครั้ง"
+            },
+            "notifyMe": "ขออภัย มีบางอย่างขัดข้อง กรุณาลองอีกครั้ง",
+            "verify": {
+              "create": "เกิดข้อผิดพลาด ไม่สามารถส่งรหัสยืนยันตัวตนได้ กรุณาลองใหม่อีกครั้ง",
+              "notFoundPhoneNumber": "เนื่องจากไม่พบคูปองโปรโมชันสำหรับเบอร์โทรศัพท์นี้"
+            },
+            "switchProfile": "สลับบัญชีผู้ใช้งานไม่สำเร็จ",
+            "sevenClubMember": {
+              "createProfile": "เพิ่มบัญชีผู้ใช้งานไม่สำเร็จ",
+              "qrCode": {
+                "request": "ไม่สามารถร้องขอ QR Code ได้"
+              }
+            },
+            "coupon": {
+              "remove": "ขออภัยค่ะ ระบบไม่สามารถนำคูปองออกได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง",
+              "apply": "ไม่สามารถใช้โปรโมชันนี้ได้ หรือโค้ดส่วนลดถูกใช้ ครบสิทธิ์แล้ว",
+              "invalidCode": "ไม่พบคูปองสิทธิพิเศษนี้ ",
+              "alreadyApplied": "ขออภัย ท่านได้ใช้สิทธิ์พิเศษนี้ไปแล้ว",
+              "invalidForMember": "สิทธิพิเศษนี้สงวนสิทธิ์ เฉพาะสมาชิกตามเงื่อนไขที่กำหนดเท่านั้น",
+              "requires7ClubConnection": "กรุณาเชื่อมต่อบัญชีสมาชิก 7Club+ เพื่อใช้งานคูปองนี้",
+              "unavailable": "ขออภัย ระบบมีผู้ใช้งานจำนวนมาก โปรดรอซักครู่เพื่อลองใหม่อีกครั้ง",
+              "shopDeeBadRequest": "ขออภัย ระบบมีผู้ใช้งานจำนวนมาก โปรดรอซักครู่เพื่อลองใหม่อีกครั้งใน 5-10 นาที"
+            },
+            "guestCustomer": {
+              "notFoundPhoneNumber": "ไม่พบข้อมูลลูกค้า หรือ เบอร์โทรศัพท์นี้ยังไม่ได้ลงทะเบียน คุณสามารถลงทะเบียนในแบบฟอร์มด้านล่าง",
+              "createCustomerProfile": "ไม่สามารถสร้างข้อมูลลูกค้าได้เนื่องจากเบอร์โทรศัพท์นี้ถูกลงทะเบียนไปแล้ว กรุณาลองอีกครั้ง"
+            }
+          }
+        },
+        "microsite": {
+          "menu": {
+            "browse": "เลือกซื้อสินค้า {brand}",
+            "header": "สินค้า {brand}",
+            "viewAll": "สินค้า {categoryName} ทั้งหมด"
+          }
+        },
+        "productSet": {
+          "addProductOption": "เพิ่มสินค้า",
+          "back": "ย้อนกลับ",
+          "resultsFound": "0 รายการ | {item} รายการ | {item} รายการ",
+          "searchProductName": "Search product name",
+          "add": "Add",
+          "added": "Added",
+          "modal": {
+            "maximumQuantity": {
+              "title": "Reached the maximum quantity",
+              "info": "The quantity is reached the maximum, please remove some.",
+              "gotIt": "ตกลง"
+            }
+          }
+        },
+        "equip": {
+          "title": "EQUIP - Build my PC",
+          "tagline": "Build my PC",
+          "productItem": {
+            "confirmAlreadyHaveOs": "I already have an OS Code/Serial no., need Studio 7 team contacts me back to use my code/serial no. for Build my PC."
+          },
+          "component": {
+            "cpu": "CPU",
+            "mainboard": "Mainboard",
+            "vgaCard": "VGA Card",
+            "memoryRam": "Memory (RAM)",
+            "harddisk": "Harddisk",
+            "solidStateDrive": "Solid State Drive (SSD)",
+            "solidStateDriveM2": "Solid State Drive (SSD) M2",
+            "powerSupply": "Power supply",
+            "opticalDrive": "Optical drive",
+            "cpuCooler": "CPU Cooler",
+            "case": "Case",
+            "monitor": "Monitor",
+            "keyboard": "Keyboard",
+            "mouse": "Mouse",
+            "operatiingSystem": "Operating System (OS)",
+            "software": "Software"
+          },
+          "modal": {
+            "buildPc": {
+              "title": "Let us build your PC?",
+              "info": "To make sure that we can build your awesome PC, please add components that follow the list especially Mainboard, CPU, VGA card, Memory(RAM), Harddisk/SSD, Power supply, and Case.",
+              "selectYourRequest": "Select your request",
+              "selectYourRequestInfo": "You can request to add this list to your cart with or without building your PC by selecting a choice below.",
+              "buildMyPC": "Build my PC",
+              "buildMyPCInfo": "If you selected all components follow the list your PC will ready to use, just plug the accessories and turn it on.",
+              "dontBuildMyPC": "Don’t build my PC",
+              "dontBuildMyPCInfo": "All items will send as normal.",
+              "condition": "I acknowledge that Com7 has the right to make a decision to build the PC, include the installation of software appropriately.",
+              "continueBuilding": "Continue Building my PC",
+              "notAllowedToBuild": "You are not allowed to build the PC due to some necessary components are missing. Which are Mainboard, and Case."
+            }
+          },
+          "error": {
+            "notSelectOption": "Please select an option.",
+            "notAcceptCondition": "Please indicate that you have and agree to the condition.",
+            "productUnavailable": "Some items in your cart are unavailable/out of stock. Please remove them before add to cart."
+          },
+          "addComponent": "Add Component",
+          "backToAllComponents": "Back to all components",
+          "additionalFeeEquip": "Additional fee (EQUIP)"
+        }
+      }
+    }
+  }
+}
