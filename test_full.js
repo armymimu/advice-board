@@ -1,24 +1,9 @@
-const puppeteer = require('puppeteer-extra');
-const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-puppeteer.use(StealthPlugin());
+const fs = require('fs');
 const axios = require('axios');
 
 (async () => {
-  const browser = await puppeteer.launch({headless: true, args: ['--no-sandbox']});
-  const page = await browser.newPage();
-  
-  let token = '';
-  page.on('request', (request) => {
-    if (request.url().includes('prodbackadvice') && request.url().includes('product/get') && request.method() === 'POST') {
-      const h = request.headers();
-      if (h['authorization'] && !token) token = h['authorization'];
-    }
-  });
-
-  await page.setViewport({ width: 1366, height: 768 });
-  await page.goto('https://www.advice.co.th/product/iphone', {waitUntil: 'networkidle2'});
-  try { await page.waitForSelector('.list-product', { timeout: 10000 }); } catch(e) {}
-  await browser.close();
+  const tokenData = JSON.parse(fs.readFileSync('.token_cache.json', 'utf8'));
+  const token = tokenData.token;
 
   const headers = { 'Content-Type': 'application/json', 'Origin': 'https://www.advice.co.th', 'Referer': 'https://www.advice.co.th/', 'Authorization': token };
   

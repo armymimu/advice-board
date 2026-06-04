@@ -262,7 +262,7 @@ const categoryConfigs = {
   iphone: { category: 'iphone', label: 'iPhone' },
   ipad:   { category: 'ipad',   label: 'iPad' },
   macbook:{ category: 'search', keyword: 'macbook', label: 'MacBook' },
-  android:{ category: 'smartphone', label: 'Smart Phone' }
+  android:{ category: 'smart-phone', label: 'Smart Phone' }
 };
 
 async function fetchAllProducts(config, retryOnAuth = true) {
@@ -284,7 +284,7 @@ async function fetchAllProducts(config, retryOnAuth = true) {
 
   while (true) {
     const body = {
-      category: config.category,
+      category: config.category === 'smart-phone' ? 'smart-phone' : config.category,
       category_sub: '',
       product: '',
       keyword: config.keyword || '',
