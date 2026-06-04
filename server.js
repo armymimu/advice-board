@@ -241,8 +241,8 @@ const API_URL = 'https://prodbackadvice.advice.in.th/api/v1.0.0/product/get';
 const categoryConfigs = {
   iphone: { category: 'iphone', label: 'iPhone' },
   ipad:   { category: 'ipad',   label: 'iPad' },
-  macbook:{ category: 'macbook', label: 'MacBook' },
-  android:{ category: 'smart-phone', label: 'Smart Phone' }
+  macbook:{ category: 'search', keyword: 'macbook', label: 'MacBook' },
+  android:{ category: 'smartphone', label: 'Smart Phone' }
 };
 
 async function fetchAllProducts(config, retryOnAuth = true) {
@@ -267,7 +267,7 @@ async function fetchAllProducts(config, retryOnAuth = true) {
       category: config.category,
       category_sub: '',
       product: '',
-      keyword: '',
+      keyword: config.keyword || '',
       take: 100,
       skip: skip,
       refSearch: '',
