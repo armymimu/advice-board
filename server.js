@@ -1,30 +1,164 @@
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
+
+// Only require puppeteer if available (for auto token refresh)
+let puppeteer, StealthPlugin;
+try {
+  puppeteer = require('puppeteer-extra');
+  StealthPlugin = require('puppeteer-extra-plugin-stealth');
+  puppeteer.use(StealthPlugin());
+} catch (e) {
+  console.log('⚠️ puppeteer ไม่ได้ติดตั้ง — จะใช้ manual token เท่านั้น');
+}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const TOKEN_FILE = path.join(__dirname, '.token_cache.json');
 
 app.use(cors());
 app.use(express.static('.'));
+app.use(express.json());
 
 // ==========================================
-// Token Management (Auto-refresh on 401)
+// Token Management — Full Auto-Refresh
 // ==========================================
 let cachedToken = process.env.ADVICE_TOKEN || null;
 let tokenExpiry = cachedToken ? Date.now() + (90 * 60 * 1000) : 0;
+let isRefreshing = false;
+let refreshTimer = null;
 
-// Studio7 Cache
-let studio7Cache = [];
-let studio7LastUpdate = 0;
+// Load persisted token on startup
+if (!cachedToken) {
+  try {
+    if (fs.existsSync(TOKEN_FILE)) {
+      const saved = JSON.parse(fs.readFileSync(TOKEN_FILE, 'utf8'));
+      if (saved.token && saved.expiry && Date.now() < saved.expiry) {
+        cachedToken = saved.token;
+        tokenExpiry = saved.expiry;
+        const minsLeft = Math.round((tokenExpiry - Date.now()) / 60000);
+        console.log(`✅ โหลด Token จากไฟล์ (เหลือ ${minsLeft} นาที)`);
+      } else {
+        console.log('⏳ Token ในไฟล์หมดอายุแล้ว — จะรีเฟรชอัตโนมัติ');
+      }
+    }
+  } catch (e) {
+    console.log('⚠️ โหลด Token จากไฟล์ไม่สำเร็จ:', e.message);
+  }
+}
 
-async function getToken(forceRefresh = false) {
-  if (!forceRefresh && cachedToken && Date.now() < tokenExpiry) {
+function saveTokenToFile(token, expiry) {
+  try {
+    fs.writeFileSync(TOKEN_FILE, JSON.stringify({ token, expiry }), 'utf8');
+  } catch (e) { /* ignore */ }
+}
+
+// ─── AUTO TOKEN REFRESH via Puppeteer ───
+async function autoRefreshToken() {
+  if (!puppeteer) {
+    console.log('⚠️ ไม่สามารถรีเฟรช Token อัตโนมัติได้ (ไม่มี puppeteer)');
+    return false;
+  }
+
+  if (isRefreshing) {
+    console.log('⏳ กำลังรีเฟรชอยู่แล้ว...');
+    return false;
+  }
+
+  isRefreshing = true;
+  console.log('\n🔄 กำลังรีเฟรช Token อัตโนมัติ...');
+
+  let browser;
+  try {
+    browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+    });
+    const page = await browser.newPage();
+
+    let token = '';
+    page.on('request', (request) => {
+      if (request.url().includes('prodbackadvice') &&
+          request.url().includes('product/get') &&
+          request.method() === 'POST') {
+        const h = request.headers();
+        if (h['authorization'] && !token) {
+          token = h['authorization'];
+        }
+      }
+    });
+
+    await page.setViewport({ width: 1366, height: 768 });
+    await page.goto('https://www.advice.co.th/product/search?keyword=iphone', {
+      waitUntil: 'networkidle2',
+      timeout: 30000
+    });
+
+    try {
+      await page.waitForSelector('.list-product', { timeout: 15000 });
+    } catch (e) { /* token might still be captured */ }
+
+    await browser.close();
+    browser = null;
+
+    if (token) {
+      cachedToken = token;
+      tokenExpiry = Date.now() + (90 * 60 * 1000); // 90 minutes
+      saveTokenToFile(token, tokenExpiry);
+      console.log(`✅ Token รีเฟรชสำเร็จ! หมดอายุ: ${new Date(tokenExpiry).toLocaleString('th-TH')}`);
+      scheduleNextRefresh();
+      isRefreshing = false;
+      return true;
+    } else {
+      console.log('❌ ไม่สามารถดึง Token ได้ — จะลองใหม่ใน 5 นาที');
+      setTimeout(() => autoRefreshToken(), 5 * 60 * 1000);
+      isRefreshing = false;
+      return false;
+    }
+  } catch (e) {
+    console.error('❌ Token refresh error:', e.message);
+    if (browser) try { await browser.close(); } catch (_) {}
+    // Retry after 5 minutes on error
+    setTimeout(() => autoRefreshToken(), 5 * 60 * 1000);
+    isRefreshing = false;
+    return false;
+  }
+}
+
+// ─── Schedule next refresh 10 minutes before expiry ───
+function scheduleNextRefresh() {
+  if (refreshTimer) clearTimeout(refreshTimer);
+
+  const timeUntilExpiry = tokenExpiry - Date.now();
+  // Refresh 10 minutes before expiry, minimum 1 minute
+  const refreshIn = Math.max(timeUntilExpiry - (10 * 60 * 1000), 60 * 1000);
+  const refreshMins = Math.round(refreshIn / 60000);
+
+  console.log(`⏰ จะรีเฟรช Token อัตโนมัติใน ${refreshMins} นาที`);
+
+  refreshTimer = setTimeout(() => {
+    console.log('⏰ ถึงเวลารีเฟรช Token อัตโนมัติ!');
+    autoRefreshToken();
+  }, refreshIn);
+}
+
+// ─── Get token (auto-refresh if needed) ───
+async function getToken() {
+  // If token is valid, return it
+  if (cachedToken && Date.now() < tokenExpiry) {
     return cachedToken;
   }
 
-  // Try direct API without token (sometimes Advice allows it)
-  console.log('🔑 พยายามเรียก API โดยตรง...');
+  // Token expired or not available — try auto-refresh
+  console.log('🔑 Token หมดอายุหรือไม่มี — เริ่มรีเฟรชอัตโนมัติ...');
+  const success = await autoRefreshToken();
+  if (success && cachedToken) {
+    return cachedToken;
+  }
+
+  // Try direct API without token as fallback
   try {
     const testResp = await axios.post('https://prodbackadvice.advice.in.th/api/v1.0.0/product/get', {
       category: 'iphone', category_sub: '', product: '', keyword: '',
@@ -43,22 +177,23 @@ async function getToken(forceRefresh = false) {
     if (testResp.data?.status === 'SUCCESS') {
       cachedToken = 'DIRECT';
       tokenExpiry = Date.now() + (60 * 60 * 1000);
-      console.log('✅ API ใช้ได้โดยตรง');
+      console.log('✅ API ใช้ได้โดยตรง ไม่ต้องใช้ Token');
       return cachedToken;
     }
   } catch (e) { /* continue */ }
 
-  // If still have a cached token (even possibly expired), return it to try
-  if (cachedToken) {
-    console.log('⚠️ ใช้ Token เก่าลองเรียก API...');
-    return cachedToken;
-  }
+  // If still have an old cached token, try it
+  if (cachedToken) return cachedToken;
 
-  throw new Error('ไม่มี Token - ใช้ /api/set-token หรือ refresh-token script');
+  throw new Error('ไม่สามารถดึง Token ได้ — กรุณาลองรีสตาร์ท server');
 }
 
-// Endpoint to update token remotely
-app.post('/api/set-token', express.json(), (req, res) => {
+// Studio7 Cache
+let studio7Cache = [];
+let studio7LastUpdate = 0;
+
+// Endpoint to update token remotely (still works for manual override)
+app.post('/api/set-token', (req, res) => {
   const { token, secret } = req.body;
   if (secret !== (process.env.TOKEN_SECRET || 'armymimu2024')) {
     return res.status(403).json({ error: 'Invalid secret' });
@@ -67,12 +202,25 @@ app.post('/api/set-token', express.json(), (req, res) => {
 
   cachedToken = token;
   tokenExpiry = Date.now() + (90 * 60 * 1000);
-  console.log('✅ Token อัพเดทแล้ว หมดอายุ:', new Date(tokenExpiry).toISOString());
+  saveTokenToFile(token, tokenExpiry);
+  scheduleNextRefresh();
+  console.log('✅ Token อัพเดทจาก API! หมดอายุ:', new Date(tokenExpiry).toLocaleString('th-TH'));
   res.json({ success: true, expiresAt: new Date(tokenExpiry).toISOString() });
 });
 
+// Force refresh token endpoint
+app.post('/api/refresh-token', async (req, res) => {
+  console.log('🔄 ได้รับคำสั่งรีเฟรช Token จาก UI...');
+  const success = await autoRefreshToken();
+  if (success) {
+    res.json({ success: true, expiresAt: new Date(tokenExpiry).toISOString() });
+  } else {
+    res.status(500).json({ error: 'ไม่สามารถรีเฟรช Token ได้' });
+  }
+});
+
 // Endpoint to update Studio7 prices remotely
-app.post('/api/set-studio7', express.json(), (req, res) => {
+app.post('/api/set-studio7', (req, res) => {
   const { products, secret } = req.body;
   if (secret !== (process.env.TOKEN_SECRET || 'armymimu2024')) {
     return res.status(403).json({ error: 'Invalid secret' });
@@ -167,12 +315,14 @@ async function fetchAllProducts(config, retryOnAuth = true) {
       if (allProducts.length > 2000) break;
 
     } catch (err) {
-      // If 401 and we haven't retried yet, try refreshing token
       if (err.response && err.response.status === 401 && retryOnAuth) {
-        console.log('🔄 Token 401 - ลองขอ Token ใหม่...');
+        console.log('🔄 Token 401 — รีเฟรชอัตโนมัติ...');
         cachedToken = null;
         tokenExpiry = 0;
-        return fetchAllProducts(config, false);
+        const success = await autoRefreshToken();
+        if (success) {
+          return fetchAllProducts(config, false);
+        }
       }
       throw err;
     }
@@ -231,9 +381,12 @@ app.get('/api/prices/:category', async (req, res) => {
     if (error.response && error.response.status === 401) {
       cachedToken = null;
       tokenExpiry = 0;
+      try { fs.unlinkSync(TOKEN_FILE); } catch (e) { /* ignore */ }
     }
 
-    res.status(500).json({ error: 'Token หมดอายุ กรุณากด "Refresh Token" หรือรอสักครู่' });
+    res.status(500).json({
+      error: 'เกิดข้อผิดพลาด กรุณารอสักครู่แล้วลองใหม่ (ระบบจะรีเฟรช Token ให้อัตโนมัติ)'
+    });
   }
 });
 
@@ -245,26 +398,38 @@ app.get('/api/prices-studio7', (req, res) => {
   });
 });
 
-// Health check (also used by keep-alive services)
+// Health check
 app.get('/api/health', (req, res) => {
+  const minsLeft = cachedToken && tokenExpiry > Date.now()
+    ? Math.round((tokenExpiry - Date.now()) / 60000)
+    : 0;
   res.json({
     status: 'ok',
     hasToken: !!cachedToken,
     tokenValid: cachedToken && Date.now() < tokenExpiry,
     tokenExpires: tokenExpiry > 0 ? new Date(tokenExpiry).toISOString() : 'none',
+    tokenMinutesLeft: minsLeft,
+    autoRefresh: !!puppeteer,
     uptime: Math.floor(process.uptime()) + 's'
   });
 });
 
 // ==========================================
-// Startup
+// Startup — Auto refresh token immediately
 // ==========================================
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`🚀 API Server รันแล้วที่ port ${PORT}`);
-  if (cachedToken) {
-    console.log('✅ Token จาก ENV พร้อมใช้งาน!');
+  console.log('🔄 ระบบรีเฟรช Token อัตโนมัติ: ' + (puppeteer ? '✅ เปิดใช้งาน' : '❌ ปิด (ไม่มี puppeteer)'));
+
+  if (cachedToken && Date.now() < tokenExpiry) {
+    const minsLeft = Math.round((tokenExpiry - Date.now()) / 60000);
+    console.log(`✅ Token พร้อมใช้งาน (เหลือ ${minsLeft} นาที)`);
+    scheduleNextRefresh();
+  } else if (puppeteer) {
+    // Auto-refresh on startup if no valid token
+    console.log('📡 กำลังดึง Token อัตโนมัติ...');
+    await autoRefreshToken();
   } else {
-    console.log('⚠️ ยังไม่มี Token - รอการ set-token หรือ refresh');
+    console.log('⚠️ ไม่มี Token และไม่มี puppeteer — ใช้ /api/set-token หรือติดตั้ง puppeteer');
   }
-  console.log('💡 ใช้ refresh-token.bat บนเครื่อง local เพื่ออัพเดท Token อัตโนมัติ');
 });

@@ -10,6 +10,7 @@ function initPinLock() {
   if (isUnlocked) {
     lockScreen.style.display = 'none';
     appContent.style.display = 'block';
+    checkTokenStatus();
     return;
   }
 
@@ -55,6 +56,7 @@ function initPinLock() {
       setTimeout(() => {
         lockScreen.style.display = 'none';
         appContent.style.display = 'block';
+        checkTokenStatus();
       }, 500);
     } else {
       // Error
@@ -79,6 +81,83 @@ function initPinLock() {
 
 // Run immediately
 initPinLock();
+
+// ─── Token Status ───
+async function checkTokenStatus() {
+  const el = document.getElementById('token-status');
+  if (!el) return;
+  el.className = 'token-status loading';
+  el.textContent = '⏳ ตรวจสอบ...';
+  try {
+    const r = await fetch('/api/health');
+    const d = await r.json();
+    if (d.tokenValid) {
+      const mins = d.tokenMinutesLeft || Math.max(0, Math.round((new Date(d.tokenExpires) - Date.now()) / 60000));
+      el.className = 'token-status ' + (mins > 20 ? 'ok' : 'warn');
+      el.textContent = mins > 20 ? `🔑 Token OK (${mins}m)` : `⚠️ หมดใน ${mins}m`;
+      el.title = d.autoRefresh ? 'จะรีเฟรชอัตโนมัติ' : 'ไม่มีระบบรีเฟรชอัตโนมัติ';
+    } else {
+      el.className = 'token-status error';
+      el.textContent = '🔑 ไม่มี Token';
+      el.style.cursor = 'pointer';
+      el.onclick = refreshTokenFromUI;
+    }
+  } catch {
+    el.className = 'token-status error';
+    el.textContent = '⚠️ เชื่อมต่อ server ไม่ได้';
+  }
+}
+
+async function refreshTokenFromUI() {
+  const el = document.getElementById('token-status');
+  if (el) {
+    el.className = 'token-status loading';
+    el.textContent = '🔄 กำลังรีเฟรช...';
+  }
+  showToast('🔄 กำลังรีเฟรช Token อัตโนมัติ... กรุณารอ 15-30 วินาที');
+  try {
+    const r = await fetch('/api/refresh-token', { method: 'POST' });
+    const d = await r.json();
+    if (d.success) {
+      showToast('✅ Token รีเฟรชสำเร็จแล้ว!');
+      checkTokenStatus();
+    } else {
+      showToast('❌ ' + (d.error || 'ไม่สามารถรีเฟรชได้'), true);
+      checkTokenStatus();
+    }
+  } catch (e) {
+    showToast('❌ เชื่อมต่อ server ไม่ได้', true);
+    checkTokenStatus();
+  }
+}
+
+async function refreshTokenThenFetch(cat) {
+  showToast('🔄 กำลังรีเฟรช Token อัตโนมัติ... รอ 15-30 วินาที');
+  document.getElementById('submodels-' + cat).innerHTML =
+    `<div class="empty-state">
+      <div class="empty-icon">🔄</div>
+      <div class="empty-title">กำลังรีเฟรช Token...</div>
+      <div class="empty-sub">ระบบกำลังเปิดเบราว์เซอร์ดึง Token ใหม่อัตโนมัติ กรุณารอสักครู่</div>
+    </div>`;
+  document.getElementById('dot-' + cat).className = 'status-dot loading';
+  try {
+    const r = await fetch('/api/refresh-token', { method: 'POST' });
+    const d = await r.json();
+    if (d.success) {
+      showToast('✅ Token รีเฟรชสำเร็จ! กำลังโหลดข้อมูล...');
+      checkTokenStatus();
+      fetchCategory(cat);
+    } else {
+      showToast('❌ ' + (d.error || 'ไม่สามารถรีเฟรชได้'), true);
+      checkTokenStatus();
+    }
+  } catch (e) {
+    showToast('❌ เชื่อมต่อ server ไม่ได้', true);
+    checkTokenStatus();
+  }
+}
+
+setInterval(checkTokenStatus, 60000);
 
 const SHOP_NAME = 'Armymimu';
 const categoryData = {};
@@ -322,7 +401,13 @@ async function fetchCategory(cat, retry = 0) {
       fetch(`/api/prices/${cat}`),
       fetch(`/api/prices-studio7`).catch(() => null)
     ]);
-    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    if (!resp.ok) {
+      let serverMsg = '';
+      try { serverMsg = (await resp.json()).error || ''; } catch (_) {}
+      const err = new Error('HTTP ' + resp.status);
+      err.serverMsg = serverMsg;
+      throw err;
+    }
     const data = await resp.json();
     const s7Data = s7Resp && s7Resp.ok ? await s7Resp.json() : { items: [] };
     
@@ -331,12 +416,13 @@ async function fetchCategory(cat, retry = 0) {
     fetchedAt[cat] = new Date();
     renderCategory(cat);
   } catch(e) {
-    if (retry < MAX_RETRIES) {
+    const errMsg = e.serverMsg || '';
+    const isTokenErr = errMsg.includes('Token') || errMsg.includes('token');
+    const isWakeUp = retry < 2 && !isTokenErr;
+
+    if (isWakeUp) {
       const delay = Math.min(3000 + retry * 2000, 10000);
-      const msg = retry < 2
-        ? `⏳ กำลังเริ่มระบบ... รอสักครู่ (${retry+1}/${MAX_RETRIES})`
-        : `⟳ กำลังลองใหม่... (${retry+1}/${MAX_RETRIES})`;
-      showToast(msg, false);
+      showToast(`⏳ กำลังเริ่มระบบ... รอสักครู่ (${retry+1}/${MAX_RETRIES})`, false);
       document.getElementById('submodels-' + cat).innerHTML =
         `<div class="empty-state">
           <div class="empty-icon">⏳</div>
@@ -344,15 +430,26 @@ async function fetchCategory(cat, retry = 0) {
           <div class="empty-sub">เซิร์ฟเวอร์กำลัง wake up กรุณารอสักครู่ (${retry+1}/${MAX_RETRIES})</div>
         </div>`;
       setTimeout(() => fetchCategory(cat, retry + 1), delay);
-    } else {
+    } else if (isTokenErr || retry >= MAX_RETRIES) {
       document.getElementById('submodels-' + cat).innerHTML =
         `<div class="empty-state" style="border-color:rgba(240,72,72,0.2)">
-          <div class="empty-icon">⚠️</div>
-          <div class="empty-title" style="color:var(--warning)">เชื่อมต่อไม่ได้</div>
-          <div class="empty-sub">Token อาจหมดอายุ กรุณากดลองใหม่อีกครั้ง</div>
-          <button class="btn primary" onclick="fetchCategory('${cat}')" style="margin-top:16px">⟳ ลองอีกครั้ง</button>
+          <div class="empty-icon">🔑</div>
+          <div class="empty-title" style="color:var(--warning)">Token หมดอายุ</div>
+          <div class="empty-sub" style="line-height:1.7">
+            กดปุ่มด้านล่างเพื่อรีเฟรช Token อัตโนมัติ<br>
+            <span style="font-size:11px;opacity:0.7">ระบบจะเปิดเบราว์เซอร์ดึง Token ใหม่ให้อัตโนมัติ (~15-30 วินาที)</span>
+          </div>
+          <div style="display:flex;gap:8px;justify-content:center;margin-top:16px">
+            <button class="btn primary" onclick="refreshTokenThenFetch('${cat}')">🔄 รีเฟรช Token</button>
+            <button class="btn" onclick="fetchCategory('${cat}')">⟳ ลองอีกครั้ง</button>
+          </div>
         </div>`;
       document.getElementById('dot-' + cat).className = 'status-dot';
+      showToast('🔑 Token หมดอายุ — กดปุ่มรีเฟรชเพื่ออัพเดทอัตโนมัติ', true);
+    } else {
+      const delay = Math.min(3000 + retry * 2000, 10000);
+      showToast(`⟳ กำลังลองใหม่... (${retry+1}/${MAX_RETRIES})`, false);
+      setTimeout(() => fetchCategory(cat, retry + 1), delay);
     }
   }
 }

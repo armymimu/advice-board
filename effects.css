@@ -1,0 +1,485 @@
+/* ═══════════════════════════════════════════
+   Advice Price Board — Ultra Effects Layer
+   Animated Particles, Hover FX, Micro-interactions
+   ═══════════════════════════════════════════ */
+
+/* ─── ANIMATED GRADIENT BACKGROUND ─── */
+body {
+  background: linear-gradient(135deg, #0e0a0c 0%, #1a0f15 25%, #0f0c14 50%, #150f12 75%, #0e0a0c 100%);
+  background-size: 400% 400%;
+  animation: bgShift 25s ease-in-out infinite;
+}
+@keyframes bgShift {
+  0%, 100% { background-position: 0% 50%; }
+  25% { background-position: 100% 50%; }
+  50% { background-position: 100% 0%; }
+  75% { background-position: 0% 100%; }
+}
+
+/* ─── FLOATING PARTICLES CANVAS ─── */
+#particles-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* ─── AURORA / GLOW ORBS ─── */
+.aurora-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  animation: orbFloat 20s ease-in-out infinite, orbFade 8s ease-in-out infinite;
+}
+.aurora-orb:nth-child(1) {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(216,160,140,0.06) 0%, transparent 70%);
+  top: -10%; left: -5%;
+  animation-delay: 0s;
+}
+.aurora-orb:nth-child(2) {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(138,180,216,0.05) 0%, transparent 70%);
+  bottom: -10%; right: -5%;
+  animation-delay: -7s;
+}
+.aurora-orb:nth-child(3) {
+  width: 350px; height: 350px;
+  background: radial-gradient(circle, rgba(184,156,216,0.04) 0%, transparent 70%);
+  top: 40%; left: 50%;
+  animation-delay: -14s;
+}
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(60px, -40px) scale(1.1); }
+  50% { transform: translate(-30px, 50px) scale(0.9); }
+  75% { transform: translate(40px, 20px) scale(1.05); }
+}
+@keyframes orbFade {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.7; }
+}
+
+/* ─── HEADER GLOW LINE ─── */
+header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(216,160,140,0.4) 20%, 
+    rgba(216,160,140,0.8) 50%, 
+    rgba(216,160,140,0.4) 80%, 
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: headerGlow 4s ease-in-out infinite;
+}
+@keyframes headerGlow {
+  0%, 100% { background-position: -100% 0; opacity: 0.4; }
+  50% { background-position: 100% 0; opacity: 1; }
+}
+
+/* ─── LOGO ANIMATIONS ─── */
+.logo-dot {
+  animation: logoPulse 2.5s ease-in-out infinite, logoGlow 4s ease-in-out infinite !important;
+}
+@keyframes logoPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+}
+@keyframes logoGlow {
+  0%, 100% { box-shadow: 0 0 8px rgba(216,160,140,0.5), 0 0 20px rgba(216,160,140,0.2); }
+  50% { box-shadow: 0 0 16px rgba(216,160,140,0.8), 0 0 40px rgba(216,160,140,0.4), 0 0 60px rgba(216,160,140,0.1); }
+}
+
+/* ─── RIPPLE EFFECT ON ALL BUTTONS ─── */
+.btn, .tab, .key, .filter-btn {
+  position: relative;
+  overflow: hidden;
+}
+.ripple-effect {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(216,160,140,0.25);
+  transform: scale(0);
+  animation: rippleAnim 0.6s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes rippleAnim {
+  to { transform: scale(4); opacity: 0; }
+}
+
+/* ─── TAB ANIMATIONS ─── */
+.tab {
+  transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1) !important;
+}
+.tab:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 6px 20px rgba(216,160,140,0.1);
+}
+.tab:active {
+  transform: translateY(0) scale(0.97);
+}
+.tab.active {
+  animation: tabActivate 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes tabActivate {
+  0% { transform: scale(0.9); }
+  60% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* Tab active underline glow */
+.tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 2px; left: 20%; right: 20%;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+  box-shadow: 0 0 10px var(--accent);
+  animation: tabGlowLine 2s ease-in-out infinite;
+}
+@keyframes tabGlowLine {
+  0%, 100% { opacity: 0.5; transform: scaleX(0.8); }
+  50% { opacity: 1; transform: scaleX(1.1); }
+}
+
+/* ─── COUNT BADGE POP ANIMATION ─── */
+.tab .count.show {
+  animation: countPop 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes countPop {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.3); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ─── CARD ENTRANCE ANIMATIONS ─── */
+.submodel-card {
+  animation: cardSlideIn 0.5s cubic-bezier(0.25,0.46,0.45,0.94) backwards !important;
+}
+.submodel-card:nth-child(1) { animation-delay: 0s !important; }
+.submodel-card:nth-child(2) { animation-delay: 0.08s !important; }
+.submodel-card:nth-child(3) { animation-delay: 0.16s !important; }
+.submodel-card:nth-child(4) { animation-delay: 0.24s !important; }
+.submodel-card:nth-child(5) { animation-delay: 0.32s !important; }
+.submodel-card:nth-child(6) { animation-delay: 0.40s !important; }
+.submodel-card:nth-child(n+7) { animation-delay: 0.48s !important; }
+
+@keyframes cardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.97);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* ─── CARD HOVER EFFECTS ─── */
+.submodel-card {
+  transition: all 0.35s cubic-bezier(0.4,0,0.2,1) !important;
+}
+.submodel-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(216,160,140,0.08), 0 0 0 1px rgba(216,160,140,0.12) !important;
+}
+
+/* ─── TABLE ROW ANIMATIONS ─── */
+tbody tr {
+  transition: all 0.25s ease !important;
+}
+tbody tr:hover {
+  background: rgba(216,160,140,0.06) !important;
+  transform: scale(1.005);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+/* ─── PRICE SELL GLOW ─── */
+.price-sell {
+  transition: all 0.3s ease;
+}
+tbody tr:hover .price-sell {
+  text-shadow: 0 0 20px rgba(216,160,140,0.5), 0 0 40px rgba(216,160,140,0.2);
+  transform: scale(1.05);
+  display: inline-block;
+}
+
+/* ─── STAT CARDS ANIMATION ─── */
+.stat-card {
+  transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1) !important;
+  animation: statFadeIn 0.5s ease backwards;
+}
+.stat-card:nth-child(1) { animation-delay: 0s; }
+.stat-card:nth-child(2) { animation-delay: 0.08s; }
+.stat-card:nth-child(3) { animation-delay: 0.16s; }
+.stat-card:nth-child(4) { animation-delay: 0.24s; }
+.stat-card:nth-child(5) { animation-delay: 0.32s; }
+
+@keyframes statFadeIn {
+  from { opacity: 0; transform: translateY(15px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.stat-card:hover {
+  transform: translateY(-4px) scale(1.02) !important;
+  box-shadow: 0 8px 30px rgba(216,160,140,0.1) !important;
+  border-color: var(--accent) !important;
+}
+.stat-card:hover .stat-value {
+  animation: valuePulse 0.6s ease;
+}
+@keyframes valuePulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* ─── BUTTON HOVER EFFECTS ─── */
+.btn {
+  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1) !important;
+}
+.btn:hover {
+  transform: translateY(-2px) scale(1.03) !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3) !important;
+}
+.btn:active {
+  transform: translateY(0) scale(0.97) !important;
+}
+.btn.primary {
+  background-size: 200% 200% !important;
+  animation: gradientShift 3s ease infinite;
+}
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.btn.primary:hover {
+  box-shadow: 0 6px 25px rgba(216,160,140,0.45) !important;
+}
+
+/* ─── TOAST ANIMATION ─── */
+.toast.show {
+  animation: toastIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes toastIn {
+  0% { transform: translateY(30px) scale(0.8) rotate(-3deg); opacity: 0; }
+  60% { transform: translateY(-5px) scale(1.05) rotate(1deg); }
+  100% { transform: translateY(0) scale(1) rotate(0); opacity: 1; }
+}
+
+/* ─── SKELETON LOADING ENHANCED ─── */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--surface2) 0%,
+    var(--surface3) 20%,
+    rgba(216,160,140,0.08) 40%,
+    var(--surface3) 60%,
+    var(--surface2) 100%
+  ) !important;
+  background-size: 300% 100% !important;
+  animation: shimmerGlow 2s ease-in-out infinite !important;
+}
+@keyframes shimmerGlow {
+  0% { background-position: 300% 0; }
+  100% { background-position: -300% 0; }
+}
+
+/* ─── SEARCH INPUT ANIMATION ─── */
+.search-wrap input {
+  transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1) !important;
+}
+.search-wrap input:focus {
+  transform: scale(1.01);
+  box-shadow: 0 0 30px rgba(216,160,140,0.12), 0 0 60px rgba(216,160,140,0.05) !important;
+}
+
+/* ─── IMAGE HOVER 3D TILT ─── */
+.td-img img {
+  transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1) !important;
+}
+.td-img img:hover {
+  transform: scale(1.5) rotate(-3deg) !important;
+  box-shadow: 0 8px 30px rgba(216,160,140,0.3) !important;
+  z-index: 50 !important;
+  filter: brightness(1.1);
+}
+
+/* ─── PIN KEYPAD ANIMATIONS ─── */
+.pin-keypad .key {
+  transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1) !important;
+}
+.pin-keypad .key:hover {
+  transform: scale(1.1);
+  background: rgba(216,160,140,0.08) !important;
+  box-shadow: 0 0 20px rgba(216,160,140,0.15);
+}
+.pin-keypad .key:active, .pin-keypad .key.pressed {
+  transform: scale(0.9) !important;
+  background: rgba(216,160,140,0.15) !important;
+}
+
+.pin-dots .dot {
+  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1) !important;
+}
+.pin-dots .dot.filled {
+  animation: dotFill 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: 0 0 12px var(--accent), 0 0 24px rgba(216,160,140,0.3) !important;
+}
+@keyframes dotFill {
+  0% { transform: scale(0.5); }
+  60% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+/* ─── UNLOCK TRANSITION ─── */
+.pin-lock-screen.hidden {
+  animation: unlockBlast 0.7s cubic-bezier(0.4,0,0.2,1) forwards !important;
+}
+@keyframes unlockBlast {
+  0% { opacity: 1; transform: scale(1); filter: blur(0); }
+  50% { opacity: 0.5; transform: scale(1.05); filter: blur(4px); }
+  100% { opacity: 0; transform: scale(1.2); filter: blur(20px); }
+}
+
+/* ─── FLOATING EMOJIS ─── */
+.float-emoji {
+  position: fixed;
+  font-size: 20px;
+  pointer-events: none;
+  z-index: 999;
+  animation: emojiFloat 2s ease-out forwards;
+  opacity: 0;
+}
+@keyframes emojiFloat {
+  0% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+  50% { opacity: 0.8; transform: translateY(-60px) scale(1.2) rotate(15deg); }
+  100% { opacity: 0; transform: translateY(-120px) scale(0.5) rotate(30deg); }
+}
+
+/* ─── SCROLLBAR GLOW ─── */
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(216,160,140,0.3), rgba(216,160,140,0.1)) !important;
+  border-radius: 4px !important;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(216,160,140,0.5), rgba(216,160,140,0.2)) !important;
+}
+
+/* ─── VIEWER MODAL ENHANCED ─── */
+.viewer-overlay.show {
+  animation: viewerOverlayIn 0.4s ease !important;
+}
+@keyframes viewerOverlayIn {
+  from { backdrop-filter: blur(0); }
+  to { backdrop-filter: blur(24px); }
+}
+
+.viewer-overlay.show .viewer-card {
+  animation: viewerCardIn 0.6s cubic-bezier(0.34,1.56,0.64,1) !important;
+}
+@keyframes viewerCardIn {
+  0% { opacity: 0; transform: scale(0.7) translateY(50px) rotateX(10deg); }
+  60% { transform: scale(1.02) translateY(-5px) rotateX(-2deg); }
+  100% { opacity: 1; transform: scale(1) translateY(0) rotateX(0); }
+}
+
+/* ─── PROFIT BADGE GLOW ─── */
+.profit-badge {
+  transition: all 0.35s ease !important;
+}
+.profit-badge:focus-within {
+  animation: profitGlow 1.5s ease-in-out infinite;
+}
+@keyframes profitGlow {
+  0%, 100% { box-shadow: 0 0 15px rgba(216,160,140,0.1); }
+  50% { box-shadow: 0 0 30px rgba(216,160,140,0.25), 0 0 60px rgba(216,160,140,0.1); }
+}
+
+/* ─── STOCK BADGE PULSE ─── */
+.stock-badge.instock::before {
+  animation: stockPulse 2s ease-in-out infinite !important;
+}
+@keyframes stockPulse {
+  0%, 100% { box-shadow: 0 0 4px var(--accent); transform: scale(1); }
+  50% { box-shadow: 0 0 10px var(--accent), 0 0 20px rgba(216,160,140,0.3); transform: scale(1.3); }
+}
+
+/* ─── DISCOUNT BADGE BOUNCE ─── */
+.discount-badge {
+  animation: discBounce 3s ease-in-out infinite;
+}
+@keyframes discBounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* ─── CURSOR GLOW TRAIL (via JS) ─── */
+.cursor-glow {
+  position: fixed;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(216,160,140,0.04) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  transform: translate(-50%, -50%);
+  transition: left 0.3s ease, top 0.3s ease;
+}
+
+/* ─── SMOOTH PANEL TRANSITION ─── */
+.panel {
+  animation: none;
+}
+.panel.active {
+  animation: panelIn 0.4s ease;
+}
+@keyframes panelIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* ─── HEADER LOGO TEXT SHIMMER ─── */
+.logo {
+  background: linear-gradient(90deg, var(--text) 0%, var(--accent-bright) 50%, var(--text) 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: logoShimmer 6s ease-in-out infinite;
+}
+@keyframes logoShimmer {
+  0%, 100% { background-position: -100% 0; }
+  50% { background-position: 200% 0; }
+}
+
+/* ─── SUBMODEL HEADER HOVER ─── */
+.submodel-header {
+  transition: all 0.3s ease !important;
+}
+.submodel-header:hover {
+  background: linear-gradient(135deg, var(--surface3), rgba(216,160,140,0.06)) !important;
+}
+.submodel-header:hover .chevron {
+  color: var(--accent) !important;
+}
+
+/* ─── FAB BAR ENHANCED ─── */
+.fab-bar.show {
+  animation: fabSlideUp 0.5s cubic-bezier(0.34,1.56,0.64,1) !important;
+}
+@keyframes fabSlideUp {
+  0% { transform: translateY(100%); opacity: 0; }
+  60% { transform: translateY(-5px); }
+  100% { transform: translateY(0); opacity: 1; }
+}

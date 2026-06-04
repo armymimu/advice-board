@@ -27,7 +27,7 @@ const SERVER_URL = 'https://advice-board.onrender.com';
             }
         });
 
-        await page.goto('https://www.advice.co.th/product/iphone', { waitUntil: 'networkidle2' });
+        await page.goto('https://www.advice.co.th/product/search?keyword=iphone', { waitUntil: 'networkidle2' });
         try { await page.waitForSelector('.list-product', { timeout: 15000 }); } catch (e) { }
 
         if (adviceToken) {
