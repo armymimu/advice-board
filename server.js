@@ -29,6 +29,7 @@ let cachedToken = process.env.ADVICE_TOKEN || null;
 let tokenExpiry = cachedToken ? Date.now() + (90 * 60 * 1000) : 0;
 let isRefreshing = false;
 let refreshTimer = null;
+let lastTokenError = null;
 
 // Load persisted token on startup
 if (!cachedToken) {
@@ -95,12 +96,12 @@ async function autoRefreshToken() {
 
     await page.setViewport({ width: 1366, height: 768 });
     await page.goto('https://www.advice.co.th/product/search?keyword=iphone', {
-      waitUntil: 'networkidle2',
-      timeout: 30000
+      waitUntil: 'domcontentloaded',
+      timeout: 60000
     });
 
     try {
-      await page.waitForSelector('.list-product', { timeout: 15000 });
+      await page.waitForSelector('.list-product', { timeout: 30000 });
     } catch (e) { /* token might still be captured */ }
 
     await browser.close();
@@ -118,9 +119,11 @@ async function autoRefreshToken() {
       console.log('❌ ไม่สามารถดึง Token ได้ — จะลองใหม่ใน 5 นาที');
       setTimeout(() => autoRefreshToken(), 5 * 60 * 1000);
       isRefreshing = false;
+      lastTokenError = "Token not found on page";
       return false;
     }
   } catch (e) {
+    lastTokenError = e.message;
     console.error('❌ Token refresh error:', e.message);
     if (browser) try { await browser.close(); } catch (_) {}
     // Retry after 5 minutes on error
@@ -416,7 +419,8 @@ app.get('/api/health', (req, res) => {
     tokenExpires: tokenExpiry > 0 ? new Date(tokenExpiry).toISOString() : 'none',
     tokenMinutesLeft: minsLeft,
     autoRefresh: !!puppeteer,
-    uptime: Math.floor(process.uptime()) + 's'
+    uptime: Math.floor(process.uptime()) + 's',
+    lastTokenError: lastTokenError
   });
 });
 
