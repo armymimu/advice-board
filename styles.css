@@ -35,7 +35,10 @@
   --shadow: 0 4px 20px rgba(10,5,5,0.5);
   --shadow-lg: 0 8px 40px rgba(10,5,5,0.6);
   --shadow-glow: 0 0 30px rgba(216,160,140,0.10);
-  --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+  --transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --transition-smooth: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --spring-fast: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -781,3 +784,229 @@ td { padding: 10px 14px; vertical-align: middle; }
 .pin-keypad .key.empty { cursor: default; }
 
 .best-cost { color: var(--success) !important; font-weight: 700 !important; }
+
+/* ══════════════════════════════════════════════════════════
+   iOS-STYLE SPLASH SCREEN
+   ══════════════════════════════════════════════════════════ */
+.splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at 40% 30%,
+    #1a1420 0%, #0e0a0c 60%, #070508 100%);
+  overflow: hidden;
+}
+
+/* Background glow orbs on splash */
+.splash-screen::before,
+.splash-screen::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  animation: splashOrbFloat 8s ease-in-out infinite;
+}
+.splash-screen::before {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(216,160,140,0.12) 0%, transparent 65%);
+  top: -100px; left: -100px;
+  animation-delay: 0s;
+}
+.splash-screen::after {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(138,180,216,0.08) 0%, transparent 65%);
+  bottom: -80px; right: -80px;
+  animation-delay: -4s;
+}
+@keyframes splashOrbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, -20px) scale(1.1); }
+}
+
+.splash-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  animation: splashIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  z-index: 1;
+}
+@keyframes splashIn {
+  from { opacity: 0; transform: translateY(30px) scale(0.92); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.splash-logo {
+  position: relative;
+  width: 100px; height: 100px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 28px;
+}
+.splash-orb {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%,
+    rgba(216,160,140,0.25) 0%,
+    rgba(216,160,140,0.05) 50%,
+    transparent 70%
+  );
+  border: 1px solid rgba(216,160,140,0.2);
+  animation: splashOrbPulse 2.5s ease-in-out infinite;
+  box-shadow: 0 0 40px rgba(216,160,140,0.15),
+              0 0 80px rgba(216,160,140,0.06),
+              inset 0 0 30px rgba(216,160,140,0.05);
+}
+@keyframes splashOrbPulse {
+  0%, 100% { transform: scale(1);   opacity: 0.7; }
+  50%       { transform: scale(1.08); opacity: 1; }
+}
+.splash-icon {
+  font-size: 42px;
+  position: relative;
+  z-index: 1;
+  animation: splashIconFloat 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px rgba(216,160,140,0.4));
+}
+@keyframes splashIconFloat {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50%       { transform: translateY(-6px) rotate(3deg); }
+}
+
+.splash-title {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--text) 0%, var(--accent-bright) 50%, var(--text) 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: titleShimmer 3s ease-in-out infinite;
+  margin-bottom: 6px;
+}
+@keyframes titleShimmer {
+  0%, 100% { background-position: -100% 0; }
+  50%       { background-position: 200% 0; }
+}
+.splash-sub {
+  font-size: 13px;
+  color: var(--text3);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: 52px;
+}
+
+.splash-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 220px;
+}
+.splash-loader-track {
+  width: 100%;
+  height: 3px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.splash-loader-bar {
+  height: 100%;
+  width: 0%;
+  border-radius: 99px;
+  background: linear-gradient(90deg,
+    var(--accent) 0%,
+    var(--accent-bright) 50%,
+    rgba(216,160,140,0.6) 100%
+  );
+  transition: width 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 12px rgba(216,160,140,0.5);
+  position: relative;
+}
+.splash-loader-bar::after {
+  content: '';
+  position: absolute;
+  right: -2px; top: -2px; bottom: -2px;
+  width: 8px;
+  border-radius: 50%;
+  background: var(--accent-bright);
+  box-shadow: 0 0 10px var(--accent), 0 0 20px rgba(216,160,140,0.4);
+}
+.splash-loader-text {
+  font-size: 12px;
+  color: var(--text3);
+  letter-spacing: 0.3px;
+  transition: opacity 0.3s ease;
+  font-weight: 400;
+}
+
+/* Exit animation */
+.splash-screen.splash-exit {
+  animation: splashExit 0.65s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes splashExit {
+  0%   { opacity: 1; transform: scale(1);    filter: blur(0); }
+  40%  { opacity: 1; transform: scale(1.03); filter: blur(0); }
+  100% { opacity: 0; transform: scale(1.08); filter: blur(8px); }
+}
+
+/* ──────────────────────────────
+   APP + PIN ENTER TRANSITIONS
+────────────────────────────── */
+.app-enter {
+  animation: appEnter 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+@keyframes appEnter {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.pin-enter {
+  animation: pinEnter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes pinEnter {
+  from { opacity: 0; transform: scale(0.94) translateY(20px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ──────────────────────────────
+   SMOOTHER iOS-LIKE PANEL SWITCH
+────────────────────────────── */
+.panel {
+  display: none;
+  transition: opacity 0.25s ease, transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.panel.active {
+  display: block;
+  animation: panelSlideIn 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+@keyframes panelSlideIn {
+  from { opacity: 0; transform: translateX(12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ──────────────────────────────
+   iOS HAPTIC-FEEL KEY PRESS
+────────────────────────────── */
+.pin-keypad .key {
+  transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+.pin-keypad .key:active {
+  transform: scale(0.88) !important;
+  background: rgba(216,160,140,0.15) !important;
+}
+
+/* ──────────────────────────────
+   SMOOTHER TAB SWITCH
+────────────────────────────── */
+.tab {
+  transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+

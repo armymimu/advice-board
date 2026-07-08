@@ -1,18 +1,119 @@
+// ─── SPLASH + PRELOAD SYSTEM ───
 // ─── PIN LOCK SYSTEM ───
 const CORRECT_PIN = '091247';
 let enteredPin = '';
+let serverReady = false;   // ตั้งเป็น true เมื่อ server ตอบสนอง
+let preloadDone = false;   // ตั้งเป็น true เมื่อ preload เสร็จ
 
-function initPinLock() {
+// ── Global state — must be before runSplash ──
+const categoryData = {};
+const fetchedAt = {};
+let studio7Prices = [];
+
+function setSplashProgress(pct, text) {
+  const bar = document.getElementById('splash-bar');
+  const txt = document.getElementById('splash-text');
+  if (bar) bar.style.width = pct + '%';
+  if (txt && text) txt.textContent = text;
+}
+
+function hideSplash(callback) {
+  const splash = document.getElementById('splash-screen');
+  if (!splash) { if (callback) callback(); return; }
+  splash.classList.add('splash-exit');
+  setTimeout(() => {
+    splash.style.display = 'none';
+    if (callback) callback();
+  }, 650);
+}
+
+// ── Wake-up ping: ทำ request เพื่อปลุก server และวัดว่า ready หรือยัง ──
+async function wakeUpServer(maxWait = 30000) {
+  const start = Date.now();
+  let attempt = 0;
+  setSplashProgress(10, 'กำลังปลุก server...');
+  while (Date.now() - start < maxWait) {
+    attempt++;
+    try {
+      const r = await fetch('/api/health', { signal: AbortSignal.timeout(5000) });
+      if (r.ok) {
+        setSplashProgress(40, 'Server พร้อมแล้ว ✓');
+        serverReady = true;
+        return true;
+      }
+    } catch (e) { /* still waking up */ }
+    const elapsed = Date.now() - start;
+    const pct = Math.min(10 + (elapsed / maxWait) * 30, 38);
+    setSplashProgress(pct, `กำลังปลุก server... (${attempt})`);
+    await new Promise(r => setTimeout(r, 1800));
+  }
+  setSplashProgress(40, 'Server ช้า — ลองต่อ...');
+  serverReady = true; // ยังคงดำเนินต่อแม้ timeout
+  return false;
+}
+
+// ── Preload iphone data in background ──
+async function preloadIphoneData() {
+  setSplashProgress(55, 'กำลังโหลดราคา iPhone...');
+  try {
+    const [resp, s7Resp] = await Promise.all([
+      fetch('/api/prices/iphone', { signal: AbortSignal.timeout(20000) }),
+      fetch('/api/prices-studio7', { signal: AbortSignal.timeout(10000) }).catch(() => null)
+    ]);
+    if (resp.ok) {
+      const data = await resp.json();
+      const s7Data = s7Resp && s7Resp.ok ? await s7Resp.json() : { items: [] };
+      categoryData['iphone'] = data.items || [];
+      studio7Prices = s7Data.items || [];
+      fetchedAt['iphone'] = new Date();
+      setSplashProgress(90, `โหลดแล้ว ${data.items?.length || 0} รุ่น ✓`);
+      preloadDone = true;
+    } else {
+      setSplashProgress(85, 'ไม่สามารถโหลดได้ตอนนี้');
+    }
+  } catch (e) {
+    setSplashProgress(85, 'จะโหลดหลังเข้าแอป...');
+  }
+}
+
+// ── Main splash flow ──
+async function runSplash() {
+  setSplashProgress(5, 'เริ่มต้น...');
   const isUnlocked = localStorage.getItem('armymimu_unlocked') === 'true';
-  const lockScreen = document.getElementById('pin-lock-screen');
-  const appContent = document.getElementById('app-content');
 
   if (isUnlocked) {
-    lockScreen.style.display = 'none';
-    appContent.style.display = 'block';
-    checkTokenStatus();
-    return;
+    // ผู้ใช้ unlock แล้ว: ปลุก server + preload ข้อมูลทันที
+    await wakeUpServer(25000);
+    await preloadIphoneData();
+    setSplashProgress(100, 'พร้อมแล้ว! ✨');
+    await new Promise(r => setTimeout(r, 300));
+    hideSplash(() => {
+      document.getElementById('app-content').style.display = 'block';
+      document.getElementById('app-content').classList.add('app-enter');
+      checkTokenStatus();
+      if (preloadDone) renderCategory('iphone');
+      updateFabBar();
+    });
+  } else {
+    // ยังไม่ unlock: ปลุก server ก่อน แล้วค่อยโชว์ PIN
+    await wakeUpServer(20000);
+    setSplashProgress(100, 'พร้อมแล้ว! ✨');
+    await new Promise(r => setTimeout(r, 250));
+    hideSplash(() => {
+      const pinScreen = document.getElementById('pin-lock-screen');
+      pinScreen.style.display = 'flex';
+      pinScreen.classList.add('pin-enter');
+      initPinLock();
+    });
   }
+}
+
+// Start splash immediately
+runSplash();
+
+function initPinLock() {
+  const lockScreen = document.getElementById('pin-lock-screen');
+  const appContent = document.getElementById('app-content');
 
   const keys = document.querySelectorAll('.pin-keypad .key[data-num]');
   const deleteKey = document.getElementById('pin-delete');
@@ -53,10 +154,18 @@ function initPinLock() {
       // Success
       localStorage.setItem('armymimu_unlocked', 'true');
       lockScreen.classList.add('hidden');
-      setTimeout(() => {
+      // Preload ข้อมูลทันทีหลัง unlock สำเร็จ
+      setTimeout(async () => {
         lockScreen.style.display = 'none';
         appContent.style.display = 'block';
+        appContent.classList.add('app-enter');
         checkTokenStatus();
+        // preload iPhone data ถ้า server ready แล้ว
+        if (serverReady && !preloadDone) {
+          await preloadIphoneData();
+          if (preloadDone) renderCategory('iphone');
+          updateFabBar();
+        }
       }, 500);
     } else {
       // Error
@@ -160,9 +269,7 @@ async function refreshTokenThenFetch(cat) {
 setInterval(checkTokenStatus, 60000);
 
 const SHOP_NAME = 'Armymimu';
-const categoryData = {};
-const fetchedAt = {};
-let studio7Prices = []; // Global cache for Studio7 prices
+// ── Note: categoryData, fetchedAt, studio7Prices are declared at top of file ──
 const LABELS = { iphone: '📱 iPhone', ipad: '⬛ iPad', macbook: '💻 MacBook', android: '🤖 Android' };
 const CATEGORIES = ['iphone', 'ipad', 'macbook', 'android'];
 const COLOR_MAP = {

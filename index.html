@@ -6,6 +6,7 @@
 <title>Price Dashboard</title>
 <meta name="description" content="Price Board Dashboard">
 <meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0e0a0c">
 
 <!-- iOS Home Screen Support -->
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -13,13 +14,32 @@
 <meta name="apple-mobile-web-app-title" content="Advice">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="effects.css">
 </head>
 <body>
 
+<!-- iOS Splash Screen -->
+<div id="splash-screen" class="splash-screen">
+  <div class="splash-inner">
+    <div class="splash-logo">
+      <div class="splash-orb"></div>
+      <div class="splash-icon">💎</div>
+    </div>
+    <div class="splash-title">Advice Price Board</div>
+    <div class="splash-sub">Armymimu</div>
+    <div class="splash-loader">
+      <div class="splash-loader-track">
+        <div class="splash-loader-bar" id="splash-bar"></div>
+      </div>
+      <div class="splash-loader-text" id="splash-text">กำลังเชื่อมต่อ...</div>
+    </div>
+  </div>
+</div>
+
 <!-- PIN Lock Screen -->
-<div id="pin-lock-screen" class="pin-lock-screen">
+<div id="pin-lock-screen" class="pin-lock-screen" style="display:none;">
   <div class="pin-container">
     <div class="pin-header">
       <h2>Enter Passcode</h2>
