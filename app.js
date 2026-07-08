@@ -500,7 +500,7 @@ function showLoadingCards(cat) {
 }
 
 async function fetchCategory(cat, retry = 0) {
-  const MAX_RETRIES = 5;
+  const MAX_RETRIES = 8;
   document.getElementById('dot-' + cat).className = 'status-dot loading';
   showLoadingCards(cat);
   try {
@@ -513,6 +513,7 @@ async function fetchCategory(cat, retry = 0) {
       try { serverMsg = (await resp.json()).error || ''; } catch (_) {}
       const err = new Error('HTTP ' + resp.status);
       err.serverMsg = serverMsg;
+      err.httpStatus = resp.status;
       throw err;
     }
     const data = await resp.json();
@@ -523,45 +524,55 @@ async function fetchCategory(cat, retry = 0) {
     fetchedAt[cat] = new Date();
     renderCategory(cat);
   } catch(e) {
-    const errMsg = e.serverMsg || '';
-    const isTokenErr = errMsg.includes('Token') || errMsg.includes('token');
-    const isWakeUp = retry < 2 && !isTokenErr;
+    const httpStatus = e.httpStatus || 0;
+    const isTokenErr = httpStatus === 401 || (e.serverMsg || '').toLowerCase().includes('token');
+    const delay = Math.min(2000 + retry * 1500, 8000);
 
-    if (isWakeUp) {
-      const delay = Math.min(3000 + retry * 2000, 10000);
-      showToast(`⏳ กำลังเริ่มระบบ... รอสักครู่ (${retry+1}/${MAX_RETRIES})`, false);
+    if (retry >= MAX_RETRIES) {
+      // ล้มเหลวจริงๆ — โชว์ปุ่มลองใหม่
       document.getElementById('submodels-' + cat).innerHTML =
         `<div class="empty-state">
-          <div class="empty-icon">⏳</div>
-          <div class="empty-title">กำลังเริ่มระบบ...</div>
-          <div class="empty-sub">เซิร์ฟเวอร์กำลัง wake up กรุณารอสักครู่ (${retry+1}/${MAX_RETRIES})</div>
-        </div>`;
-      setTimeout(() => fetchCategory(cat, retry + 1), delay);
-    } else if (isTokenErr || retry >= MAX_RETRIES) {
-      document.getElementById('submodels-' + cat).innerHTML =
-        `<div class="empty-state" style="border-color:rgba(240,72,72,0.2)">
-          <div class="empty-icon">🔑</div>
-          <div class="empty-title" style="color:var(--warning)">Token หมดอายุ</div>
-          <div class="empty-sub" style="line-height:1.7">
-            กดปุ่มด้านล่างเพื่อรีเฟรช Token อัตโนมัติ<br>
-            <span style="font-size:11px;opacity:0.7">ระบบจะเปิดเบราว์เซอร์ดึง Token ใหม่ให้อัตโนมัติ (~15-30 วินาที)</span>
-          </div>
-          <div style="display:flex;gap:8px;justify-content:center;margin-top:16px">
-            <button class="btn primary" onclick="refreshTokenThenFetch('${cat}')">🔄 รีเฟรช Token</button>
-            <button class="btn" onclick="fetchCategory('${cat}')">⟳ ลองอีกครั้ง</button>
-          </div>
+          <div class="empty-icon">📡</div>
+          <div class="empty-title">โหลดไม่สำเร็จ</div>
+          <div class="empty-sub">เซิร์ฟเวอร์ไม่ตอบสนอง กรุณาลองอีกครั้ง</div>
+          <button class="btn primary" onclick="fetchCategory('${cat}')" style="margin-top:16px">⟳ ลองใหม่</button>
         </div>`;
       document.getElementById('dot-' + cat).className = 'status-dot';
-      showToast('🔑 Token หมดอายุ — กดปุ่มรีเฟรชเพื่ออัพเดทอัตโนมัติ', true);
-    } else {
-      const delay = Math.min(3000 + retry * 2000, 10000);
-      showToast(`⟳ กำลังลองใหม่... (${retry+1}/${MAX_RETRIES})`, false);
-      setTimeout(() => fetchCategory(cat, retry + 1), delay);
+      return;
     }
+
+    if (isTokenErr) {
+      // Token หมด — server จะรีเฟรชเองอัตโนมัติ แสดงแค่ loading
+      const retryIn = Math.round(delay / 1000);
+      document.getElementById('submodels-' + cat).innerHTML =
+        `<div class="empty-state">
+          <div class="empty-icon" style="animation: spin 1s linear infinite">🔄</div>
+          <div class="empty-title">กำลังรีเฟรช Token...</div>
+          <div class="empty-sub">ระบบกำลังดึง Token ใหม่อัตโนมัติ<br>
+            <span style="font-size:11px;opacity:0.6">จะลองใหม่ใน ${retryIn} วินาที (${retry+1}/${MAX_RETRIES})</span>
+          </div>
+        </div>`;
+      showToast(`🔄 Token หมด — กำลังรีเฟรชอัตโนมัติ...`);
+    } else {
+      // Network error หรือ server ตื่น
+      const retryIn = Math.round(delay / 1000);
+      document.getElementById('submodels-' + cat).innerHTML =
+        `<div class="empty-state">
+          <div class="empty-icon" style="animation: spin 1s linear infinite">⏳</div>
+          <div class="empty-title">กำลังเชื่อมต่อ...</div>
+          <div class="empty-sub">กำลังเริ่มระบบ กรุณารอสักครู่<br>
+            <span style="font-size:11px;opacity:0.6">ลองใหม่ใน ${retryIn} วินาที (${retry+1}/${MAX_RETRIES})</span>
+          </div>
+        </div>`;
+    }
+
+    setTimeout(() => fetchCategory(cat, retry + 1), delay);
   }
 }
 
+
 // ─── Filter/Sort/Search ───
+
 function debounceSearch(cat, val) {
   clearTimeout(debounceTimer);
   debounceTimer = setTimeout(() => renderCategory(cat, val), 250);

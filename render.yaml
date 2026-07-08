@@ -6,9 +6,3 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PUPPETEER_EXECUTABLE_PATH
-        value: /usr/bin/chromium
-      - key: PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
-        value: "true"
-      - key: RENDER_EXTERNAL_URL
-        value: https://advice-board.onrender.com

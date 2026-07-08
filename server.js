@@ -4,253 +4,146 @@ const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 
-let puppeteer, StealthPlugin;
-try {
-  puppeteer = require('puppeteer-extra');
-  StealthPlugin = require('puppeteer-extra-plugin-stealth');
-  puppeteer.use(StealthPlugin());
-} catch (e) {
-  console.log('⚠️ puppeteer ไม่ได้ติดตั้ง — จะใช้ manual token');
-}
-
 const app = express();
 const PORT = process.env.PORT || 3000;
-const TOKEN_FILE = path.join(__dirname, '.token_cache.json');
 
 app.use(cors());
 app.use(express.static('.'));
 app.use(express.json());
 
 // ==========================================
-// Token Management — Full Auto-Refresh
+// TOKEN SYSTEM v2 — HTTP-only, No Puppeteer
 // ==========================================
+// วิธีทำงาน:
+//   1. GET advice.co.th → ได้ user_token cookie (anonymous JWT)
+//   2. ใช้ user_token เป็น Authorization: Bearer header
+//   3. Token หมดอายุใน ~24 ชม — รีเฟรชก่อนหมดอายุ 30 นาที
+//   4. ไม่ใช้ไฟล์เลย — เก็บใน memory + process.env เท่านั้น
+// ==========================================
+
+const ADVICE_HOME = 'https://www.advice.co.th/product/search?keyword=iphone';
+const UA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1';
+
 let cachedToken = process.env.ADVICE_TOKEN || null;
-let tokenExpiry = cachedToken ? Date.now() + (90 * 60 * 1000) : 0;
+let tokenExpiry = cachedToken ? Date.now() + (23 * 60 * 60 * 1000) : 0;
 let isRefreshing = false;
 let refreshTimer = null;
 let lastTokenError = null;
+let tokenFetchCount = 0;
 
-// Load persisted token on startup
-if (!cachedToken) {
-  try {
-    if (fs.existsSync(TOKEN_FILE)) {
-      const saved = JSON.parse(fs.readFileSync(TOKEN_FILE, 'utf8'));
-      if (saved.token && saved.expiry && Date.now() < saved.expiry) {
-        cachedToken = saved.token;
-        tokenExpiry = saved.expiry;
-        const minsLeft = Math.round((tokenExpiry - Date.now()) / 60000);
-        console.log(`✅ โหลด Token จากไฟล์ (เหลือ ${minsLeft} นาที)`);
-      } else {
-        console.log('⏳ Token ในไฟล์หมดอายุแล้ว — จะรีเฟรชอัตโนมัติ');
-      }
+// ─── ดึง token ใหม่ผ่าน HTTP GET (ไม่ต้องใช้ Puppeteer) ───
+async function fetchTokenViaHttp() {
+  console.log('🌐 กำลังดึง Token ผ่าน HTTP GET advice.co.th...');
+  const r = await axios.get(ADVICE_HOME, {
+    headers: {
+      'User-Agent': UA,
+      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+      'Accept-Language': 'th-TH,th;q=0.9,en;q=0.8',
+    },
+    timeout: 20000,
+    maxRedirects: 5,
+  });
+
+  const setCookies = r.headers['set-cookie'] || [];
+  for (const c of setCookies) {
+    const [pair] = c.split(';');
+    const idx = pair.indexOf('=');
+    if (idx < 0) continue;
+    const key = pair.slice(0, idx).trim();
+    const val = pair.slice(idx + 1).trim();
+    if (key === 'user_token' && val && val.length > 20) {
+      return `Bearer ${val}`;
     }
-  } catch (e) {
-    console.log('⚠️ โหลด Token จากไฟล์ไม่สำเร็จ:', e.message);
   }
+  throw new Error('ไม่พบ user_token ใน cookie จาก advice.co.th');
 }
 
-function saveTokenToFile(token, expiry) {
-  try {
-    fs.writeFileSync(TOKEN_FILE, JSON.stringify({ token, expiry }), 'utf8');
-  } catch (e) { /* ignore */ }
-}
-
-// ─── AUTO TOKEN REFRESH via Puppeteer ───
+// ─── Auto refresh ───
 async function autoRefreshToken() {
-  if (!puppeteer) {
-    console.log('⚠️ ไม่สามารถรีเฟรช Token อัตโนมัติได้ (ไม่มี puppeteer)');
-    return false;
+  if (isRefreshing) {
+    console.log('⏳ กำลังรีเฟรชอยู่แล้ว รอสักครู่...');
+    // รอให้รีเฟรชเสร็จ (max 30 วิ)
+    for (let i = 0; i < 30; i++) {
+      await new Promise(r => setTimeout(r, 1000));
+      if (!isRefreshing && cachedToken) return true;
+    }
+    return !!cachedToken;
   }
 
-  if (isRefreshing) return false;
   isRefreshing = true;
-  console.log('🔄 ระบบกำลังรีเฟรช Token อัตโนมัติด้วย Puppeteer...');
+  tokenFetchCount++;
+  console.log(`🔄 รีเฟรช Token ครั้งที่ ${tokenFetchCount}...`);
 
-  let browser;
   try {
-    browser = await puppeteer.launch({
-      headless: true,
-      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium',
-      args: [
-        '--no-sandbox', 
-        '--disable-setuid-sandbox', 
-        '--disable-dev-shm-usage',
-        '--disable-gpu',
-        '--no-zygote',
-        '--single-process',
-        '--disable-software-rasterizer',
-        '--mute-audio'
-      ]
-    });
-    const page = await browser.newPage();
-    
-    // Set matching User-Agent
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36');
-
-    await page.setRequestInterception(true);
-    let token = '';
-    page.on('request', (request) => {
-      // Abort images and CSS to save memory
-      const resourceType = request.resourceType();
-      if (['image', 'stylesheet', 'font', 'media'].includes(resourceType)) {
-        request.abort();
-        return;
-      }
-
-      if (request.url().includes('prodbackadvice') &&
-          request.url().includes('product/get') &&
-          request.method() === 'POST') {
-        const h = request.headers();
-        if (h['authorization'] && !token) {
-          token = h['authorization'];
-        }
-      }
-      request.continue();
-    });
-
-    await page.setViewport({ width: 1366, height: 768 });
-    await page.goto('https://www.advice.co.th/product/search?keyword=iphone', {
-      waitUntil: 'domcontentloaded',
-      timeout: 60000
-    });
-
-    try {
-      await page.waitForSelector('.list-product', { timeout: 30000 });
-    } catch (e) { /* token might still be captured */ }
-
-    await browser.close();
-    browser = null;
-
-    if (token) {
-      console.log('✅ ได้รับ Token ใหม่สำเร็จ!');
-      cachedToken = token;
-      tokenExpiry = Date.now() + (90 * 60 * 1000); // 90 นาที
-      fs.writeFileSync(TOKEN_FILE, JSON.stringify({ token: cachedToken, expiry: tokenExpiry }));
-      lastTokenError = null;
-      isRefreshing = false;
-      return true;
-    } else {
-      console.log('❌ ไม่พบ Token ในหน้าเว็บ — จะลองใหม่ใน 5 นาที');
-      setTimeout(() => autoRefreshToken(), 5 * 60 * 1000);
-      isRefreshing = false;
-      lastTokenError = "Token not found on page";
-      return false;
-    }
+    const token = await fetchTokenViaHttp();
+    cachedToken = token;
+    // JWT จาก advice มี exp ~24 ชม — set expiry 23 ชม เพื่อความปลอดภัย
+    tokenExpiry = Date.now() + (23 * 60 * 60 * 1000);
+    lastTokenError = null;
+    console.log(`✅ Token ใหม่พร้อมใช้งาน! (หมดอายุใน 23 ชม)`);
+    scheduleNextRefresh();
+    isRefreshing = false;
+    return true;
   } catch (e) {
     lastTokenError = e.message;
-    console.error('❌ Token refresh error:', e.message);
-    if (browser) try { await browser.close(); } catch (_) {}
-    // Retry after 5 minutes on error
-    setTimeout(() => autoRefreshToken(), 5 * 60 * 1000);
+    console.error('❌ รีเฟรช Token ล้มเหลว:', e.message);
+    // Retry หลัง 2 นาที
+    setTimeout(() => autoRefreshToken(), 2 * 60 * 1000);
     isRefreshing = false;
     return false;
   }
 }
 
-// ─── Schedule next refresh 10 minutes before expiry ───
+// ─── schedule refresh 30 นาทีก่อนหมดอายุ ───
 function scheduleNextRefresh() {
   if (refreshTimer) clearTimeout(refreshTimer);
-
-  const timeUntilExpiry = tokenExpiry - Date.now();
-  // Refresh 10 minutes before expiry, minimum 1 minute
-  const refreshIn = Math.max(timeUntilExpiry - (10 * 60 * 1000), 60 * 1000);
-  const refreshMins = Math.round(refreshIn / 60000);
-
-  console.log(`⏰ จะรีเฟรช Token อัตโนมัติใน ${refreshMins} นาที`);
-
-  refreshTimer = setTimeout(() => {
-    console.log('⏰ ถึงเวลารีเฟรช Token อัตโนมัติ!');
-    autoRefreshToken();
-  }, refreshIn);
+  const timeLeft = tokenExpiry - Date.now();
+  const refreshIn = Math.max(timeLeft - (30 * 60 * 1000), 5 * 60 * 1000);
+  console.log(`⏰ จะรีเฟรช Token อีกครั้งใน ${Math.round(refreshIn / 60000)} นาที`);
+  refreshTimer = setTimeout(() => autoRefreshToken(), refreshIn);
 }
 
-// ─── Get token (auto-refresh if needed) ───
+// ─── Get token (รีเฟรชถ้าหมดอายุ) ───
 async function getToken() {
-  // If token is valid, return it
   if (cachedToken && Date.now() < tokenExpiry) {
     return cachedToken;
   }
-
-  // Token expired or not available — try auto-refresh
-  console.log('🔑 Token หมดอายุหรือไม่มี — เริ่มรีเฟรชอัตโนมัติ...');
-  const success = await autoRefreshToken();
-  if (success && cachedToken) {
-    return cachedToken;
-  }
-
-  // Try direct API without token as fallback
-  try {
-    const testResp = await axios.post('https://prodbackadvice.advice.in.th/api/v1.0.0/product/get', {
-      category: 'iphone', category_sub: '', product: '', keyword: '',
-      take: 1, skip: 0, refSearch: '', page: 'product',
-      arr_filter_brand: [], arr_filter_ict: [], arr_filter_price_ict: [],
-      arr_filter_cate: [], addView: false
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Origin': 'https://www.advice.co.th',
-        'Referer': 'https://www.advice.co.th/',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-      },
-      timeout: 15000
-    });
-    if (testResp.data?.status === 'SUCCESS') {
-      cachedToken = 'DIRECT';
-      tokenExpiry = Date.now() + (60 * 60 * 1000);
-      console.log('✅ API ใช้ได้โดยตรง ไม่ต้องใช้ Token');
-      return cachedToken;
-    }
-  } catch (e) { /* continue */ }
-
-  // If still have an old cached token, try it
-  if (cachedToken) return cachedToken;
-
-  throw new Error('ไม่สามารถดึง Token ได้ — กรุณาลองรีสตาร์ท server');
+  console.log('🔑 Token หมดอายุหรือไม่มี — กำลังรีเฟรช...');
+  const ok = await autoRefreshToken();
+  if (ok && cachedToken) return cachedToken;
+  throw new Error('ไม่สามารถดึง Token ได้ กรุณารอสักครู่แล้วลองใหม่');
 }
 
+// ==========================================
 // Studio7 Cache
+// ==========================================
 let studio7Cache = [];
 let studio7LastUpdate = 0;
 
-// Endpoint to update token remotely (still works for manual override)
+// ==========================================
+// API Routes: Token Management
+// ==========================================
 app.post('/api/set-token', (req, res) => {
   const { token, secret } = req.body;
   if (secret !== (process.env.TOKEN_SECRET || 'armymimu2024')) {
     return res.status(403).json({ error: 'Invalid secret' });
   }
   if (!token) return res.status(400).json({ error: 'Token required' });
-
-  cachedToken = token;
-  tokenExpiry = Date.now() + (90 * 60 * 1000);
-  saveTokenToFile(token, tokenExpiry);
+  cachedToken = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
+  tokenExpiry = Date.now() + (23 * 60 * 60 * 1000);
   scheduleNextRefresh();
-  console.log('✅ Token อัพเดทจาก API! หมดอายุ:', new Date(tokenExpiry).toLocaleString('th-TH'));
+  console.log('✅ Token อัพเดทจาก API');
   res.json({ success: true, expiresAt: new Date(tokenExpiry).toISOString() });
 });
 
-// Force refresh token endpoint
 app.post('/api/refresh-token', async (req, res) => {
-  console.log('🔄 ได้รับคำสั่งรีเฟรช Token จาก UI...');
-  const success = await autoRefreshToken();
-  if (success) {
+  console.log('🔄 ได้รับคำสั่ง refresh token จาก UI...');
+  const ok = await autoRefreshToken();
+  if (ok) {
     res.json({ success: true, expiresAt: new Date(tokenExpiry).toISOString() });
   } else {
-    res.status(500).json({ error: 'ไม่สามารถรีเฟรช Token ได้' });
+    res.status(500).json({ error: lastTokenError || 'ไม่สามารถรีเฟรชได้' });
   }
-});
-
-// Endpoint to update Studio7 prices remotely
-app.post('/api/set-studio7', (req, res) => {
-  const { products, secret } = req.body;
-  if (secret !== (process.env.TOKEN_SECRET || 'armymimu2024')) {
-    return res.status(403).json({ error: 'Invalid secret' });
-  }
-  if (!Array.isArray(products)) return res.status(400).json({ error: 'Products array required' });
-
-  studio7Cache = products;
-  studio7LastUpdate = Date.now();
-  console.log(`✅ Studio7 อัพเดทแล้ว ${products.length} รายการ`);
-  res.json({ success: true, count: products.length });
 });
 
 // ==========================================
@@ -259,50 +152,47 @@ app.post('/api/set-studio7', (req, res) => {
 const API_URL = 'https://prodbackadvice.advice.in.th/api/v1.0.0/product/get';
 
 const categoryConfigs = {
-  iphone: { category: 'iphone', label: 'iPhone' },
-  ipad:   { category: 'ipad',   label: 'iPad' },
-  macbook:{ category: 'search', keyword: 'macbook', label: 'MacBook' },
-  android:{ category: 'smart-phone', label: 'Smart Phone' }
+  iphone:  { category: 'iphone',       label: 'iPhone' },
+  ipad:    { category: 'ipad',         label: 'iPad' },
+  macbook: { category: 'search', keyword: 'macbook', label: 'MacBook' },
+  android: { category: 'smart-phone',  label: 'Smart Phone' },
 };
 
 async function fetchAllProducts(config, retryOnAuth = true) {
   const token = await getToken();
-
   const headers = {
     'Content-Type': 'application/json',
+    'Accept': 'application/json, text/plain, */*',
+    'Accept-Language': 'th-TH,th;q=0.9',
     'Origin': 'https://www.advice.co.th',
-    'Referer': 'https://www.advice.co.th/',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'
+    'Referer': 'https://www.advice.co.th/product/search?keyword=iphone',
+    'User-Agent': UA,
+    'Authorization': token,
   };
-
-  if (token && token !== 'DIRECT') {
-    headers['Authorization'] = token;
-  }
 
   const allProducts = [];
   let skip = 0;
 
   while (true) {
     const body = {
-      category: config.category === 'smart-phone' ? 'smart-phone' : config.category,
+      category: config.category,
       category_sub: '',
       product: '',
       keyword: config.keyword || '',
       take: 100,
-      skip: skip,
+      skip,
       refSearch: '',
       page: 'product',
       arr_filter_brand: [],
       arr_filter_ict: [],
       arr_filter_price_ict: [],
       arr_filter_cate: [],
-      addView: false
+      addView: false,
     };
 
     try {
       const resp = await axios.post(API_URL, body, { headers, timeout: 20000 });
       const data = resp.data;
-
       if (data.status !== 'SUCCESS' || !data.data) break;
 
       const d = data.data;
@@ -310,7 +200,7 @@ async function fetchAllProducts(config, retryOnAuth = true) {
       let pageProducts = [];
 
       if (productObj && typeof productObj === 'object' && !Array.isArray(productObj)) {
-        for (const [key, pageData] of Object.entries(productObj)) {
+        for (const [, pageData] of Object.entries(productObj)) {
           if (pageData.product && Array.isArray(pageData.product)) {
             pageProducts.push(...pageData.product);
           }
@@ -324,10 +214,8 @@ async function fetchAllProducts(config, retryOnAuth = true) {
       }
 
       if (pageProducts.length === 0) break;
-
       allProducts.push(...pageProducts);
       skip += 100;
-
       console.log(`   ดึงแล้ว ${allProducts.length} รายการ`);
 
       if (d.count_product !== undefined && d.count_product <= 100) break;
@@ -335,14 +223,12 @@ async function fetchAllProducts(config, retryOnAuth = true) {
       if (allProducts.length > 2000) break;
 
     } catch (err) {
-      if (err.response && err.response.status === 401 && retryOnAuth) {
-        console.log('🔄 Token 401 — รีเฟรชอัตโนมัติ...');
+      if (err.response?.status === 401 && retryOnAuth) {
+        console.log('🔄 Token 401 — รีเฟรชและลองใหม่...');
         cachedToken = null;
         tokenExpiry = 0;
-        const success = await autoRefreshToken();
-        if (success) {
-          return fetchAllProducts(config, false);
-        }
+        const ok = await autoRefreshToken();
+        if (ok) return fetchAllProducts(config, false);
       }
       throw err;
     }
@@ -352,12 +238,11 @@ async function fetchAllProducts(config, retryOnAuth = true) {
 }
 
 // ==========================================
-// API Routes
+// API Routes: Prices
 // ==========================================
 app.get('/api/prices/:category', async (req, res) => {
   const category = req.params.category;
   const config = categoryConfigs[category];
-
   if (!config) return res.status(400).json({ error: 'ไม่พบหมวดหมู่นี้' });
 
   try {
@@ -377,18 +262,17 @@ app.get('/api/prices/:category', async (req, res) => {
         modelCode = match[1];
         model = model.replace(/\s*\([^)]+\)\s*$/, '').trim();
       }
-
       return {
-        model: model,
+        model,
         spec: p.spec || '-',
-        modelCode: modelCode,
+        modelCode,
         price: p.price_sale || p.price_srp || 0,
         priceSrp: p.price_srp || 0,
         brand: p.brand || '',
         image: p.pic_url || '',
         url: p.product_url ? `https://www.advice.co.th/product/${p.product_url}` : '',
         inStock: p.type === 'instock',
-        promotion: p.product_promotion || ''
+        promotion: p.product_promotion || '',
       };
     });
 
@@ -397,63 +281,69 @@ app.get('/api/prices/:category', async (req, res) => {
 
   } catch (error) {
     console.error(`❌ Error fetching ${category}:`, error.message);
-
-    if (error.response && error.response.status === 401) {
+    if (error.response?.status === 401) {
       cachedToken = null;
       tokenExpiry = 0;
-      try { fs.unlinkSync(TOKEN_FILE); } catch (e) { /* ignore */ }
     }
-
     res.status(500).json({
-      error: 'เกิดข้อผิดพลาด กรุณารอสักครู่แล้วลองใหม่ (ระบบจะรีเฟรช Token ให้อัตโนมัติ)',
+      error: 'เกิดข้อผิดพลาด กรุณารอสักครู่แล้วลองใหม่',
       detail: error.message,
-      status: error.response ? error.response.status : null,
-      data: error.response ? error.response.data : null
+      status: error.response?.status || null,
     });
   }
 });
 
-// Get Studio7 prices
 app.get('/api/prices-studio7', (req, res) => {
   res.json({
     items: studio7Cache,
-    lastUpdate: studio7LastUpdate > 0 ? new Date(studio7LastUpdate).toISOString() : 'none'
+    lastUpdate: studio7LastUpdate > 0 ? new Date(studio7LastUpdate).toISOString() : 'none',
   });
 });
 
+app.post('/api/set-studio7', (req, res) => {
+  const { products, secret } = req.body;
+  if (secret !== (process.env.TOKEN_SECRET || 'armymimu2024')) {
+    return res.status(403).json({ error: 'Invalid secret' });
+  }
+  if (!Array.isArray(products)) return res.status(400).json({ error: 'Products array required' });
+  studio7Cache = products;
+  studio7LastUpdate = Date.now();
+  console.log(`✅ Studio7 อัพเดทแล้ว ${products.length} รายการ`);
+  res.json({ success: true, count: products.length });
+});
+
+// ==========================================
 // Health check
+// ==========================================
 app.get('/api/health', (req, res) => {
   const minsLeft = cachedToken && tokenExpiry > Date.now()
-    ? Math.round((tokenExpiry - Date.now()) / 60000)
-    : 0;
+    ? Math.round((tokenExpiry - Date.now()) / 60000) : 0;
   res.json({
     status: 'ok',
     hasToken: !!cachedToken,
-    tokenValid: cachedToken && Date.now() < tokenExpiry,
+    tokenValid: !!(cachedToken && Date.now() < tokenExpiry),
     tokenExpires: tokenExpiry > 0 ? new Date(tokenExpiry).toISOString() : 'none',
     tokenMinutesLeft: minsLeft,
+    tokenSource: 'http-cookie',
     autoRefresh: true,
+    fetchCount: tokenFetchCount,
     uptime: Math.floor(process.uptime()) + 's',
-    lastTokenError: lastTokenError
+    lastTokenError,
   });
 });
 
 // ==========================================
-// Startup — Auto refresh token immediately
+// Startup
 // ==========================================
 app.listen(PORT, async () => {
-  console.log(`🚀 API Server รันแล้วที่ port ${PORT}`);
-  console.log('🔄 ระบบรีเฟรช Token อัตโนมัติ: ' + (puppeteer ? '✅ เปิดใช้งาน' : '❌ ปิด (ไม่มี puppeteer)'));
+  console.log(`🚀 Server รันแล้วที่ port ${PORT}`);
+  console.log('🌐 Token system: HTTP GET (ไม่ต้องใช้ Puppeteer)');
 
   if (cachedToken && Date.now() < tokenExpiry) {
-    const minsLeft = Math.round((tokenExpiry - Date.now()) / 60000);
-    console.log(`✅ Token พร้อมใช้งาน (เหลือ ${minsLeft} นาที)`);
+    console.log(`✅ Token พร้อมจาก env var`);
     scheduleNextRefresh();
-  } else if (puppeteer) {
-    // Auto-refresh on startup if no valid token
+  } else {
     console.log('📡 กำลังดึง Token อัตโนมัติ...');
     await autoRefreshToken();
-  } else {
-    console.log('⚠️ ไม่มี Token และไม่มี puppeteer — ใช้ /api/set-token หรือติดตั้ง puppeteer');
   }
 });
