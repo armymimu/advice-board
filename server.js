@@ -152,14 +152,65 @@ app.post('/api/refresh-token', async (req, res) => {
 const API_URL = 'https://prodbackadvice.advice.in.th/api/v1.0.0/product/get';
 
 // ─── Category configs (ทดสอบแล้วกับ API จริง สิงหาคม 2026) ───
-// API ใหม่ใช้ keyword search — response เป็น Array ของ category groups
-// แต่ละ group: { product: [...products], category: "...", count_product: N, category_slug: "..." }
+// API limit 15 items per group — ต้อง loop หลาย keyword เพื่อให้ครบ
 const categoryConfigs = {
-  iphone:  { category: 'smartphone', keyword: 'iphone',  label: 'iPhone',  filterSlug: ['apple-product'] },
-  ipad:    { category: 'smartphone', keyword: 'ipad',    label: 'iPad',    filterSlug: ['apple-product'] },
-  macbook: { category: 'notebook',   keyword: 'macbook', label: 'MacBook', filterBrand: 'APPLE' },
-  android: { category: 'smartphone', keyword: '',        label: 'Android', excludeBrand: 'APPLE' },
+  iphone: {
+    label: 'iPhone',
+    // ดึงทีละ series — แต่ละ keyword ได้ ~15 Apple products
+    queries: [
+      { category: 'smartphone', keyword: 'iphone 17' },
+      { category: 'smartphone', keyword: 'iphone 16' },
+      { category: 'smartphone', keyword: 'iphone 15' },
+      { category: 'smartphone', keyword: 'iphone 14' },
+      { category: 'smartphone', keyword: 'iphone 13' },
+      { category: 'smartphone', keyword: 'iphone 12' },
+      { category: 'smartphone', keyword: 'iphone 11' },
+      { category: 'smartphone', keyword: 'iphone se' },
+      { category: 'smartphone', keyword: 'iphone air' },
+    ],
+    filterSlug: ['apple-product'],
+    filterBrandInclude: 'APPLE',
+  },
+  ipad: {
+    label: 'iPad',
+    queries: [
+      { category: 'smartphone', keyword: 'ipad pro' },
+      { category: 'smartphone', keyword: 'ipad air' },
+      { category: 'smartphone', keyword: 'ipad mini' },
+      { category: 'smartphone', keyword: 'ipad 10' },
+      { category: 'smartphone', keyword: 'ipad' },
+    ],
+    filterSlug: ['apple-product'],
+    filterBrandInclude: 'APPLE',
+  },
+  macbook: {
+    label: 'MacBook',
+    queries: [
+      { category: 'notebook', keyword: 'macbook pro' },
+      { category: 'notebook', keyword: 'macbook air' },
+      { category: 'notebook', keyword: 'mac mini' },
+      { category: 'notebook', keyword: 'mac studio' },
+      { category: 'notebook', keyword: 'imac' },
+    ],
+    filterSlug: ['apple-product'],
+    filterBrandInclude: 'APPLE',
+  },
+  android: {
+    label: 'Android',
+    queries: [
+      { category: 'smartphone', keyword: 'samsung' },
+      { category: 'smartphone', keyword: 'xiaomi' },
+      { category: 'smartphone', keyword: 'oppo' },
+      { category: 'smartphone', keyword: 'vivo' },
+      { category: 'smartphone', keyword: 'realme' },
+      { category: 'smartphone', keyword: 'google pixel' },
+      { category: 'smartphone', keyword: 'motorola' },
+      { category: 'smartphone', keyword: '' }, // no keyword = all smartphones
+    ],
+    excludeBrand: 'APPLE',
+  },
 };
+
 
 // ─── แกะ products ออกจาก response ที่มีได้หลาย structure ───
 function extractProductsFromResponse(data, config) {
@@ -175,16 +226,23 @@ function extractProductsFromResponse(data, config) {
       const groupItems = group.product;
       if (!Array.isArray(groupItems)) continue;
 
-      // ถ้ามี filterSlug — เอาเฉพาะ group ที่ slug ตรง
+      // filter by slug ถ้ากำหนดไว้
       if (config.filterSlug && config.filterSlug.length > 0) {
         const slug = (group.category_slug || '').toLowerCase();
         if (!config.filterSlug.some(s => slug.includes(s))) continue;
       }
 
-      results.push(...groupItems);
+      // filter by brand include
+      let items = groupItems;
+      if (config.filterBrandInclude) {
+        items = groupItems.filter(p => (p.brand || '').toUpperCase() === config.filterBrandInclude.toUpperCase());
+      }
+
+      results.push(...items);
     }
     return results;
   }
+
 
   // Structure เดิม: Object { "id": { category, product: [...] } }
   if (typeof prod === 'object') {
@@ -212,61 +270,69 @@ async function fetchAllProducts(config, retryOnAuth = true) {
     'Authorization': token,
   };
 
+  const seenCodes = new Set();
   const allProducts = [];
-  let skip = 0;
-  const isKeywordMode = !!config.keyword; // keyword search ไม่รองรับ pagination แบบ skip
 
-  while (true) {
-    const body = {
-      category: config.category,
-      category_sub: '',
-      product: '',
-      keyword: config.keyword || '',
-      take: isKeywordMode ? 200 : 100,
-      skip: isKeywordMode ? 0 : skip, // keyword search ไม่ต้อง skip
-      refSearch: '',
-      page: 'product',
-      arr_filter_brand: [],
-      arr_filter_ict: [],
-      arr_filter_price_ict: [],
-      arr_filter_cate: [],
-      addView: false,
-    };
+  // ดึงจากทุก query ใน config.queries (multi-keyword approach)
+  const queries = config.queries || [{ category: config.category || 'smartphone', keyword: config.keyword || '' }];
 
-    try {
-      const resp = await axios.post(API_URL, body, { headers, timeout: 25000 });
-      const data = resp.data;
-      if (data.status !== 'SUCCESS' || !data.data) break;
+  for (const q of queries) {
+    let skip = 0;
+    while (true) {
+      const body = {
+        category: q.category,
+        category_sub: '',
+        product: '',
+        keyword: q.keyword || '',
+        take: 100,
+        skip,
+        refSearch: '',
+        page: 'product',
+        arr_filter_brand: [],
+        arr_filter_ict: [],
+        arr_filter_price_ict: [],
+        arr_filter_cate: [],
+        addView: false,
+      };
 
-      const pageProducts = extractProductsFromResponse(data, config);
+      try {
+        const resp = await axios.post(API_URL, body, { headers, timeout: 25000 });
+        const data = resp.data;
+        if (data.status !== 'SUCCESS' || !data.data) break;
 
-      if (pageProducts.length === 0) break;
-      allProducts.push(...pageProducts);
-      console.log(`   ดึงแล้ว ${allProducts.length} รายการ`);
+        const pageProducts = extractProductsFromResponse(data, config);
+        if (pageProducts.length === 0) break;
 
-      // keyword search — ได้ทั้งหมดในครั้งเดียว ไม่ต้อง paginate
-      if (isKeywordMode) break;
+        // dedup ด้วย code
+        let added = 0;
+        for (const p of pageProducts) {
+          const key = p.code || p.product;
+          if (key && !seenCodes.has(key)) {
+            seenCodes.add(key);
+            allProducts.push(p);
+            added++;
+          }
+        }
+        console.log(`   [${q.keyword || 'all'}] +${added} → รวม ${allProducts.length} รายการ`);
 
-      // category search — paginate ด้วย skip
-      skip += 100;
-      const countProduct = data.data?.count_product;
-      if (countProduct !== undefined && allProducts.length >= countProduct) break;
-      if (pageProducts.length < 100) break;
-      if (allProducts.length > 3000) break;
+        // keyword search ได้ครบในครั้งเดียว (pagination ไม่ทำงาน)
+        break;
 
-    } catch (err) {
-      if (err.response?.status === 401 && retryOnAuth) {
-        console.log('🔄 Token 401 — รีเฟรชและลองใหม่...');
-        cachedToken = null;
-        tokenExpiry = 0;
-        const ok = await autoRefreshToken();
-        if (ok) return fetchAllProducts(config, false);
+      } catch (err) {
+        if (err.response?.status === 401 && retryOnAuth) {
+          console.log('🔄 Token 401 — รีเฟรชและลองใหม่...');
+          cachedToken = null; tokenExpiry = 0;
+          const ok = await autoRefreshToken();
+          if (ok) return fetchAllProducts(config, false);
+        }
+        console.error(`   [${q.keyword}] error: ${err.message}`);
+        break;
       }
-      throw err;
     }
   }
 
   return allProducts;
+
 }
 
 // ==========================================
