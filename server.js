@@ -151,18 +151,60 @@ app.post('/api/refresh-token', async (req, res) => {
 // ==========================================
 const API_URL = 'https://prodbackadvice.advice.in.th/api/v1.0.0/product/get';
 
+// ─── Category configs (ทดสอบแล้วกับ API จริง สิงหาคม 2026) ───
+// API ใหม่ใช้ keyword search — response เป็น Array ของ category groups
+// แต่ละ group: { product: [...products], category: "...", count_product: N, category_slug: "..." }
 const categoryConfigs = {
-  iphone:  { category: 'iphone',       label: 'iPhone' },
-  ipad:    { category: 'ipad',         label: 'iPad' },
-  macbook: { category: 'search', keyword: 'macbook', label: 'MacBook' },
-  android: { category: 'smart-phone',  label: 'Smart Phone' },
+  iphone:  { category: 'smartphone', keyword: 'iphone',  label: 'iPhone',  filterSlug: ['apple-product'] },
+  ipad:    { category: 'smartphone', keyword: 'ipad',    label: 'iPad',    filterSlug: ['apple-product'] },
+  macbook: { category: 'notebook',   keyword: 'macbook', label: 'MacBook', filterBrand: 'APPLE' },
+  android: { category: 'smartphone', keyword: '',        label: 'Android', excludeBrand: 'APPLE' },
 };
+
+// ─── แกะ products ออกจาก response ที่มีได้หลาย structure ───
+function extractProductsFromResponse(data, config) {
+  const prod = data?.data?.product;
+  if (!prod) return [];
+
+  // Structure ใหม่: Array of category groups
+  // [{ product: [...], category: "APPLE PRODUCTS", category_slug: "apple-product" }, ...]
+  if (Array.isArray(prod)) {
+    let results = [];
+    for (const group of prod) {
+      if (!group || typeof group !== 'object') continue;
+      const groupItems = group.product;
+      if (!Array.isArray(groupItems)) continue;
+
+      // ถ้ามี filterSlug — เอาเฉพาะ group ที่ slug ตรง
+      if (config.filterSlug && config.filterSlug.length > 0) {
+        const slug = (group.category_slug || '').toLowerCase();
+        if (!config.filterSlug.some(s => slug.includes(s))) continue;
+      }
+
+      results.push(...groupItems);
+    }
+    return results;
+  }
+
+  // Structure เดิม: Object { "id": { category, product: [...] } }
+  if (typeof prod === 'object') {
+    const results = [];
+    for (const v of Object.values(prod)) {
+      if (Array.isArray(v?.product)) results.push(...v.product);
+      else if (Array.isArray(v)) results.push(...v);
+    }
+    return results;
+  }
+
+  return [];
+}
 
 async function fetchAllProducts(config, retryOnAuth = true) {
   const token = await getToken();
   const headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json, text/plain, */*',
+
     'Accept-Language': 'th-TH,th;q=0.9',
     'Origin': 'https://www.advice.co.th',
     'Referer': 'https://www.advice.co.th/product/search?keyword=iphone',
@@ -172,6 +214,7 @@ async function fetchAllProducts(config, retryOnAuth = true) {
 
   const allProducts = [];
   let skip = 0;
+  const isKeywordMode = !!config.keyword; // keyword search ไม่รองรับ pagination แบบ skip
 
   while (true) {
     const body = {
@@ -179,8 +222,8 @@ async function fetchAllProducts(config, retryOnAuth = true) {
       category_sub: '',
       product: '',
       keyword: config.keyword || '',
-      take: 100,
-      skip,
+      take: isKeywordMode ? 200 : 100,
+      skip: isKeywordMode ? 0 : skip, // keyword search ไม่ต้อง skip
       refSearch: '',
       page: 'product',
       arr_filter_brand: [],
@@ -191,36 +234,25 @@ async function fetchAllProducts(config, retryOnAuth = true) {
     };
 
     try {
-      const resp = await axios.post(API_URL, body, { headers, timeout: 20000 });
+      const resp = await axios.post(API_URL, body, { headers, timeout: 25000 });
       const data = resp.data;
       if (data.status !== 'SUCCESS' || !data.data) break;
 
-      const d = data.data;
-      const productObj = d.product;
-      let pageProducts = [];
-
-      if (productObj && typeof productObj === 'object' && !Array.isArray(productObj)) {
-        for (const [, pageData] of Object.entries(productObj)) {
-          if (pageData.product && Array.isArray(pageData.product)) {
-            pageProducts.push(...pageData.product);
-          }
-        }
-      } else if (Array.isArray(productObj)) {
-        for (const group of productObj) {
-          if (group.product && Array.isArray(group.product)) {
-            pageProducts.push(...group.product);
-          }
-        }
-      }
+      const pageProducts = extractProductsFromResponse(data, config);
 
       if (pageProducts.length === 0) break;
       allProducts.push(...pageProducts);
-      skip += 100;
       console.log(`   ดึงแล้ว ${allProducts.length} รายการ`);
 
-      if (d.count_product !== undefined && d.count_product <= 100) break;
+      // keyword search — ได้ทั้งหมดในครั้งเดียว ไม่ต้อง paginate
+      if (isKeywordMode) break;
+
+      // category search — paginate ด้วย skip
+      skip += 100;
+      const countProduct = data.data?.count_product;
+      if (countProduct !== undefined && allProducts.length >= countProduct) break;
       if (pageProducts.length < 100) break;
-      if (allProducts.length > 2000) break;
+      if (allProducts.length > 3000) break;
 
     } catch (err) {
       if (err.response?.status === 401 && retryOnAuth) {
@@ -249,9 +281,12 @@ app.get('/api/prices/:category', async (req, res) => {
     console.log(`\n🔍 กำลังดึงข้อมูล ${config.label}...`);
     const rawProducts = await fetchAllProducts(config);
 
+    // กรอง brand ตาม config
     let filtered = rawProducts;
-    if (category === 'android') {
-      filtered = rawProducts.filter(p => (p.brand || '').toUpperCase() !== 'APPLE');
+    if (config.filterBrand) {
+      filtered = rawProducts.filter(p => (p.brand || '').toUpperCase() === config.filterBrand.toUpperCase());
+    } else if (config.excludeBrand) {
+      filtered = rawProducts.filter(p => (p.brand || '').toUpperCase() !== config.excludeBrand.toUpperCase());
     }
 
     const items = filtered.map(p => {
@@ -281,10 +316,7 @@ app.get('/api/prices/:category', async (req, res) => {
 
   } catch (error) {
     console.error(`❌ Error fetching ${category}:`, error.message);
-    if (error.response?.status === 401) {
-      cachedToken = null;
-      tokenExpiry = 0;
-    }
+    if (error.response?.status === 401) { cachedToken = null; tokenExpiry = 0; }
     res.status(500).json({
       error: 'เกิดข้อผิดพลาด กรุณารอสักครู่แล้วลองใหม่',
       detail: error.message,
