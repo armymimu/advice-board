@@ -258,167 +258,111 @@ app.post('/api/set-studio7', express.json(), (req, res) => {
 });
 
 // ==========================================
-// Advice Web Scraper — Product Fetching (NEW)
+// Advice API Fetching (Axios - No Puppeteer needed)
 // ==========================================
-const categoryUrls = {
-  iphone:  { url: 'https://www.advice.co.th/product/iphone',       label: 'iPhone' },
-  ipad:    { url: 'https://www.advice.co.th/product/ipad',         label: 'iPad' },
-  macbook: { url: 'https://www.advice.co.th/product/mac',          label: 'Mac' },
-  android: { url: 'https://www.advice.co.th/product/smartphone',   label: 'Smart Phone' }
+const categoryConfigs = {
+  iphone:  { category: 'iphone',       label: 'iPhone' },
+  ipad:    { category: 'ipad',         label: 'iPad' },
+  macbook: { category: 'mac',          label: 'Mac' },
+  android: { category: 'smartphone',   label: 'Smart Phone' }
 };
 
-// Keep old config for backward compat with API route
-const categoryConfigs = categoryUrls;
+let cachedApiToken = null;
 
-let scrapeBrowser = null;
-
-async function getScrapeBrowser() {
-  if (scrapeBrowser) {
-    try {
-      // Check if still usable by accessing a property
-      const pages = await scrapeBrowser.pages();
-      if (pages) return scrapeBrowser;
-    } catch(e) {
-      scrapeBrowser = null;
-    }
-  }
-  
-  let pup;
+async function getApiToken() {
+  if (cachedApiToken) return cachedApiToken;
   try {
-    pup = require('puppeteer-extra');
-    const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-    pup.use(StealthPlugin());
-  } catch (e) {
-    pup = require('puppeteer');
+    const res = await axios.get('https://www.advice.co.th/', {
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+      timeout: 10000
+    });
+    if (res.headers['set-cookie']) {
+      const tokenCookie = res.headers['set-cookie'].find(c => c.startsWith('user_token='));
+      if (tokenCookie) {
+        cachedApiToken = tokenCookie.split(';')[0].split('=')[1];
+        return cachedApiToken;
+      }
+    }
+  } catch(e) {
+    console.error('Failed to get token:', e.message);
   }
-  
-  scrapeBrowser = await pup.launch({
-    headless: 'new',
-    args: [
-      '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage',
-      '--disable-gpu', '--no-first-run'
-    ],
-    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined
-  });
-  
-  return scrapeBrowser;
+  return null;
 }
 
-async function scrapeAdvicePage(categoryKey) {
-  const config = categoryUrls[categoryKey];
+async function fetchAdviceCategory(categoryKey) {
+  const config = categoryConfigs[categoryKey];
   if (!config) throw new Error('ไม่พบหมวดหมู่: ' + categoryKey);
   
-  console.log(`🌐 กำลัง scrape ${config.label} จาก ${config.url}...`);
+  console.log('🌐 กำลังดึงข้อมูล ' + config.label + ' ผ่าน API...');
   
-  const browser = await getScrapeBrowser();
-  const page = await browser.newPage();
-  
-  try {
-    await page.setViewport({ width: 1280, height: 900 });
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36');
-    
-    await page.goto(config.url, { waitUntil: 'networkidle2', timeout: 30000 });
-    
-    // Wait for product cards to appear
-    await page.waitForSelector('.list-product', { timeout: 15000 }).catch(() => {});
-    
-    // Scroll down to trigger lazy loading
-    await page.evaluate(async () => {
-      for (let i = 0; i < 10; i++) {
-        window.scrollBy(0, 800);
-        await new Promise(r => setTimeout(r, 300));
-      }
-      window.scrollTo(0, 0);
-    });
-    
-    await new Promise(r => setTimeout(r, 2000));
-    
-    // Extract products from the page
-    const products = await page.evaluate((catKey) => {
-      const items = [];
-      const cards = document.querySelectorAll('.list-product');
+  const token = await getApiToken();
+  if (!token) throw new Error('ไม่สามารถขอ Token จากระบบได้');
+
+  let allProducts = [];
+  let skip = 0;
+  let total = Infinity;
+
+  while(allProducts.length < total) {
+    try {
+      const res = await axios.post('https://www.advice.co.th/_advice-api/api/v1.0.0/product/get', {
+        category: config.category,
+        take: 100,
+        skip: skip,
+        page: 'product',
+        group_end: false
+      }, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/json'
+        },
+        timeout: 15000
+      });
+
+      const data = res.data; 
+      if (data.status !== 'SUCCESS' || !data.data || !data.data.product) break;
       
-      cards.forEach(card => {
-        try {
-          // Product name
-          const nameEl = card.querySelector('.fn-name');
-          const name = nameEl ? nameEl.textContent.trim() : '';
-          if (!name) return;
-          
-          // URL
-          const href = nameEl ? nameEl.getAttribute('href') : '';
-          const fullUrl = href ? 'https://www.advice.co.th' + href : '';
-          
-          // Spec
-          const specEl = card.querySelector('.item-spec');
-          const spec = specEl ? specEl.textContent.trim() : '';
-          
-          // Price — from .item-price-sale
-          const priceEl = card.querySelector('.item-price-sale');
-          let price = 0;
-          if (priceEl) {
-            const priceText = priceEl.textContent.trim();
-            price = parseInt(priceText.replace(/[^0-9]/g, '')) || 0;
-          }
-          
-          // SRP price (original price, strikethrough)
-          const srpEl = card.querySelector('.item-price-srp');
-          let priceSrp = 0;
-          if (srpEl) {
-            const srpText = srpEl.textContent.trim();
-            priceSrp = parseInt(srpText.replace(/[^0-9]/g, '')) || 0;
-          }
-          
-          // Brand
-          const brandEl = card.querySelector('.item-brand-name');
-          const brand = brandEl ? brandEl.textContent.trim() : '';
-          
-          // Image
-          const imgEl = card.querySelector('.img-product');
-          const image = imgEl ? imgEl.getAttribute('src') : '';
-          
-          // Stock — check for out-of-stock indicators
-          const hasAddCart = !!card.querySelector('.btn-add-cart');
-          const outOfStockEl = card.querySelector('.item-out-of-stock, .out-of-stock, .btn-notify');
-          const inStock = hasAddCart && !outOfStockEl;
-          
-          // Product code — try from image URL (pattern: /A0180021/)
-          let code = '';
-          if (image) {
-            const codeMatch = image.match(/pic_product4\/(A\d+)/);
-            if (codeMatch) code = codeMatch[1];
-          }
-          
-          // Filter for Android: exclude Apple
-          if (catKey === 'android' && brand.toUpperCase() === 'APPLE') return;
-          
-          items.push({
-            model: name,
-            spec: spec,
-            modelCode: code || '-',
-            price: price,
-            priceSrp: priceSrp || price,
-            brand: brand,
-            image: image,
-            url: fullUrl,
-            inStock: inStock
+      const productObj = data.data.product;
+      if (skip === 0) total = data.data.count_product || 0;
+      if (!productObj) break;
+      
+      const groups = Object.values(productObj);
+      if (groups.length === 0) break;
+      
+      groups.forEach(group => {
+        if (group.product && Array.isArray(group.product)) {
+          group.product.forEach(p => {
+            if (categoryKey === 'android' && (p.brand || '').toUpperCase() === 'APPLE') return;
+            
+            allProducts.push({
+              model: p.name || p.product || '',
+              spec: p.description || p.spec || '-',
+              modelCode: p.code || '-',
+              price: p.price_sale || p.price || 0,
+              priceSrp: p.price_srp || p.price || 0,
+              brand: p.brand || '',
+              image: p.image || p.pic_url || '',
+              url: p.product_url ? 'https://www.advice.co.th/product/' + p.product_url : '',
+              inStock: p.stock > 0 || p.type === 'instock'
+            });
           });
-        } catch(e) {}
+        }
       });
       
-      return items;
-    }, categoryKey);
-    
-    console.log(`✅ ${config.label}: scrape ได้ ${products.length} รายการ`);
-    
-    await page.close();
-    return products;
-    
-  } catch(err) {
-    console.error(`❌ Scrape error (${config.label}):`, err.message);
-    try { await page.close(); } catch(_) {}
-    throw err;
+      skip += 100;
+      if (groups.length < 100) break;
+      
+    } catch(err) {
+      if (err.response && err.response.status === 401) {
+        cachedApiToken = null; 
+      }
+      console.error('❌ API Error (' + config.label + '):', err.message);
+      break;
+    }
   }
+
+  console.log('✅ ' + config.label + ': ดึงได้ ' + allProducts.length + ' รายการ');
+  return allProducts;
 }
 
 // ==========================================
@@ -436,24 +380,23 @@ app.get('/api/prices/:category', async (req, res) => {
   const hasCache = cached && cached.items && cached.items.length > 0;
   const isFresh = hasCache && (Date.now() - cached.fetchedAt) < CACHE_TTL;
 
-  // Background refresh function
   const triggerBackgroundRefresh = async () => {
     try {
-      console.log(`\n🔄 กำลังดึงข้อมูลสด ${config.label} เบื้องหลัง...`);
-      const items = await scrapeAdvicePage(category);
+      console.log('\n🔄 กำลังดึงข้อมูลสด ' + config.label + ' เบื้องหลัง...');
+      const items = await fetchAdviceCategory(category);
 
-      productCache[category] = { items, fetchedAt: Date.now() };
-      saveProductCache();
-      console.log(`✅ อัปเดต ${config.label} เบื้องหลังสำเร็จ: ${items.length} รุ่น`);
+      if (items && items.length > 0) {
+        productCache[category] = { items, fetchedAt: Date.now() };
+        saveProductCache();
+        console.log('✅ อัปเดต ' + config.label + ' เบื้องหลังสำเร็จ: ' + items.length + ' รุ่น');
+      }
     } catch (error) {
-      console.error(`❌ Background fetch error for ${category}:`, error.message);
+      console.error('❌ Background fetch error for ' + category + ':', error.message);
     }
   };
 
-  // 1. If cache exists (even if stale), return it INSTANTLY
   if (hasCache) {
     if (!isFresh) {
-      // Trigger background refresh but don't await it
       triggerBackgroundRefresh();
     }
     return res.json({ 
@@ -465,25 +408,18 @@ app.get('/api/prices/:category', async (req, res) => {
     });
   }
 
-  // 2. No cache at all -> Must block and wait for the first fetch
   try {
-    console.log(`\n🔍 ไม่มีแคช กำลังดึงข้อมูล ${config.label} ครั้งแรก (อาจใช้เวลา)...`);
+    console.log('\n🔍 ไม่มีแคช กำลังดึงข้อมูล ' + config.label + ' ครั้งแรก...');
     await triggerBackgroundRefresh();
     
-    // Return newly fetched cache
     const newCache = productCache[category];
-    if (newCache && newCache.items) {
+    if (newCache && newCache.items && newCache.items.length > 0) {
       res.json({ items: newCache.items, total: newCache.items.length, cached: false, stale: false, fetchedAt: newCache.fetchedAt });
     } else {
       res.status(500).json({ error: 'ดึงข้อมูลไม่สำเร็จ' });
     }
   } catch (error) {
-    const isNoToken = error.message && error.message.includes('ไม่มี Token');
-    res.status(500).json({
-      error: isNoToken
-        ? 'ยังไม่มี Token กรุณารัน refresh-token.bat'
-        : 'เชื่อมต่อ Advice ไม่สำเร็จ กรุณาลองใหม่'
-    });
+    res.status(500).json({ error: error.message });
   }
 });
 
