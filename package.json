@@ -1,5 +1,5 @@
 {
-  "name": "advice-board",
+  "name": "jadsadarakasod",
   "version": "1.0.0",
   "description": "Advice Price Board Dashboard - ดูราคาสินค้า Apple จาก Advice และ Studio7",
   "main": "server.js",
@@ -11,6 +11,8 @@
     "axios": "^1.7.0",
     "cors": "^2.8.5",
     "express": "^4.21.0",
+    "puppeteer": "^25.12.0",
+    "puppeteer-core": "^25.12.0",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2"
   }

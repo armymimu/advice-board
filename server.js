@@ -394,73 +394,91 @@ app.get('/api/prices/:category', async (req, res) => {
 
   if (!config) return res.status(400).json({ error: 'ไม่พบหมวดหมู่นี้' });
 
-  // Use cache if fresh enough (5 minutes)
   const cached = productCache[category];
   const CACHE_TTL = 5 * 60 * 1000;
-  if (cached && cached.items && cached.items.length > 0 && (Date.now() - cached.fetchedAt) < CACHE_TTL) {
-    console.log(`📦 ใช้แคช ${config.label}: ${cached.items.length} รุ่น (age: ${Math.round((Date.now() - cached.fetchedAt)/1000)}s)`);
-    return res.json({ items: cached.items, total: cached.items.length, cached: true });
-  }
+  
+  const hasCache = cached && cached.items && cached.items.length > 0;
+  const isFresh = hasCache && (Date.now() - cached.fetchedAt) < CACHE_TTL;
 
-  try {
-    console.log(`\n🔍 กำลังดึงข้อมูล ${config.label}...`);
-    const rawProducts = await fetchAllProducts(config);
-
-    let filtered = rawProducts;
-    if (category === 'android') {
-      filtered = rawProducts.filter(p => (p.brand || '').toUpperCase() !== 'APPLE');
-    }
-
-    const items = filtered.map(p => {
-      let model = p.product || p.name || '';
-      let modelCode = '-';
-      const match = model.match(/\(([^)]+)\)\s*$/);
-      if (match) {
-        modelCode = match[1];
-        model = model.replace(/\s*\([^)]+\)\s*$/, '').trim();
+  // Background refresh function
+  const triggerBackgroundRefresh = async () => {
+    try {
+      console.log(`\n🔄 กำลังดึงข้อมูลสด ${config.label} เบื้องหลัง...`);
+      const rawProducts = await fetchAllProducts(config);
+      
+      let filtered = rawProducts;
+      if (category === 'android') {
+        filtered = rawProducts.filter(p => (p.brand || '').toUpperCase() !== 'APPLE');
       }
 
-      return {
-        model: model,
-        spec: p.spec || p.description || '-',
-        modelCode: modelCode,
-        price: p.price_sale || p.price_srp || p.price || 0,
-        priceSrp: p.price_srp || p.price || 0,
-        brand: p.brand || '',
-        image: p.pic_url || p.image || '',
-        url: p.product_url ? `https://www.advice.co.th/product/${p.product_url}` : '',
-        inStock: p.type === 'instock' || p.stock > 0,
-        promotion: p.product_promotion || p.promotion || ''
-      };
+      const items = filtered.map(p => {
+        let model = p.product || p.name || '';
+        let modelCode = '-';
+        const match = model.match(/\(([^)]+)\)\s*$/);
+        if (match) {
+          modelCode = match[1];
+          model = model.replace(/\s*\([^)]+\)\s*$/, '').trim();
+        }
+
+        return {
+          model: model,
+          spec: p.spec || p.description || '-',
+          modelCode: modelCode,
+          price: p.price_sale || p.price_srp || p.price || 0,
+          priceSrp: p.price_srp || p.price || 0,
+          brand: p.brand || '',
+          image: p.pic_url || p.image || '',
+          url: p.product_url ? `https://www.advice.co.th/product/${p.product_url}` : '',
+          inStock: p.type === 'instock' || p.stock > 0,
+          promotion: p.product_promotion || p.promotion || ''
+        };
+      });
+
+      productCache[category] = { items, fetchedAt: Date.now() };
+      saveProductCache();
+      console.log(`✅ อัปเดต ${config.label} เบื้องหลังสำเร็จ: ${items.length} รุ่น`);
+    } catch (error) {
+      console.error(`❌ Background fetch error for ${category}:`, error.message);
+      if (error.response && error.response.status === 401) {
+        cachedToken = null; tokenExpiry = 0;
+        try { fs.unlinkSync(TOKEN_FILE); } catch (_) {}
+      }
+    }
+  };
+
+  // 1. If cache exists (even if stale), return it INSTANTLY
+  if (hasCache) {
+    if (!isFresh) {
+      // Trigger background refresh but don't await it
+      triggerBackgroundRefresh();
+    }
+    return res.json({ 
+      items: cached.items, 
+      total: cached.items.length, 
+      cached: true, 
+      stale: !isFresh,
+      fetchedAt: cached.fetchedAt 
     });
+  }
 
-    // Update cache
-    productCache[category] = { items, fetchedAt: Date.now() };
-    saveProductCache();
-
-    console.log(`✅ ${config.label}: ได้ ${items.length} รุ่น`);
-    res.json({ items, total: items.length, cached: false });
-
+  // 2. No cache at all -> Must block and wait for the first fetch
+  try {
+    console.log(`\n🔍 ไม่มีแคช กำลังดึงข้อมูล ${config.label} ครั้งแรก (อาจใช้เวลา)...`);
+    await triggerBackgroundRefresh();
+    
+    // Return newly fetched cache
+    const newCache = productCache[category];
+    if (newCache && newCache.items) {
+      res.json({ items: newCache.items, total: newCache.items.length, cached: false, stale: false, fetchedAt: newCache.fetchedAt });
+    } else {
+      res.status(500).json({ error: 'ดึงข้อมูลไม่สำเร็จ' });
+    }
   } catch (error) {
-    console.error(`❌ Error fetching ${category}:`, error.message);
-
-    if (error.response && error.response.status === 401) {
-      cachedToken = null;
-      tokenExpiry = 0;
-      try { fs.unlinkSync(TOKEN_FILE); } catch (_) {}
-    }
-
-    // Return cached data if available (even if stale)
-    if (cached && cached.items && cached.items.length > 0) {
-      console.log(`📦 ใช้แคชเก่า ${config.label}: ${cached.items.length} รุ่น`);
-      return res.json({ items: cached.items, total: cached.items.length, cached: true, stale: true });
-    }
-
     const isNoToken = error.message && error.message.includes('ไม่มี Token');
     res.status(500).json({
       error: isNoToken
-        ? 'ยังไม่มี Token กรุณารัน refresh-token.bat บนเครื่องของคุณก่อน'
-        : 'Token หมดอายุ กรุณารัน refresh-token.bat บนเครื่องของคุณ'
+        ? 'ยังไม่มี Token กรุณารัน refresh-token.bat'
+        : 'เชื่อมต่อ Advice ไม่สำเร็จ กรุณาลองใหม่'
     });
   }
 });
