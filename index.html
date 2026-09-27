@@ -10,6 +10,11 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <script>
+    if(window.location.hostname.includes('onrender')) {
+      alert('เว็บไซต์นี้โดนบล็อกการเชื่อมต่อ (Error 403 Cloudflare)\n\nกรุณาใช้งานผ่านไฟล์ start.bat บนเครื่องของคุณเท่านั้นครับ!');
+    }
+  </script>
 
   <header class="header-container">
     <div class="header-top">
