@@ -6,265 +6,45 @@ const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const TOKEN_FILE = path.join(__dirname, '.token_cache.json');
 const CACHE_FILE = path.join(__dirname, '.product_cache.json');
 
 app.use(cors());
 app.use(express.static('.'));
 
 // ==========================================
-// Token Management
+// Caching Management
 // ==========================================
-let cachedToken = process.env.ADVICE_TOKEN || null;
-let tokenExpiry = cachedToken ? Date.now() + (90 * 60 * 1000) : 0;
+let productCache = {};
 
-// Product Cache (persist across restarts)
-let productCache = {};  // { iphone: { items: [], fetchedAt: timestamp }, ... }
-let studio7Cache = [];
-let studio7LastUpdate = 0;
-
-// Load persisted token on startup
-if (!cachedToken) {
+function loadProductCache() {
   try {
-    if (fs.existsSync(TOKEN_FILE)) {
-      const saved = JSON.parse(fs.readFileSync(TOKEN_FILE, 'utf8'));
-      if (saved.token && saved.expiry && Date.now() < saved.expiry) {
-        cachedToken = saved.token;
-        tokenExpiry = saved.expiry;
-        console.log('✅ โหลด Token จากแคช หมดอายุ:', new Date(tokenExpiry).toISOString());
-      } else {
-        console.log('⚠️ Token ในแคชหมดอายุแล้ว');
-      }
+    if (fs.existsSync(CACHE_FILE)) {
+      const data = fs.readFileSync(CACHE_FILE, 'utf8');
+      productCache = JSON.parse(data);
     }
-  } catch (e) {
-    console.log('⚠️ โหลด Token จากแคชไม่สำเร็จ:', e.message);
-  }
-}
-
-// Load persisted product cache
-try {
-  if (fs.existsSync(CACHE_FILE)) {
-    const saved = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf8'));
-    if (saved.products) productCache = saved.products;
-    if (saved.studio7) { studio7Cache = saved.studio7; studio7LastUpdate = saved.studio7Updated || 0; }
-    const cats = Object.keys(productCache).filter(k => productCache[k].items?.length > 0);
-    if (cats.length > 0) {
-      console.log('✅ โหลดแคชสินค้า:', cats.map(c => `${c}(${productCache[c].items.length})`).join(', '));
-    }
-  }
-} catch (e) { /* ignore */ }
-
-function saveTokenToFile(token, expiry) {
-  try {
-    fs.writeFileSync(TOKEN_FILE, JSON.stringify({ token, expiry }), 'utf8');
-  } catch (e) {
-    console.log('⚠️ บันทึก Token ลงแคชไม่สำเร็จ:', e.message);
+  } catch (error) {
+    console.error('Failed to load product cache:', error.message);
   }
 }
 
 function saveProductCache() {
   try {
-    fs.writeFileSync(CACHE_FILE, JSON.stringify({
-      products: productCache,
-      studio7: studio7Cache,
-      studio7Updated: studio7LastUpdate
-    }), 'utf8');
-  } catch (e) { /* ignore */ }
-}
-
-async function getToken(forceRefresh = false) {
-  if (!forceRefresh && cachedToken && Date.now() < tokenExpiry) {
-    return cachedToken;
-  }
-
-  // Try direct API without token
-  console.log('🔑 พยายามเรียก API โดยตรง...');
-  try {
-    const testResp = await axios.post('https://prodbackadvice.advice.in.th/api/v1.0.0/product/get', {
-      category: 'iphone', category_sub: '', product: '', keyword: '',
-      take: 1, skip: 0, refSearch: '', page: 'product',
-      arr_filter_brand: [], arr_filter_ict: [], arr_filter_price_ict: [],
-      arr_filter_cate: [], addView: false
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Origin': 'https://www.advice.co.th',
-        'Referer': 'https://www.advice.co.th/',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-      },
-      timeout: 15000
-    });
-    if (testResp.data?.status === 'SUCCESS') {
-      cachedToken = 'DIRECT';
-      tokenExpiry = Date.now() + (60 * 60 * 1000);
-      console.log('✅ API ใช้ได้โดยตรง');
-      return cachedToken;
-    }
-  } catch (e) { /* continue */ }
-
-  // Try auto-refresh with Puppeteer (if available)
-  if (!cachedToken || Date.now() >= tokenExpiry) {
-    console.log('🔄 พยายาม Auto-Refresh Token ด้วย Puppeteer...');
-    try {
-      const newToken = await autoRefreshToken();
-      if (newToken) return newToken;
-    } catch (e) {
-      console.log('⚠️ Auto-refresh ล้มเหลว:', e.message);
-    }
-  }
-
-  if (cachedToken) {
-    console.log('⚠️ ใช้ Token เก่าลองเรียก API...');
-    return cachedToken;
-  }
-
-  throw new Error('ไม่มี Token - ใช้ /api/set-token หรือ refresh-token script');
-}
-
-// ==========================================
-// Auto-Refresh Token with Puppeteer
-// ==========================================
-let isRefreshing = false;
-
-async function autoRefreshToken() {
-  if (isRefreshing) {
-    console.log('⏳ กำลัง refresh อยู่แล้ว...');
-    return cachedToken;
-  }
-
-  let puppeteer;
-  try {
-    puppeteer = require('puppeteer-extra');
-    const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-    puppeteer.use(StealthPlugin());
-  } catch (e) {
-    // Puppeteer not available, try plain puppeteer
-    try {
-      puppeteer = require('puppeteer');
-    } catch (e2) {
-      console.log('⚠️ Puppeteer ไม่พร้อมใช้งาน - ต้อง set token ด้วยมือ');
-      return null;
-    }
-  }
-
-  isRefreshing = true;
-  console.log('🌐 เปิดเบราว์เซอร์ดึง Token...');
-
-  let browser;
-  try {
-    browser = await puppeteer.launch({
-      headless: 'new',
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-gpu',
-        '--no-first-run',
-        '--single-process'
-      ],
-      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined
-    });
-
-    const page = await browser.newPage();
-    let adviceToken = '';
-
-    page.on('request', r => {
-      if (r.url().includes('prodbackadvice') && r.url().includes('product/get') && r.method() === 'POST') {
-        const h = r.headers();
-        if (h.authorization && !adviceToken) {
-          adviceToken = h.authorization;
-        }
-      }
-    });
-
-    try {
-      await page.goto('https://www.advice.co.th/product/iphone', {
-        waitUntil: 'domcontentloaded',
-        timeout: 25000
-      });
-    } catch (err) {
-      console.log('⚠️ Page load warning:', err.message);
-    }
-
-    try { await page.waitForSelector('.list-product, .product-item, [class*="product"]', { timeout: 10000 }); }
-    catch (e) { /* continue anyway */ }
-
-    // Wait a bit for the API call to happen
-    await new Promise(r => setTimeout(r, 3000));
-
-    if (adviceToken) {
-      cachedToken = adviceToken;
-      tokenExpiry = Date.now() + (90 * 60 * 1000);
-      saveTokenToFile(adviceToken, tokenExpiry);
-      console.log('✅ Auto-Refresh Token สำเร็จ! หมดอายุ:', new Date(tokenExpiry).toISOString());
-    } else {
-      console.log('⚠️ ไม่สามารถดึง Token อัตโนมัติได้');
-    }
-
-    await browser.close();
-    isRefreshing = false;
-    return adviceToken || null;
-
-  } catch (e) {
-    console.error('❌ Auto-refresh error:', e.message);
-    if (browser) try { await browser.close(); } catch (_) {}
-    isRefreshing = false;
-    return null;
+    fs.writeFileSync(CACHE_FILE, JSON.stringify(productCache, null, 2), 'utf8');
+  } catch (error) {
+    console.error('Failed to save product cache:', error.message);
   }
 }
 
-// ==========================================
-// API Endpoints — Token Management
-// ==========================================
-app.post('/api/set-token', express.json(), (req, res) => {
-  const { token, secret } = req.body;
-  if (secret !== (process.env.TOKEN_SECRET || 'armymimu2024')) {
-    return res.status(403).json({ error: 'Invalid secret' });
-  }
-  if (!token) return res.status(400).json({ error: 'Token required' });
-
-  cachedToken = token;
-  tokenExpiry = Date.now() + (90 * 60 * 1000);
-  saveTokenToFile(token, tokenExpiry);
-  console.log('✅ Token อัพเดทแล้ว หมดอายุ:', new Date(tokenExpiry).toISOString());
-  res.json({ success: true, expiresAt: new Date(tokenExpiry).toISOString() });
-});
-
-app.post('/api/refresh-token', async (req, res) => {
-  try {
-    const token = await autoRefreshToken();
-    if (token) {
-      res.json({ success: true, expiresAt: new Date(tokenExpiry).toISOString() });
-    } else {
-      res.status(500).json({ success: false, error: 'ไม่สามารถ refresh token ได้' });
-    }
-  } catch (e) {
-    res.status(500).json({ success: false, error: e.message });
-  }
-});
-
-app.post('/api/set-studio7', express.json(), (req, res) => {
-  const { products, secret } = req.body;
-  if (secret !== (process.env.TOKEN_SECRET || 'armymimu2024')) {
-    return res.status(403).json({ error: 'Invalid secret' });
-  }
-  if (!Array.isArray(products)) return res.status(400).json({ error: 'Products array required' });
-
-  studio7Cache = products;
-  studio7LastUpdate = Date.now();
-  saveProductCache();
-  console.log(`✅ Studio7 อัพเดทแล้ว ${products.length} รายการ`);
-  res.json({ success: true, count: products.length });
-});
+loadProductCache();
 
 // ==========================================
 // Advice API Fetching (Axios - No Puppeteer needed)
 // ==========================================
 const categoryConfigs = {
-  iphone:  { keyword: 'iphone',       label: 'iPhone' },
-  ipad:    { keyword: 'ipad',         label: 'iPad' },
-  macbook: { keyword: 'macbook',      label: 'Mac' },
-  android: { keyword: 'smartphone',   label: 'Smart Phone' }
+  iphone:  { payload: { category: 'apple-product', category_sub: 'iphone', group_end: true }, label: 'iPhone' },
+  ipad:    { payload: { category: 'apple-product', category_sub: 'ipad', group_end: true }, label: 'iPad' },
+  macbook: { payload: { category: 'apple-product', category_sub: 'mac', group_end: true }, label: 'Mac' },
+  android: { payload: { category: 'smartphone-tablet', category_sub: 'smartphone', group_end: true }, label: 'Smart Phone' }
 };
 
 let cachedApiToken = null;
@@ -293,7 +73,7 @@ async function fetchAdviceCategory(categoryKey) {
   const config = categoryConfigs[categoryKey];
   if (!config) throw new Error('ไม่พบหมวดหมู่: ' + categoryKey);
   
-  console.log('🌐 กำลังค้นหาข้อมูล ' + config.label + ' ผ่าน API...');
+  console.log('🌐 กำลังดึงข้อมูล ' + config.label + ' ผ่าน API...');
   
   const token = await getApiToken();
   if (!token) throw new Error('ไม่สามารถขอ Token จากระบบได้');
@@ -301,15 +81,16 @@ async function fetchAdviceCategory(categoryKey) {
   let allProducts = [];
   let skip = 0;
   
-  // To avoid infinite loops, set a max of 5 pages (100 items max)
-  while(skip < 100) {
+  while (true) {
     try {
-      const res = await axios.post('https://www.advice.co.th/_advice-api/api/v1.0.0/product/get', {
-        keyword: config.keyword,
-        take: 20,
+      const reqPayload = {
+        ...config.payload,
+        take: 100,
         skip: skip,
         page: 'product'
-      }, {
+      };
+
+      const res = await axios.post('https://www.advice.co.th/_advice-api/api/v1.0.0/product/get', reqPayload, {
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
           'Authorization': 'Bearer ' + token,
@@ -321,19 +102,26 @@ async function fetchAdviceCategory(categoryKey) {
       const data = res.data;
       if (!data || !data.data || !data.data.product) break;
       
-      const pArray = data.data.product;
-      if (!Array.isArray(pArray) || pArray.length === 0) break;
+      const pObj = data.data.product;
+      const groups = Object.values(pObj);
+      if (groups.length === 0) break;
       
       let itemsAddedThisPage = 0;
       
-      pArray.forEach(catGroup => {
-        if (catGroup.product && Array.isArray(catGroup.product)) {
-          catGroup.product.forEach(p => {
+      groups.forEach(group => {
+        if (group.product && Array.isArray(group.product)) {
+          group.product.forEach(p => {
             if (categoryKey === 'android' && (p.brand || '').toUpperCase() === 'APPLE') return;
             
-            // Check for duplicates
             const modelCode = p.code || '-';
             if (allProducts.some(existing => existing.modelCode === modelCode && modelCode !== '-')) return;
+            
+            const nameLow = (p.name || p.product || '').toLowerCase();
+            if (categoryKey === 'iphone' && !nameLow.includes('iphone')) return;
+            if (categoryKey === 'ipad' && !nameLow.includes('ipad')) return;
+            if (categoryKey === 'macbook' && !(nameLow.includes('macbook') || nameLow.includes('mac ') || nameLow.includes('imac') || nameLow.includes('mac mini') || nameLow.includes('mac studio'))) return;
+            if (categoryKey === 'iphone' && (nameLow.includes('case') || nameLow.includes('magsafe') || nameLow.includes('cable') || nameLow.includes('adapter') || nameLow.includes('wallet') || nameLow.includes('film') || nameLow.includes('glass'))) return;
+            if (categoryKey === 'ipad' && (nameLow.includes('case') || nameLow.includes('pencil') || nameLow.includes('keyboard') || nameLow.includes('folio') || nameLow.includes('film') || nameLow.includes('glass'))) return;
             
             allProducts.push({
               model: p.name || p.product || '',
@@ -352,7 +140,10 @@ async function fetchAdviceCategory(categoryKey) {
       });
       
       if (itemsAddedThisPage === 0) break; // End of pagination
-      skip += 20;
+      if (itemsAddedThisPage < 100 && skip !== 0) break; // Reached last page
+      
+      skip += 100;
+      if (skip >= 1000) break; // Safety net
       
     } catch(err) {
       if (err.response && err.response.status === 401) {
@@ -384,7 +175,7 @@ app.get('/api/prices/:category', async (req, res) => {
 
   const triggerBackgroundRefresh = async () => {
     try {
-      console.log('\n🔄 กำลังดึงข้อมูลสด ' + config.label + ' เบื้องหลัง...');
+      console.log('\\n🔄 กำลังดึงข้อมูลสด ' + config.label + ' เบื้องหลัง...');
       const items = await fetchAdviceCategory(category);
 
       if (items && items.length > 0) {
@@ -411,7 +202,7 @@ app.get('/api/prices/:category', async (req, res) => {
   }
 
   try {
-    console.log('\n🔍 ไม่มีแคช กำลังดึงข้อมูล ' + config.label + ' ครั้งแรก...');
+    console.log('\\n🔍 ไม่มีแคช กำลังดึงข้อมูล ' + config.label + ' ครั้งแรก...');
     await triggerBackgroundRefresh();
     
     const newCache = productCache[category];
@@ -425,105 +216,31 @@ app.get('/api/prices/:category', async (req, res) => {
   }
 });
 
-app.get('/api/prices-studio7', (req, res) => {
-  res.json({
-    items: studio7Cache,
-    lastUpdate: studio7LastUpdate > 0 ? new Date(studio7LastUpdate).toISOString() : 'none'
-  });
-});
-
-app.get('/api/health', (req, res) => {
-  const tokenMinutesLeft = cachedToken && tokenExpiry > 0
-    ? Math.max(0, Math.round((tokenExpiry - Date.now()) / 60000))
-    : 0;
-
-  res.json({
-    status: 'ok',
-    hasToken: !!cachedToken,
-    tokenValid: cachedToken && Date.now() < tokenExpiry,
-    tokenExpires: tokenExpiry > 0 ? new Date(tokenExpiry).toISOString() : 'none',
-    tokenMinutesLeft,
-    autoRefresh: hasPuppeteer(),
-    uptime: Math.floor(process.uptime()) + 's',
-    cachedCategories: Object.keys(productCache).filter(k => productCache[k].items?.length > 0),
-    studio7Count: studio7Cache.length
-  });
-});
-
-function hasPuppeteer() {
-  try { require.resolve('puppeteer-extra'); return true; } catch (_) {
-    try { require.resolve('puppeteer'); return true; } catch (_2) { return false; }
-  }
-}
-
-// ==========================================
-// Auto-Refresh Scheduler
-// ==========================================
-const REFRESH_INTERVAL = 60 * 60 * 1000; // 60 minutes
-
-function scheduleTokenRefresh() {
-  setInterval(async () => {
-    if (!cachedToken || Date.now() > tokenExpiry - (10 * 60 * 1000)) {
-      console.log('\n⏰ Token หมดเร็วๆ นี้ — Auto-Refresh...');
+// Force update route
+app.post('/api/update', async (req, res) => {
+  try {
+    const categoryConfigsKeys = Object.keys(categoryConfigs);
+    const results = {};
+    
+    for (const cat of categoryConfigsKeys) {
       try {
-        await autoRefreshToken();
-      } catch (e) {
-        console.error('❌ Scheduled refresh failed:', e.message);
+        const items = await fetchAdviceCategory(cat);
+        if (items && items.length > 0) {
+          productCache[cat] = { items, fetchedAt: Date.now() };
+          results[cat] = items.length;
+        }
+      } catch (err) {
+        console.error('Update error for ' + cat + ':', err);
       }
     }
-  }, REFRESH_INTERVAL);
-  console.log(`⏰ Auto-refresh Token ทุก ${REFRESH_INTERVAL / 60000} นาที`);
-}
-
-// ==========================================
-// Keep-Alive (Prevent Render Free Tier Sleep)
-// ==========================================
-const RENDER_URL = process.env.RENDER_EXTERNAL_URL || null;
-
-function startKeepAlive() {
-  if (!RENDER_URL) {
-    console.log('💤 ไม่มี RENDER_EXTERNAL_URL - ข้าม keep-alive');
-    return;
+    
+    saveProductCache();
+    res.json({ success: true, updated: results });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
   }
-  const INTERVAL = 14 * 60 * 1000; // 14 minutes (Render sleeps after 15)
-  setInterval(async () => {
-    try {
-      const resp = await axios.get(`${RENDER_URL}/api/health`, { timeout: 10000 });
-      console.log(`💓 Keep-alive ping OK (uptime: ${resp.data.uptime})`);
-    } catch (e) {
-      console.log('💓 Keep-alive ping failed:', e.message);
-    }
-  }, INTERVAL);
-  console.log(`💓 Keep-alive ping ทุก 14 นาที -> ${RENDER_URL}`);
-}
+});
 
-// ==========================================
-// Startup
-// ==========================================
 app.listen(PORT, () => {
-  console.log(`🚀 API Server รันแล้วที่ port ${PORT}`);
-  if (cachedToken) {
-    console.log('✅ Token พร้อมใช้งาน!');
-  } else {
-    console.log('⚠️ ยังไม่มี Token - รอการ set-token หรือ refresh');
-  }
-
-  // Start keep-alive
-  startKeepAlive();
-
-  // Auto-refresh token scheduler
-  if (hasPuppeteer()) {
-    console.log('🌐 Puppeteer พร้อม - รองรับ auto-refresh token');
-    scheduleTokenRefresh();
-
-    // If no token, try to get one immediately
-    if (!cachedToken || Date.now() >= tokenExpiry) {
-      setTimeout(() => {
-        console.log('\n🔄 Startup: พยายาม auto-refresh token...');
-        autoRefreshToken().catch(e => console.log('⚠️ Startup refresh failed:', e.message));
-      }, 5000);
-    }
-  } else {
-    console.log('💡 ใช้ refresh-token.bat บนเครื่อง local เพื่ออัพเดท Token');
-  }
+  console.log('🚀 API Server รันแล้วที่ port ' + PORT);
 });

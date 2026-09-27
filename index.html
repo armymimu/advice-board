@@ -2,108 +2,75 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Jadsadarakasod (จัดสดราคาสด)</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advice Price Board</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <!-- Header -->
-  <header class="header">
-    <div class="header-content">
-      <div class="header-brand">
-        <!-- Abstract sleek geometric logo -->
-        <div class="logo-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
-            <rect x="3" y="3" width="7" height="7" rx="2"></rect>
-            <rect x="14" y="3" width="7" height="7" rx="2"></rect>
-            <rect x="14" y="14" width="7" height="7" rx="2"></rect>
-            <path d="M3 14h7v7H3z"></path>
-          </svg>
-        </div>
-        <div class="brand-text">
-          <h1>Jadsadarakasod</h1>
-          <p>จัดสดราคาสด เช็คต้นทุนและราคาขาย</p>
+  <header class="header-container">
+    <div class="header-top">
+      <div class="logo-group">
+        <div class="logo-icon"><i class="fas fa-tags"></i></div>
+        <div class="logo-text">
+          <h1>Advice Price Board</h1>
         </div>
       </div>
-      <div class="header-controls">
-        <div class="profit-setting">
-          <label for="global-profit" id="profit-label">กำไรตั้งต้น (iPhone)</label>
-          <div class="input-wrapper">
-            <span class="currency-symbol">฿</span>
-            <input type="number" id="global-profit" value="1000" min="0" step="100" placeholder="0" aria-label="กำไรเริ่มต้นต่อเครื่อง">
-          </div>
+      
+      <div class="profit-control">
+        <label for="global-profit">กำไรต่อเครื่อง:</label>
+        <div class="profit-input-wrap">
+          <input type="number" id="global-profit" value="1000" min="0" step="100">
+          <span class="profit-unit">฿</span>
         </div>
+      </div>
+    </div>
+
+    <div class="toolbar-container">
+      <div class="tabs" id="category-tabs">
+        <button class="tab-btn active" data-cat="iphone">iPhone</button>
+        <button class="tab-btn" data-cat="ipad">iPad</button>
+        <button class="tab-btn" data-cat="macbook">Mac</button>
+        <button class="tab-btn" data-cat="android">Android</button>
+      </div>
+
+      <div class="toolbar-actions">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" id="search-input" placeholder="ค้นหารุ่น...">
+        </div>
+        <button id="btn-copy-visible" class="btn-secondary" title="คัดลอกผลที่แสดง">
+          <i class="fas fa-copy"></i> คัดลอกผลที่แสดง
+        </button>
+        <button id="btn-copy-all" class="btn-primary" title="คัดลอกทุกรุ่น">
+          <i class="fas fa-clone"></i> คัดลอกทุกรุ่น
+        </button>
       </div>
     </div>
   </header>
 
-  <!-- Main Content -->
-  <main class="container">
-    
-    <!-- Top Bar: Notice & Toolbar -->
-    <div class="page-top-bar">
-      <!-- Sync Status Bar -->
-      <div class="notice-bar">
-        <div class="notice-content">
-          <span class="chip-notice" id="sync-badge">ข้อมูลสด</span>
-          <span class="notice-desc" id="sync-time">กำลังดึงข้อมูล...</span>
-        </div>
-        <button id="btn-sync" class="btn-text">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16" style="margin-right: 4px; vertical-align: text-bottom;"><path d="M21 12a9 9 0 11-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path></svg>
-          อัปเดตจาก Advice
-        </button>
-      </div>
-      
-      <!-- Controls (Tabs + Search/Sort) -->
-      <div class="toolbar">
-        <div class="segmented-control" role="tablist" aria-label="หมวดหมู่สินค้า">
-          <div class="segment-indicator" id="tab-indicator"></div>
-          <button class="segment active" data-category="iphone" role="tab" aria-selected="true">iPhone</button>
-          <button class="segment" data-category="ipad" role="tab" aria-selected="false">iPad</button>
-          <button class="segment" data-category="macbook" role="tab" aria-selected="false">Mac</button>
-          <button class="segment" data-category="android" role="tab" aria-selected="false">Android</button>
-        </div>
+  <div class="status-bar" id="status-bar">
+    <!-- Status will be injected here -->
+  </div>
 
-        <div class="tools">
-          <div class="search-box">
-            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="11" cy="11" r="8"></circle>
-              <path d="M21 21l-4.35-4.35"></path>
-            </svg>
-            <input type="text" id="search-input" placeholder="ค้นหารุ่น, ความจุ, รหัส..." aria-label="ค้นหาสินค้า">
-            <button id="clear-search" class="clear-btn" aria-label="ล้างคำค้นหา" hidden>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"></path></svg>
-            </button>
-          </div>
-          <div class="sort-box">
-            <select id="sort-select" aria-label="เรียงลำดับข้อมูล">
-              <option value="name">เรียงตามชื่อ</option>
-              <option value="price_asc">ราคาขาย: ต่ำไปสูง</option>
-              <option value="price_desc" selected>ราคาขาย: สูงไปต่ำ</option>
-            </select>
-          </div>
-        </div>
-      </div>
+  <main class="main-content">
+    <div id="loading-state" class="state-view">
+      <div class="spinner"></div>
+      <h3>กำลังเชื่อมต่อระบบ Advice...</h3>
+      <p style="font-size: 13px; margin-top: 8px;">(หากเข้าใช้งานครั้งแรกอาจใช้เวลาปลุกเซิร์ฟเวอร์ 30-50 วินาที)</p>
     </div>
 
-    <!-- Product Grid/Table Container -->
-    <div id="product-container" class="product-container">
-      <!-- Loading state initially -->
-      <div class="empty-state">
-        <svg class="spinner" viewBox="0 0 50 50" width="32" height="32" stroke="var(--accent)" stroke-width="4" fill="none" stroke-linecap="round">
-          <circle cx="25" cy="25" r="20"></circle>
-        </svg>
-        <p style="margin-top: 16px;">กำลังเชื่อมต่อระบบ Advice...</p>
-      </div>
+    <div id="error-state" class="state-view" style="display: none;">
+      <!-- Error injected here -->
     </div>
 
+    <div id="products-grid">
+      <!-- Cards injected here -->
+    </div>
   </main>
-
-  <div id="toast-container" class="toast-container"></div>
 
   <script src="app.js"></script>
 </body>
