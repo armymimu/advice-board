@@ -107,9 +107,11 @@ async function fetchAdviceCategory(categoryKey) {
       if (groups.length === 0) break;
       
       let itemsAddedThisPage = 0;
+      let itemsReturnedThisPage = 0;
       
       groups.forEach(group => {
         if (group.product && Array.isArray(group.product)) {
+          itemsReturnedThisPage += group.product.length;
           group.product.forEach(p => {
             if (categoryKey === 'android' && (p.brand || '').toUpperCase() === 'APPLE') return;
             
@@ -139,8 +141,8 @@ async function fetchAdviceCategory(categoryKey) {
         }
       });
       
-      if (itemsAddedThisPage === 0) break; // End of pagination
-      if (itemsAddedThisPage < 100 && skip !== 0) break; // Reached last page
+      if (itemsReturnedThisPage === 0) break; // End of pagination
+      if (itemsReturnedThisPage < 100 && skip !== 0) break; // Reached last page
       
       skip += 100;
       if (skip >= 1000) break; // Safety net
