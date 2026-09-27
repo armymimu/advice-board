@@ -84,15 +84,15 @@ async function fetchAdviceCategory(categoryKey) {
   
   let keywords = [categoryKey];
   if (categoryKey === 'iphone') {
-    keywords = ['iphone 16 pro max', 'iphone 16 pro', 'iphone 16 plus', 'iphone 16', 'iphone 15 pro max', 'iphone 15 pro', 'iphone 15 plus', 'iphone 15', 'iphone 14', 'iphone 13'];
+    keywords = ['iphone 16 pro max', 'iphone 16 pro', 'iphone 16 plus', 'iphone 16', 'iphone 15 pro max', 'iphone 15 pro', 'iphone 15 plus', 'iphone 15', 'iphone 14 pro max', 'iphone 14 pro', 'iphone 14 plus', 'iphone 14', 'iphone 13', 'iphone se'];
   } else if (categoryKey === 'ipad') {
-    keywords = ['ipad pro m4', 'ipad pro m2', 'ipad air m2', 'ipad air 5', 'ipad gen 10', 'ipad gen 9', 'ipad mini'];
+    keywords = ['ipad pro 11', 'ipad pro 13', 'ipad pro 12.9', 'ipad air 11', 'ipad air 13', 'ipad air 10.9', 'ipad 11 a16', 'ipad 10.9', 'ipad 10.2', 'ipad mini 7', 'ipad mini 6'];
   } else if (categoryKey === 'macbook') {
-    keywords = ['macbook pro m3', 'macbook pro m2', 'macbook air m3', 'macbook air m2', 'imac m3', 'mac mini m2', 'mac studio'];
+    keywords = ['macbook pro 14', 'macbook pro 16', 'macbook pro 13', 'macbook air 15', 'macbook air 13', 'macbook air m1', 'imac 24', 'mac mini', 'mac studio'];
   }
 
   // If android, we use standard pagination loop
-  let paginationList = isSearchApi ? keywords : [0, 100, 200, 300, 400, 500, 600, 700, 800, 900];
+  let paginationList = isSearchApi ? keywords : [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200];
 
   for (let param of paginationList) {
     try {
@@ -117,7 +117,7 @@ async function fetchAdviceCategory(categoryKey) {
         };
       }
 
-      await new Promise(r => setTimeout(r, 1500));
+      await new Promise(r => setTimeout(r, 1000)); // Reduced to 1s to make it slightly faster
       
       const res = await axios.post(endpoint, reqPayload, {
         headers: {
@@ -153,7 +153,7 @@ async function fetchAdviceCategory(categoryKey) {
             
             const nameLow = (p.name || p.product || '').toLowerCase();
             
-            const badWords = ['case', 'เคส', 'film', 'ฟิล์ม', 'glass', 'กระจก', 'magsafe', 'cable', 'สายชาร์จ', 'สาย', 'adapter', 'หัวชาร์จ', 'อะแดปเตอร์', 'อะแดปปเตอร์', 'wallet', 'pencil', 'ปากกา', 'keyboard', 'คีย์บอร์ด', 'folio', 'mouse', 'เมาส์', 'trackpad', 'แทร็คแพด', 'hub', 'dongle', 'dock', 'ซอง', 'กระเป๋า', 'bag', 'sleeve', 'airpods', 'earpods', 'watch', 'strap', 'สายนาฬิกา', 'apple tv', 'care+', 'applecare', 'ประกัน', 'warranty', 'smart tag', 'airtag', 'ซิม', 'sim', 'ลำโพง', 'speaker', 'ขาตั้ง', 'stand', 'ชาร์จไร้สาย', 'wireless charger', 'หูฟัง', 'headphone', 'earbud', 'mouse', 'เมาส์'];
+            const badWords = ['case', 'เคส', 'film', 'ฟิล์ม', 'glass', 'กระจก', 'magsafe', 'cable', 'สายชาร์จ', 'สาย', 'adapter', 'หัวชาร์จ', 'อะแดปเตอร์', 'อะแดปปเตอร์', 'wallet', 'pencil', 'ปากกา', 'keyboard', 'คีย์บอร์ด', 'folio', 'mouse', 'เมาส์', 'trackpad', 'แทร็คแพด', 'hub', 'dongle', 'dock', 'ซอง', 'กระเป๋า', 'bag', 'sleeve', 'airpods', 'earpods', 'watch', 'strap', 'สายนาฬิกา', 'apple tv', 'care+', 'applecare', 'ประกัน', 'warranty', 'smart tag', 'airtag', 'ซิม', 'sim', 'ลำโพง', 'speaker', 'ขาตั้ง', 'stand', 'ชาร์จไร้สาย', 'wireless charger', 'หูฟัง', 'headphone', 'earbud'];
             if (badWords.some(w => nameLow.includes(w))) return;
 
             if (categoryKey === 'iphone' && !nameLow.includes('iphone')) return;
