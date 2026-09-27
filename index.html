@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Price Dashboard</title>
+<meta name="description" content="Price Board Dashboard">
+<meta name="robots" content="noindex, nofollow">
+
+<!-- iOS Home Screen Support -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Advice">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- PIN Lock Screen -->
+<div id="pin-lock-screen" class="pin-lock-screen">
+  <div class="pin-container">
+    <div class="pin-header">
+      <h2>Enter Passcode</h2>
+      <p>Please enter your PIN to access the dashboard</p>
+    </div>
+    
+    <div class="pin-dots">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    
+    <div class="pin-keypad">
+      <button class="key" data-num="1">1</button>
+      <button class="key" data-num="2">2</button>
+      <button class="key" data-num="3">3</button>
+      <button class="key" data-num="4">4</button>
+      <button class="key" data-num="5">5</button>
+      <button class="key" data-num="6">6</button>
+      <button class="key" data-num="7">7</button>
+      <button class="key" data-num="8">8</button>
+      <button class="key" data-num="9">9</button>
+      <button class="key action empty"></button>
+      <button class="key" data-num="0">0</button>
+      <button class="key action delete" id="pin-delete">โซ</button>
+    </div>
+  </div>
+</div>
+
+<!-- Main App Content (Hidden by default) -->
+<div id="app-content" style="display: none;">
+<header>
+  <div class="logo">
+    <div class="logo-dot"></div>
+    Advice Price Board
+    <span class="logo-shop">Armymimu</span>
+  </div>
+  <div class="header-right">
+    <div id="token-status" class="token-status" title="เธชเธ–เธฒเธเธฐ Token เธเธญเธ Advice API"></div>
+    <div class="profit-badge">
+      <span class="profit-label">เธเธณเนเธฃ +</span>
+      <input id="profitInput" type="number" value="1000" />
+      <span class="profit-label">เธเธฒเธ—</span>
+      <div class="profit-stepper">
+        <button onclick="adjustProfit(100)" title="+100">โ–ฒ</button>
+        <button onclick="adjustProfit(-100)" title="-100">โ–ผ</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="main">
+  <div class="tabs">
+    <button class="tab active" data-tab="iphone" onclick="switchTab('iphone')"><span class="emoji">๐“ฑ</span> iPhone <span class="count" id="cnt-iphone"></span></button>
+    <button class="tab" data-tab="ipad" onclick="switchTab('ipad')"><span class="emoji">โฌ</span> iPad <span class="count" id="cnt-ipad"></span></button>
+    <button class="tab" data-tab="macbook" onclick="switchTab('macbook')"><span class="emoji">๐’ป</span> MacBook <span class="count" id="cnt-macbook"></span></button>
+    <button class="tab" data-tab="android" onclick="switchTab('android')"><span class="emoji">๐ค–</span> Android <span class="count" id="cnt-android"></span></button>
+  </div>
+  <div id="panels-container"></div>
+</div>
+
+<!-- 3D Product Viewer Modal -->
+<div class="viewer-overlay" id="viewer" onclick="closeViewer(event)">
+  <button class="viewer-close" onclick="closeViewer()">&times;</button>
+  <div class="viewer-card">
+    <div class="viewer-3d-wrap">
+      <div class="viewer-3d-inner" id="viewer3d">
+        <img id="viewerImg" src="" alt="" />
+        <div class="shine"></div>
+        <div class="reflection"></div>
+      </div>
+    </div>
+    <div class="viewer-info">
+      <div class="vi-model" id="viewerModel"></div>
+      <div class="vi-spec" id="viewerSpec"></div>
+      <div class="vi-badges" id="viewerBadges"></div>
+      <div class="vi-prices" id="viewerPrices"></div>
+      <div class="vi-actions">
+        <button class="btn primary" onclick="copyViewerProduct()">๐“ เธเนเธญเธเธฃเธฒเธเธฒเธฃเธธเนเธเธเธตเน</button>
+        <a class="btn" id="viewerLink" href="#" target="_blank">๐”— เธ”เธนเนเธ Advice</a>
+      </div>
+    </div>
+  </div>
+  <div class="viewer-hint">๐–ฑ๏ธ เน€เธฅเธทเนเธญเธเน€เธกเธฒเธชเนเน€เธเธทเนเธญเธ”เธนเธกเธธเธกเธกเธญเธ 3D</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+</div> <!-- End of app-content -->
+
+<script src="app.js"></script>
+</body>
+</html>
+

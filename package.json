@@ -1,0 +1,17 @@
+{
+  "name": "advice-board",
+  "version": "1.0.0",
+  "description": "Advice Price Board Dashboard - ดูราคาสินค้า Apple จาก Advice และ Studio7",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "scrape": "node scraper.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
+  }
+}
