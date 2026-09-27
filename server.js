@@ -177,12 +177,16 @@ async function autoRefreshToken() {
       }
     });
 
-    await page.goto('https://www.advice.co.th/product/iphone', {
-      waitUntil: 'networkidle2',
-      timeout: 30000
-    });
+    try {
+      await page.goto('https://www.advice.co.th/product/iphone', {
+        waitUntil: 'domcontentloaded',
+        timeout: 25000
+      });
+    } catch (err) {
+      console.log('⚠️ Page load warning:', err.message);
+    }
 
-    try { await page.waitForSelector('.list-product, .product-item, [class*="product"]', { timeout: 15000 }); }
+    try { await page.waitForSelector('.list-product, .product-item, [class*="product"]', { timeout: 10000 }); }
     catch (e) { /* continue anyway */ }
 
     // Wait a bit for the API call to happen
@@ -254,135 +258,167 @@ app.post('/api/set-studio7', express.json(), (req, res) => {
 });
 
 // ==========================================
-// Advice API — Product Fetching (FIXED)
+// Advice Web Scraper — Product Fetching (NEW)
 // ==========================================
-const API_URL = 'https://prodbackadvice.advice.in.th/api/v1.0.0/product/get';
-
-const categoryConfigs = {
-  iphone: { category: 'iphone', label: 'iPhone' },
-  ipad:   { category: 'ipad',   label: 'iPad' },
-  macbook:{ category: 'macbook', label: 'MacBook' },
-  android:{ category: 'smart-phone', label: 'Smart Phone' }
+const categoryUrls = {
+  iphone:  { url: 'https://www.advice.co.th/product/iphone',       label: 'iPhone' },
+  ipad:    { url: 'https://www.advice.co.th/product/ipad',         label: 'iPad' },
+  macbook: { url: 'https://www.advice.co.th/product/mac',          label: 'Mac' },
+  android: { url: 'https://www.advice.co.th/product/smartphone',   label: 'Smart Phone' }
 };
 
-async function fetchAllProducts(config, retryOnAuth = true) {
-  const token = await getToken();
+// Keep old config for backward compat with API route
+const categoryConfigs = categoryUrls;
 
-  const headers = {
-    'Content-Type': 'application/json',
-    'Origin': 'https://www.advice.co.th',
-    'Referer': 'https://www.advice.co.th/',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'
-  };
+let scrapeBrowser = null;
 
-  if (token && token !== 'DIRECT') {
-    headers['Authorization'] = token;
-  }
-
-  const allProducts = [];
-  let skip = 0;
-  let totalExpected = Infinity;  // Will be updated from API response
-
-  while (true) {
-    const body = {
-      category: config.category,
-      category_sub: '',
-      product: '',
-      keyword: '',
-      take: 100,
-      skip: skip,
-      refSearch: '',
-      page: 'product',
-      arr_filter_brand: [],
-      arr_filter_ict: [],
-      arr_filter_price_ict: [],
-      arr_filter_cate: [],
-      addView: false
-    };
-
+async function getScrapeBrowser() {
+  if (scrapeBrowser) {
     try {
-      const resp = await axios.post(API_URL, body, { headers, timeout: 25000 });
-      const data = resp.data;
-
-      if (data.status !== 'SUCCESS' || !data.data) {
-        console.log(`   ⚠️ API ตอบ status: ${data.status}`);
-        break;
-      }
-
-      const d = data.data;
-
-      // Update total expected count from API response
-      if (d.count_product !== undefined && d.count_product > 0) {
-        totalExpected = d.count_product;
-      }
-
-      // Extract products from the nested response structure
-      const productObj = d.product;
-      let pageProducts = [];
-
-      if (productObj && typeof productObj === 'object' && !Array.isArray(productObj)) {
-        // Response format: { product: { "0": { product: [...] }, "1": { product: [...] } } }
-        for (const [key, pageData] of Object.entries(productObj)) {
-          if (pageData && pageData.product && Array.isArray(pageData.product)) {
-            pageProducts.push(...pageData.product);
-          } else if (Array.isArray(pageData)) {
-            // Sometimes the value is directly an array
-            pageProducts.push(...pageData);
-          }
-        }
-      } else if (Array.isArray(productObj)) {
-        for (const group of productObj) {
-          if (group && group.product && Array.isArray(group.product)) {
-            pageProducts.push(...group.product);
-          } else if (typeof group === 'object' && group.product_url) {
-            // Direct product object
-            pageProducts.push(group);
-          }
-        }
-      }
-
-      // Also check if products are directly in data.data.products (alternate response format)
-      if (pageProducts.length === 0 && Array.isArray(d.products)) {
-        pageProducts = d.products;
-      }
-
-      if (pageProducts.length === 0) {
-        console.log(`   ⚠️ ไม่มีสินค้าเพิ่มเติมที่ skip=${skip}`);
-        break;
-      }
-
-      allProducts.push(...pageProducts);
-      skip += 100;
-
-      console.log(`   ดึงแล้ว ${allProducts.length}/${totalExpected === Infinity ? '?' : totalExpected} รายการ (batch: ${pageProducts.length})`);
-
-      // Stop conditions — FIXED: check against totalExpected properly
-      if (allProducts.length >= totalExpected) break;
-      if (pageProducts.length < 100) break;    // Last page
-      if (allProducts.length > 5000) break;     // Safety limit increased from 2000
-
-      // Small delay to avoid rate limiting
-      await new Promise(r => setTimeout(r, 300));
-
-    } catch (err) {
-      if (err.response && err.response.status === 401 && retryOnAuth) {
-        console.log('🔄 Token 401 - ลองขอ Token ใหม่...');
-        cachedToken = null;
-        tokenExpiry = 0;
-        try { fs.unlinkSync(TOKEN_FILE); } catch (_) {}
-        return fetchAllProducts(config, false);
-      }
-      console.error(`   ❌ Error at skip=${skip}:`, err.message);
-      // If we already have some products, return what we have instead of failing
-      if (allProducts.length > 0) {
-        console.log(`   ⚠️ ส่งคืนข้อมูลที่มี ${allProducts.length} รายการ (ไม่ครบ)`);
-        break;
-      }
-      throw err;
+      // Check if still usable by accessing a property
+      const pages = await scrapeBrowser.pages();
+      if (pages) return scrapeBrowser;
+    } catch(e) {
+      scrapeBrowser = null;
     }
   }
+  
+  let pup;
+  try {
+    pup = require('puppeteer-extra');
+    const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+    pup.use(StealthPlugin());
+  } catch (e) {
+    pup = require('puppeteer');
+  }
+  
+  scrapeBrowser = await pup.launch({
+    headless: 'new',
+    args: [
+      '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage',
+      '--disable-gpu', '--no-first-run'
+    ],
+    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined
+  });
+  
+  return scrapeBrowser;
+}
 
-  return allProducts;
+async function scrapeAdvicePage(categoryKey) {
+  const config = categoryUrls[categoryKey];
+  if (!config) throw new Error('ไม่พบหมวดหมู่: ' + categoryKey);
+  
+  console.log(`🌐 กำลัง scrape ${config.label} จาก ${config.url}...`);
+  
+  const browser = await getScrapeBrowser();
+  const page = await browser.newPage();
+  
+  try {
+    await page.setViewport({ width: 1280, height: 900 });
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36');
+    
+    await page.goto(config.url, { waitUntil: 'networkidle2', timeout: 30000 });
+    
+    // Wait for product cards to appear
+    await page.waitForSelector('.list-product', { timeout: 15000 }).catch(() => {});
+    
+    // Scroll down to trigger lazy loading
+    await page.evaluate(async () => {
+      for (let i = 0; i < 10; i++) {
+        window.scrollBy(0, 800);
+        await new Promise(r => setTimeout(r, 300));
+      }
+      window.scrollTo(0, 0);
+    });
+    
+    await new Promise(r => setTimeout(r, 2000));
+    
+    // Extract products from the page
+    const products = await page.evaluate((catKey) => {
+      const items = [];
+      const cards = document.querySelectorAll('.list-product');
+      
+      cards.forEach(card => {
+        try {
+          // Product name
+          const nameEl = card.querySelector('.fn-name');
+          const name = nameEl ? nameEl.textContent.trim() : '';
+          if (!name) return;
+          
+          // URL
+          const href = nameEl ? nameEl.getAttribute('href') : '';
+          const fullUrl = href ? 'https://www.advice.co.th' + href : '';
+          
+          // Spec
+          const specEl = card.querySelector('.item-spec');
+          const spec = specEl ? specEl.textContent.trim() : '';
+          
+          // Price — from .item-price-sale
+          const priceEl = card.querySelector('.item-price-sale');
+          let price = 0;
+          if (priceEl) {
+            const priceText = priceEl.textContent.trim();
+            price = parseInt(priceText.replace(/[^0-9]/g, '')) || 0;
+          }
+          
+          // SRP price (original price, strikethrough)
+          const srpEl = card.querySelector('.item-price-srp');
+          let priceSrp = 0;
+          if (srpEl) {
+            const srpText = srpEl.textContent.trim();
+            priceSrp = parseInt(srpText.replace(/[^0-9]/g, '')) || 0;
+          }
+          
+          // Brand
+          const brandEl = card.querySelector('.item-brand-name');
+          const brand = brandEl ? brandEl.textContent.trim() : '';
+          
+          // Image
+          const imgEl = card.querySelector('.img-product');
+          const image = imgEl ? imgEl.getAttribute('src') : '';
+          
+          // Stock — check for out-of-stock indicators
+          const hasAddCart = !!card.querySelector('.btn-add-cart');
+          const outOfStockEl = card.querySelector('.item-out-of-stock, .out-of-stock, .btn-notify');
+          const inStock = hasAddCart && !outOfStockEl;
+          
+          // Product code — try from image URL (pattern: /A0180021/)
+          let code = '';
+          if (image) {
+            const codeMatch = image.match(/pic_product4\/(A\d+)/);
+            if (codeMatch) code = codeMatch[1];
+          }
+          
+          // Filter for Android: exclude Apple
+          if (catKey === 'android' && brand.toUpperCase() === 'APPLE') return;
+          
+          items.push({
+            model: name,
+            spec: spec,
+            modelCode: code || '-',
+            price: price,
+            priceSrp: priceSrp || price,
+            brand: brand,
+            image: image,
+            url: fullUrl,
+            inStock: inStock
+          });
+        } catch(e) {}
+      });
+      
+      return items;
+    }, categoryKey);
+    
+    console.log(`✅ ${config.label}: scrape ได้ ${products.length} รายการ`);
+    
+    await page.close();
+    return products;
+    
+  } catch(err) {
+    console.error(`❌ Scrape error (${config.label}):`, err.message);
+    try { await page.close(); } catch(_) {}
+    throw err;
+  }
 }
 
 // ==========================================
@@ -404,45 +440,13 @@ app.get('/api/prices/:category', async (req, res) => {
   const triggerBackgroundRefresh = async () => {
     try {
       console.log(`\n🔄 กำลังดึงข้อมูลสด ${config.label} เบื้องหลัง...`);
-      const rawProducts = await fetchAllProducts(config);
-      
-      let filtered = rawProducts;
-      if (category === 'android') {
-        filtered = rawProducts.filter(p => (p.brand || '').toUpperCase() !== 'APPLE');
-      }
-
-      const items = filtered.map(p => {
-        let model = p.product || p.name || '';
-        let modelCode = '-';
-        const match = model.match(/\(([^)]+)\)\s*$/);
-        if (match) {
-          modelCode = match[1];
-          model = model.replace(/\s*\([^)]+\)\s*$/, '').trim();
-        }
-
-        return {
-          model: model,
-          spec: p.spec || p.description || '-',
-          modelCode: modelCode,
-          price: p.price_sale || p.price_srp || p.price || 0,
-          priceSrp: p.price_srp || p.price || 0,
-          brand: p.brand || '',
-          image: p.pic_url || p.image || '',
-          url: p.product_url ? `https://www.advice.co.th/product/${p.product_url}` : '',
-          inStock: p.type === 'instock' || p.stock > 0,
-          promotion: p.product_promotion || p.promotion || ''
-        };
-      });
+      const items = await scrapeAdvicePage(category);
 
       productCache[category] = { items, fetchedAt: Date.now() };
       saveProductCache();
       console.log(`✅ อัปเดต ${config.label} เบื้องหลังสำเร็จ: ${items.length} รุ่น`);
     } catch (error) {
       console.error(`❌ Background fetch error for ${category}:`, error.message);
-      if (error.response && error.response.status === 401) {
-        cachedToken = null; tokenExpiry = 0;
-        try { fs.unlinkSync(TOKEN_FILE); } catch (_) {}
-      }
     }
   };
 

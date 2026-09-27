@@ -5,7 +5,12 @@ let products = [];
 let currentCategory = 'iphone';
 let searchQuery = '';
 let sortBy = 'price_desc';
-let globalProfit = 1000;
+let categoryProfits = {
+  iphone: 1000,
+  ipad: 1000,
+  macbook: 1000,
+  android: 1000
+};
 let lastUpdateDate = null;
 let isFetching = false;
 let isStale = false;
@@ -16,17 +21,25 @@ const formatMoney = (amount) => new Intl.NumberFormat('th-TH').format(amount);
 // Initialization & LocalStorage
 // ==========================================
 function init() {
-  const savedProfit = localStorage.getItem('advice_board_profit_v4');
-  if (savedProfit) {
-    globalProfit = parseInt(savedProfit, 10);
-    document.getElementById('global-profit').value = globalProfit;
+  const savedProfits = localStorage.getItem('advice_board_profits_v5');
+  if (savedProfits) {
+    try {
+      categoryProfits = { ...categoryProfits, ...JSON.parse(savedProfits) };
+    } catch(e) {}
   }
 
   setupEventListeners();
   requestAnimationFrame(() => updateTabIndicator());
+  updateProfitUI();
   
   // Fetch initial data
   fetchData(currentCategory);
+}
+
+function updateProfitUI() {
+  const labels = { iphone: 'iPhone', ipad: 'iPad', macbook: 'Mac', android: 'Android' };
+  document.getElementById('profit-label').textContent = `กำไรตั้งต้น (${labels[currentCategory] || currentCategory})`;
+  document.getElementById('global-profit').value = categoryProfits[currentCategory] || 1000;
 }
 
 // ==========================================
@@ -58,14 +71,10 @@ async function fetchData(category, forceRefresh = false) {
   noticeBar.classList.remove('stale');
   
   try {
-    // URL relative to the same host (server.js serves this file and the API)
-    // If opening file:// locally, we fallback to localhost:3000
+    // URL relative to the same host
     const baseUrl = window.location.protocol === 'file:' ? 'http://localhost:3000' : '';
     const url = `${baseUrl}/api/prices/${category}`;
     
-    // In a real app we might pass forceRefresh as a query param if backend supported it
-    // For now we just call the endpoint. The backend handles its own cache (5 mins) 
-    // and returns { items, total, cached, stale }
     const response = await fetch(url);
     const data = await response.json();
     
@@ -149,11 +158,12 @@ function showToast(message) {
 // ==========================================
 function calculatePrice(product) {
   const advicePrice = parseInt(product.price) || 0;
-  const sellingPrice = advicePrice + globalProfit;
+  const currentProfit = categoryProfits[currentCategory] || 0;
+  const sellingPrice = advicePrice + currentProfit;
   
   return { 
     advicePrice, 
-    profit: globalProfit, 
+    profit: currentProfit, 
     sellingPrice
   };
 }
@@ -251,7 +261,6 @@ function render() {
       const calc = calculatePrice(item);
       
       let priceDisplay = `฿${formatMoney(calc.sellingPrice)}`;
-      let statusIndicator = '';
       
       if (!item.inStock) {
         priceDisplay = `<span class="out-of-stock">หมดสินค้า</span>`;
@@ -313,13 +322,13 @@ function escapeHTML(str) {
 // Event Listeners & Interactions
 // ==========================================
 function setupEventListeners() {
-  // Global Profit Setup (applies to ALL items instantly)
+  // Category-based Profit Setup
   const globalProfitInput = document.getElementById('global-profit');
   globalProfitInput.addEventListener('input', (e) => {
     let val = parseInt(e.target.value);
     if (isNaN(val) || val < 0) val = 0;
-    globalProfit = val;
-    localStorage.setItem('advice_board_profit_v4', globalProfit);
+    categoryProfits[currentCategory] = val;
+    localStorage.setItem('advice_board_profits_v5', JSON.stringify(categoryProfits));
     
     // Render without delay for instant feedback
     render();
@@ -338,6 +347,9 @@ function setupEventListeners() {
       
       if (newCategory !== currentCategory) {
         currentCategory = newCategory;
+        updateProfitUI();
+        products = []; // Clear for loading state
+        render();
         // Fetch new category data
         fetchData(currentCategory);
       }
@@ -375,10 +387,10 @@ function setupEventListeners() {
 
   // Reset Profit
   document.getElementById('btn-reset').addEventListener('click', () => {
-    if (confirm('ล้างค่าการตั้งค่ากำไรและคืนค่ากลับเป็น 1,000 บาท?')) {
-      localStorage.removeItem('advice_board_profit_v4');
-      globalProfit = 1000;
-      document.getElementById('global-profit').value = 1000;
+    if (confirm('ล้างค่าการตั้งค่ากำไรและคืนค่ากลับเป็น 1,000 บาทในทุกหมวดหมู่?')) {
+      localStorage.removeItem('advice_board_profits_v5');
+      categoryProfits = { iphone: 1000, ipad: 1000, macbook: 1000, android: 1000 };
+      updateProfitUI();
       render();
       showToast('คืนค่าเริ่มต้นสำเร็จ');
     }

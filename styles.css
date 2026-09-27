@@ -231,7 +231,7 @@
   
   /* Segmented Control */
   .segmented-control {
-    position: relative; display: flex;
+    position: relative; display: flex; width: 100%; max-width: 480px;
     background: rgba(32,36,44,0.05);
     padding: 4px; border-radius: var(--radius-pill);
   }
@@ -246,9 +246,10 @@
   
   .segment {
     position: relative; z-index: 2; background: transparent; border: none;
-    color: var(--text-secondary); padding: 8px 24px; font-size: 14px; font-weight: 500;
+    color: var(--text-secondary); padding: 8px 12px; font-size: 14px; font-weight: 500;
     border-radius: var(--radius-pill); cursor: pointer;
     transition: color var(--duration-fast) ease; font-family: inherit; outline: none;
+    flex: 1; text-align: center; white-space: nowrap;
   }
   .segment:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
   .segment:hover { color: var(--text-primary); }
@@ -442,8 +443,8 @@
     .profit-setting { width: 100%; justify-content: space-between; }
   
     .toolbar { flex-direction: column; align-items: stretch; }
-    .segmented-control { display: grid; grid-template-columns: 1fr 1fr 1fr; }
-    .segment { text-align: center; padding: 10px; }
+    .segmented-control { display: flex; width: 100%; max-width: none; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .segment { padding: 10px 8px; flex: 1; }
     
     .tools { flex-direction: column; }
     .search-box, .sort-box select { width: 100%; }
