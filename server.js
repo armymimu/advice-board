@@ -181,12 +181,15 @@ app.get('/api/prices/:category', async (req, res) => {
       const items = await fetchAdviceCategory(category);
 
       if (items && items.length > 0) {
-        productCache[category] = { items, fetchedAt: Date.now() };
+        productCache[category] = { items, fetchedAt: Date.now(), lastError: null };
         saveProductCache();
         console.log('✅ อัปเดต ' + config.label + ' เบื้องหลังสำเร็จ: ' + items.length + ' รุ่น');
+      } else {
+        productCache[category] = { items: [], fetchedAt: Date.now(), lastError: 'API returned 0 items' };
       }
     } catch (error) {
       console.error('❌ Background fetch error for ' + category + ':', error.message);
+      productCache[category] = { items: [], fetchedAt: Date.now(), lastError: error.message };
     }
   };
 
@@ -211,7 +214,7 @@ app.get('/api/prices/:category', async (req, res) => {
     if (newCache && newCache.items && newCache.items.length > 0) {
       res.json({ items: newCache.items, total: newCache.items.length, cached: false, stale: false, fetchedAt: newCache.fetchedAt });
     } else {
-      res.status(500).json({ error: 'ดึงข้อมูลไม่สำเร็จ' });
+      res.status(500).json({ error: newCache && newCache.lastError ? newCache.lastError : 'ดึงข้อมูลไม่สำเร็จ' });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -240,6 +243,16 @@ app.post('/api/update', async (req, res) => {
     res.json({ success: true, updated: results });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+
+app.get('/api/debug', async (req, res) => {
+  try {
+    const r1 = await axios.get('https://www.advice.co.th/', { headers: { 'User-Agent': 'Mozilla/5.0' }, timeout: 10000 });
+    res.json({ success: true, status: r1.status, headers: r1.headers['set-cookie'] ? 'Has Cookies' : 'No Cookies' });
+  } catch (e) {
+    res.json({ success: false, error: e.message, code: e.code, status: e.response ? e.response.status : null });
   }
 });
 
