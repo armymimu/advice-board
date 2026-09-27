@@ -75,30 +75,42 @@ async function getApiToken() {
 }
 
 async function fetchAdviceCategory(categoryKey) {
-  const config = categoryConfigs[categoryKey];
-  if (!config) throw new Error('ไม่พบหมวดหมู่: ' + categoryKey);
-  
-  console.log('🌐 กำลังดึงข้อมูล ' + config.label + ' ผ่าน API...');
-  
+  let allProducts = [];
   const token = await getApiToken();
   if (!token) throw new Error('ไม่สามารถขอ Token จากระบบได้');
 
-  let allProducts = [];
   let skip = 0;
-  
+  let retryCount = 0;
+  const isSearchApi = ['iphone', 'ipad', 'macbook'].includes(categoryKey);
+
   while (true) {
     try {
-      const reqPayload = {
-        ...config.payload,
-        take: 100,
-        skip: skip,
-        page: 'product'
-      };
+      let endpoint = 'https://www.advice.co.th/_advice-api/api/v1.0.0/product/get';
+      let reqPayload = {};
+      
+      if (isSearchApi) {
+        endpoint = 'https://www.advice.co.th/_advice-api/api/v1.0.0/product/search';
+        reqPayload = {
+          keyword: categoryKey === 'macbook' ? 'macbook' : categoryKey,
+          sort: 'desc',
+          order: 'popular',
+          take: 20,
+          skip: skip
+        };
+      } else {
+        reqPayload = {
+          category: 'smartphone-tablet',
+          category_sub: 'smartphone',
+          group_end: true,
+          take: 100,
+          skip: skip,
+          page: 'product'
+        };
+      }
 
-      // Sleep for 1.5 seconds to prevent rate limiting (Cloudflare block)
       await new Promise(r => setTimeout(r, 1500));
       
-      const res = await axios.post('https://www.advice.co.th/_advice-api/api/v1.0.0/product/get', reqPayload, {
+      const res = await axios.post(endpoint, reqPayload, {
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
           'Accept': 'application/json, text/plain, */*',
@@ -129,18 +141,19 @@ async function fetchAdviceCategory(categoryKey) {
             if (allProducts.some(existing => existing.modelCode === modelCode && modelCode !== '-')) return;
             
             const nameLow = (p.name || p.product || '').toLowerCase();
+            
+            const badWords = ['case', 'เคส', 'film', 'ฟิล์ม', 'glass', 'กระจก', 'magsafe', 'cable', 'สายชาร์จ', 'สาย', 'adapter', 'หัวชาร์จ', 'อะแดปเตอร์', 'อะแดปปเตอร์', 'wallet', 'pencil', 'ปากกา', 'keyboard', 'คีย์บอร์ด', 'folio', 'mouse', 'เมาส์', 'trackpad', 'แทร็คแพด', 'hub', 'dongle', 'dock', 'ซอง', 'กระเป๋า', 'bag', 'sleeve', 'airpods', 'earpods', 'watch', 'strap', 'สายนาฬิกา', 'apple tv', 'care+', 'applecare', 'ประกัน', 'warranty', 'smart tag', 'airtag', 'ซิม', 'sim', 'ลำโพง', 'speaker', 'ขาตั้ง', 'stand', 'ชาร์จไร้สาย', 'wireless charger', 'หูฟัง', 'headphone', 'earbud'];
+            if (badWords.some(w => nameLow.includes(w))) return;
+
             if (categoryKey === 'iphone' && !nameLow.includes('iphone')) return;
             if (categoryKey === 'ipad' && !nameLow.includes('ipad')) return;
             if (categoryKey === 'macbook' && !(nameLow.includes('macbook') || nameLow.includes('mac ') || nameLow.includes('imac') || nameLow.includes('mac mini') || nameLow.includes('mac studio'))) return;
-            if (categoryKey === 'iphone' && (nameLow.includes('case') || nameLow.includes('magsafe') || nameLow.includes('cable') || nameLow.includes('adapter') || nameLow.includes('wallet') || nameLow.includes('film') || nameLow.includes('glass'))) return;
-            if (categoryKey === 'ipad' && (nameLow.includes('case') || nameLow.includes('pencil') || nameLow.includes('keyboard') || nameLow.includes('folio') || nameLow.includes('film') || nameLow.includes('glass'))) return;
             
             allProducts.push({
               model: p.name || p.product || '',
-              spec: p.description || p.spec || '-',
-              modelCode: modelCode,
+              spec: p.spec || '',
               price: p.price_sale || p.price || 0,
-              priceSrp: p.price_srp || p.price || 0,
+              modelCode: modelCode,
               brand: p.brand || '',
               image: p.image || p.pic_url || '',
               url: p.product_url ? 'https://www.advice.co.th/product/' + p.product_url : '',
@@ -151,22 +164,21 @@ async function fetchAdviceCategory(categoryKey) {
         }
       });
       
-      if (itemsReturnedThisPage === 0) break; // End of pagination
-      if (itemsReturnedThisPage < 100 && skip !== 0) break; // Reached last page
+      if (itemsReturnedThisPage === 0) break;
+      if (itemsReturnedThisPage < (isSearchApi ? 20 : 100) && skip !== 0) break;
       
-      skip += 100;
-      if (skip >= 1000) break; // Safety net
+      skip += (isSearchApi ? 20 : 100);
+      if (skip >= (isSearchApi ? 1000 : 2000)) break;
       
     } catch(err) {
       if (err.response && err.response.status === 401) {
         cachedApiToken = null; 
       }
-      console.error('❌ API Error (' + config.label + '):', err.message);
-      break;
+      retryCount++;
+      if (retryCount > 3) throw err;
+      await new Promise(r => setTimeout(r, 2000));
     }
   }
-
-  console.log('✅ ' + config.label + ': ดึงได้ ' + allProducts.length + ' รายการ');
   return allProducts;
 }
 
