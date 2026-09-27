@@ -53,7 +53,12 @@ async function getApiToken() {
   if (cachedApiToken) return cachedApiToken;
   try {
     const res = await axios.get('https://www.advice.co.th/', {
-      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+          'Accept-Language': 'th-TH,th;q=0.9,en-US;q=0.8,en;q=0.7',
+          'Sec-Ch-Ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+          'Sec-Ch-Ua-Mobile': '?0',
+          'Sec-Ch-Ua-Platform': '"Windows"' },
       timeout: 10000
     });
     if (res.headers['set-cookie']) {
@@ -90,9 +95,14 @@ async function fetchAdviceCategory(categoryKey) {
         page: 'product'
       };
 
+      // Sleep for 1.5 seconds to prevent rate limiting (Cloudflare block)
+      await new Promise(r => setTimeout(r, 1500));
+      
       const res = await axios.post('https://www.advice.co.th/_advice-api/api/v1.0.0/product/get', reqPayload, {
         headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Accept': 'application/json, text/plain, */*',
+          'Accept-Language': 'th-TH,th;q=0.9,en-US;q=0.8,en;q=0.7',
           'Authorization': 'Bearer ' + token,
           'Content-Type': 'application/json'
         },
