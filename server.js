@@ -261,10 +261,10 @@ app.post('/api/set-studio7', express.json(), (req, res) => {
 // Advice API Fetching (Axios - No Puppeteer needed)
 // ==========================================
 const categoryConfigs = {
-  iphone:  { category: 'iphone',       label: 'iPhone' },
-  ipad:    { category: 'ipad',         label: 'iPad' },
-  macbook: { category: 'mac',          label: 'Mac' },
-  android: { category: 'smartphone',   label: 'Smart Phone' }
+  iphone:  { keyword: 'iphone',       label: 'iPhone' },
+  ipad:    { keyword: 'ipad',         label: 'iPad' },
+  macbook: { keyword: 'macbook',      label: 'Mac' },
+  android: { keyword: 'smartphone',   label: 'Smart Phone' }
 };
 
 let cachedApiToken = null;
@@ -293,23 +293,22 @@ async function fetchAdviceCategory(categoryKey) {
   const config = categoryConfigs[categoryKey];
   if (!config) throw new Error('ไม่พบหมวดหมู่: ' + categoryKey);
   
-  console.log('🌐 กำลังดึงข้อมูล ' + config.label + ' ผ่าน API...');
+  console.log('🌐 กำลังค้นหาข้อมูล ' + config.label + ' ผ่าน API...');
   
   const token = await getApiToken();
   if (!token) throw new Error('ไม่สามารถขอ Token จากระบบได้');
 
   let allProducts = [];
   let skip = 0;
-  let total = Infinity;
-
-  while(allProducts.length < total) {
+  
+  // To avoid infinite loops, set a max of 5 pages (100 items max)
+  while(skip < 100) {
     try {
       const res = await axios.post('https://www.advice.co.th/_advice-api/api/v1.0.0/product/get', {
-        category: config.category,
-        take: 100,
+        keyword: config.keyword,
+        take: 20,
         skip: skip,
-        page: 'product',
-        group_end: false
+        page: 'product'
       }, {
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
@@ -319,25 +318,27 @@ async function fetchAdviceCategory(categoryKey) {
         timeout: 15000
       });
 
-      const data = res.data; 
-      if (data.status !== 'SUCCESS' || !data.data || !data.data.product) break;
+      const data = res.data;
+      if (!data || !data.data || !data.data.product) break;
       
-      const productObj = data.data.product;
-      if (skip === 0) total = data.data.count_product || 0;
-      if (!productObj) break;
+      const pArray = data.data.product;
+      if (!Array.isArray(pArray) || pArray.length === 0) break;
       
-      const groups = Object.values(productObj);
-      if (groups.length === 0) break;
+      let itemsAddedThisPage = 0;
       
-      groups.forEach(group => {
-        if (group.product && Array.isArray(group.product)) {
-          group.product.forEach(p => {
+      pArray.forEach(catGroup => {
+        if (catGroup.product && Array.isArray(catGroup.product)) {
+          catGroup.product.forEach(p => {
             if (categoryKey === 'android' && (p.brand || '').toUpperCase() === 'APPLE') return;
+            
+            // Check for duplicates
+            const modelCode = p.code || '-';
+            if (allProducts.some(existing => existing.modelCode === modelCode && modelCode !== '-')) return;
             
             allProducts.push({
               model: p.name || p.product || '',
               spec: p.description || p.spec || '-',
-              modelCode: p.code || '-',
+              modelCode: modelCode,
               price: p.price_sale || p.price || 0,
               priceSrp: p.price_srp || p.price || 0,
               brand: p.brand || '',
@@ -345,12 +346,13 @@ async function fetchAdviceCategory(categoryKey) {
               url: p.product_url ? 'https://www.advice.co.th/product/' + p.product_url : '',
               inStock: p.stock > 0 || p.type === 'instock'
             });
+            itemsAddedThisPage++;
           });
         }
       });
       
-      skip += 100;
-      if (groups.length < 100) break;
+      if (itemsAddedThisPage === 0) break; // End of pagination
+      skip += 20;
       
     } catch(err) {
       if (err.response && err.response.status === 401) {
