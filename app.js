@@ -428,3 +428,45 @@ window.toggleAccordion = function(btn) {
 
 // Start app
 init();
+
+
+// ==========================================
+// Copy Functionality
+// ==========================================
+window.copyIndividualPrice = function(model, price) {
+  const text = `${model}\nราคา: ฿${formatMoney(price)}`;
+  navigator.clipboard.writeText(text).then(() => {
+    alert('คัดลอกราคาเรียบร้อยแล้ว');
+  }).catch(err => {
+    console.error('Failed to copy', err);
+    alert('ไม่สามารถคัดลอกได้');
+  });
+};
+
+document.getElementById('btn-copy-all')?.addEventListener('click', () => {
+  if (products.length === 0) {
+    alert('ไม่มีข้อมูลให้คัดลอก');
+    return;
+  }
+  
+  // Filter products matching current search & sort
+  let textToCopy = 'รายการราคา ' + document.getElementById('profit-label').innerText.replace(' (บาท):', '') + '\n\n';
+  
+  const filteredProducts = products.filter(p => {
+    const q = searchQuery.toLowerCase();
+    return p.model.toLowerCase().includes(q) || (p.spec && p.spec.toLowerCase().includes(q));
+  });
+  
+  filteredProducts.forEach(p => {
+    const profit = categoryProfits[currentCategory] || 0;
+    const finalPrice = p.price + profit;
+    textToCopy += `- ${p.model}\n  ราคา: ฿${formatMoney(finalPrice)}\n`;
+  });
+  
+  navigator.clipboard.writeText(textToCopy).then(() => {
+    alert('คัดลอกราคาทั้งหมด (' + filteredProducts.length + ' รายการ) เรียบร้อยแล้ว');
+  }).catch(err => {
+    console.error('Failed to copy', err);
+    alert('ไม่สามารถคัดลอกได้');
+  });
+});
