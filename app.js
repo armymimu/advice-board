@@ -67,7 +67,7 @@ function parseProduct(p) {
   cleanName = cleanName.replace(/\s*\([^)]+\)$/, ''); 
   
   let capacity = 'N/A';
-  const capRegex = /\\b(\\d+(GB|TB))\\b|\\b(\\d+\\/\\d+(GB|TB))\\b|\\(\\d+\\+\\d+(GB|TB)\\)/i;
+  const capRegex = /\b(\d+(GB|TB))\b|\b(\d+\/\d+(GB|TB))\b|\(\d+\+\d+(GB|TB)\)/i;
   const capMatch = cleanName.match(capRegex);
   
   let color = 'Standard';
@@ -79,7 +79,7 @@ function parseProduct(p) {
     const originalCapMatch = name.match(capRegex);
     if (originalCapMatch) {
        const index = originalCapMatch.index + originalCapMatch[0].length;
-       const afterCap = name.substring(index).replace(/\\s*\\([^)]+\\)$/, '').replace(/^\\s*-\\s*/, '').trim();
+       const afterCap = name.substring(index).replace(/\s*\([^)]+\)$/, '').replace(/^\s*-\s*/, '').trim();
        if (afterCap.length > 0 && !afterCap.includes(')')) {
          color = afterCap;
          cleanName = cleanName.replace(afterCap, '');
@@ -91,7 +91,7 @@ function parseProduct(p) {
     cleanName = parts.join(' - ');
   }
   
-  let series = cleanName.trim().replace(/\\s*[-/]+\\s*$/, '').replace(/\\s+/g, ' ');
+  let series = cleanName.trim().replace(/\s*[-/]+\s*$/, '').replace(/\s+/g, ' ');
   return { series, capacity, color, price: p.price, origPrice: p.price, modelCode: p.modelCode };
 }
 
@@ -148,7 +148,7 @@ function groupProducts(items) {
 function sortCapacities(a, b) {
   const parseVal = (str) => {
     if (str.includes('TB')) return parseFloat(str) * 1024;
-    if (str.includes('GB')) return parseFloat(str.match(/\\d+/)[0]);
+    if (str.includes('GB')) return parseFloat(str.match(/\d+/)[0]);
     return 0;
   };
   return parseVal(a) - parseVal(b);
@@ -165,9 +165,31 @@ async function fetchData(category) {
     loadingState.style.display = 'block';
     errorState.style.display = 'none';
 
-    const url = \`\${baseUrl}/api/prices/\${category}\`;
-    const response = await fetch(url);
-    const data = await response.json();
+    const url = `${baseUrl}/api/prices/${category}`;
+    
+    // 60-second timeout to prevent infinite spinner
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 60000);
+    
+    let response;
+    try {
+      response = await fetch(url, { signal: controller.signal });
+    } catch(err) {
+      if (err.name === 'AbortError') {
+        throw new Error('เซิร์ฟเวอร์ไม่ตอบสนอง (หมดเวลา 60 วินาที) อาจเกิดจาก Cloudflare บล็อก กรุณาลองใหม่อีกครั้ง');
+      }
+      throw err;
+    } finally {
+      clearTimeout(timeoutId);
+    }
+    
+    const text = await response.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch(e) {
+      throw new Error('เซิร์ฟเวอร์ตอบกลับผิดพลาด: ' + text.substring(0, 100));
+    }
 
     if (data.error) throw new Error(data.error);
 
@@ -190,12 +212,12 @@ async function fetchData(category) {
   } catch (error) {
     loadingState.style.display = 'none';
     errorState.style.display = 'block';
-    errorState.innerHTML = \`
+    errorState.innerHTML = `
       <div style="font-size: 32px; margin-bottom: 16px;"><i class="fas fa-exclamation-triangle"></i></div>
       <h3>อัปเดตไม่สำเร็จ</h3>
-      <p>\${error.message}</p>
-      <button class="btn-primary" style="margin: 16px auto 0;" onclick="fetchData('\${category}')">ลองใหม่</button>
-    \`;
+      <p>${error.message}</p>
+      <button class="btn-primary" style="margin: 16px auto 0;" onclick="fetchData('${category}')">ลองใหม่</button>
+    `;
     updateStatus('อัปเดตไม่สำเร็จ', 'error');
   } finally {
     isFetching = false;
@@ -213,7 +235,7 @@ function updateStatus(text, type = '') {
   if (type === 'warning') icon = 'fa-clock';
   if (type === 'error') icon = 'fa-exclamation-circle';
   
-  statusBar.innerHTML = \`<div class="status-pill \${type}"><i class="fas \${icon}"></i> \${text}</div>\`;
+  statusBar.innerHTML = `<div class="status-pill ${type}"><i class="fas ${icon}"></i> ${text}</div>`;
 }
 
 // ==========================================
@@ -223,12 +245,12 @@ function renderProducts() {
   productsGrid.innerHTML = '';
   
   if (products.length === 0) {
-    productsGrid.innerHTML = \`
+    productsGrid.innerHTML = `
       <div class="state-view">
         <i class="fas fa-box-open" style="font-size: 32px; color: var(--text-tertiary); margin-bottom: 16px;"></i>
         <h3>ไม่มีสินค้า</h3>
         <p>ไม่พบสินค้าในหมวดหมู่นี้</p>
-      </div>\`;
+      </div>`;
     return;
   }
 
@@ -239,7 +261,7 @@ function renderProducts() {
   });
 
   if (filtered.length === 0) {
-    productsGrid.innerHTML = \`<div class="state-view"><h3>ไม่พบสินค้าที่ค้นหา</h3></div>\`;
+    productsGrid.innerHTML = `<div class="state-view"><h3>ไม่พบสินค้าที่ค้นหา</h3></div>`;
     return;
   }
 
@@ -250,43 +272,43 @@ function renderProducts() {
     card.className = 'series-card';
     
     // Header
-    let html = \`
+    let html = `
       <div class="series-header">
         <div class="series-title">
-          <h2>\${escapeHTML(group.series)}</h2>
-          <span class="series-badge">\${group.capacities.length} รุ่นย่อย</span>
+          <h2>${escapeHTML(group.series)}</h2>
+          <span class="series-badge">${group.capacities.length} รุ่นย่อย</span>
         </div>
         <div class="toolbar-actions" style="padding:0">
-          <button class="btn-secondary" onclick="copySeries('\${escapeHTML(group.series.replace(/'/g, "\\'"))}')">
+          <button class="btn-secondary" onclick="copySeries('${escapeHTML(group.series.replace(/'/g, "\\'"))}')">
             <i class="fas fa-copy"></i> คัดลอกรุ่นนี้
           </button>
         </div>
       </div>
-    \`;
+    `;
     
     // Capacities
     group.capacities.forEach(cap => {
       const finalPrice = cap.price + globalProfit;
       
-      html += \`
+      html += `
         <div class="capacity-row">
           <div class="cap-info">
-            <div class="cap-name">\${cap.capacity} \${cap.multiplePrices ? '<span style="font-size:12px;color:var(--text-tertiary);font-weight:400">(แยกตามสี)</span>' : ''}</div>
+            <div class="cap-name">${cap.capacity} ${cap.multiplePrices ? '<span style="font-size:12px;color:var(--text-tertiary);font-weight:400">(แยกตามสี)</span>' : ''}</div>
             <div class="cap-colors">
-              \${cap.colors.split(', ').map(c => \`<span class="color-chip">\${escapeHTML(c)}</span>\`).join('')}
+              ${cap.colors.split(', ').map(c => `<span class="color-chip">${escapeHTML(c)}</span>`).join('')}
             </div>
           </div>
           <div class="cap-price-area">
             <div class="price-display">
-              <div class="price-final">฿\${formatMoney(finalPrice)}</div>
-              <div class="price-detail">ทุน ฿\${formatMoney(cap.price)} + กำไร ฿\${formatMoney(globalProfit)}</div>
+              <div class="price-final">฿${formatMoney(finalPrice)}</div>
+              <div class="price-detail">ทุน ฿${formatMoney(cap.price)} + กำไร ฿${formatMoney(globalProfit)}</div>
             </div>
-            <button class="btn-icon" title="คัดลอกราคาความจุนี้" onclick="copySingle(this, '\${escapeHTML(group.series.replace(/'/g, "\\'"))}', '\${cap.capacity}', \${finalPrice}, '\${escapeHTML(cap.multiplePrices ? cap.colors : '')}')">
+            <button class="btn-icon" title="คัดลอกราคาความจุนี้" onclick="copySingle(this, '${escapeHTML(group.series.replace(/'/g, "\\'"))}', '${cap.capacity}', ${finalPrice}, '${escapeHTML(cap.multiplePrices ? cap.colors : '')}')">
               <i class="fas fa-copy"></i>
             </button>
           </div>
         </div>
-      \`;
+      `;
     });
     
     card.innerHTML = html;
@@ -325,8 +347,8 @@ async function doCopy(btnElement, text, successMsg) {
 }
 
 window.copySingle = function(btn, series, capacity, finalPrice, colors) {
-  let text = \`\${series}\\n\${capacity} — ฿\${formatMoney(finalPrice)}\`;
-  if (colors) text += \` (\${colors})\`;
+  let text = `${series}\n${capacity} — ฿${formatMoney(finalPrice)}`;
+  if (colors) text += ` (${colors})`;
   doCopy(btn, text, 'คัดลอกเรียบร้อย');
 };
 
@@ -338,28 +360,28 @@ window.copySeries = function(seriesName) {
   
   if (!group) return;
   
-  let text = \`\${group.series}\\n\`;
+  let text = `${group.series}\n`;
   group.capacities.forEach(cap => {
     const finalPrice = cap.price + globalProfit;
-    text += \`\${cap.capacity} — ฿\${formatMoney(finalPrice)}\`;
-    if (cap.multiplePrices) text += \` (\${cap.colors})\`;
-    text += '\\n';
+    text += `${cap.capacity} — ฿${formatMoney(finalPrice)}`;
+    if (cap.multiplePrices) text += ` (${cap.colors})`;
+    text += '\n';
   });
   
-  doCopy(null, text.trim(), \`คัดลอก \${group.series} เรียบร้อยแล้ว\`);
+  doCopy(null, text.trim(), `คัดลอก ${group.series} เรียบร้อยแล้ว`);
 };
 
 function buildTextFromGrouped(grouped) {
   let text = '';
   grouped.forEach(g => {
-    text += \`\${g.series}\\n\`;
+    text += `${g.series}\n`;
     g.capacities.forEach(cap => {
       const finalPrice = cap.price + globalProfit;
-      text += \`\${cap.capacity} — ฿\${formatMoney(finalPrice)}\`;
-      if (cap.multiplePrices) text += \` (\${cap.colors})\`;
-      text += '\\n';
+      text += `${cap.capacity} — ฿${formatMoney(finalPrice)}`;
+      if (cap.multiplePrices) text += ` (${cap.colors})`;
+      text += '\n';
     });
-    text += '\\n';
+    text += '\n';
   });
   return text.trim();
 }
@@ -373,7 +395,7 @@ function copyVisibleProducts() {
   
   const grouped = groupProducts(filtered);
   const text = buildTextFromGrouped(grouped);
-  doCopy(null, text, \`คัดลอกผลที่แสดง (\${grouped.length} รุ่น) เรียบร้อยแล้ว\`);
+  doCopy(null, text, `คัดลอกผลที่แสดง (${grouped.length} รุ่น) เรียบร้อยแล้ว`);
 }
 
 async function copyAllProducts() {
@@ -390,8 +412,9 @@ async function copyAllProducts() {
       allItems.push(...allCategoriesCache[cat]);
     } else {
       try {
-        const res = await fetch(\`\${baseUrl}/api/prices/\${cat}\`);
-        const data = await res.json();
+        const res = await fetch(`${baseUrl}/api/prices/${cat}`);
+        const text = await res.text();
+        const data = JSON.parse(text);
         if (data.items) {
           allCategoriesCache[cat] = data.items;
           allItems.push(...data.items);
@@ -410,7 +433,7 @@ async function copyAllProducts() {
   const grouped = groupProducts(allItems);
   const text = buildTextFromGrouped(grouped);
   
-  await doCopy(null, text, \`คัดลอกทุกรุ่น (\${grouped.length} ตระกูล) เรียบร้อยแล้ว\`);
+  await doCopy(null, text, `คัดลอกทุกรุ่น (${grouped.length} ตระกูล) เรียบร้อยแล้ว`);
   btn.innerHTML = origText;
 }
 
