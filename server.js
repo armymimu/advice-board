@@ -63,7 +63,7 @@ const KEYWORDS = {
     'iphone 16 pro max', 'iphone 16 pro', 'iphone 16 plus', 'iphone 16',
     'iphone 15 pro max', 'iphone 15 pro', 'iphone 15 plus', 'iphone 15',
     'iphone 14 pro max', 'iphone 14 pro', 'iphone 14 plus', 'iphone 14',
-    'iphone 13', 'iphone se'
+    'iphone 13', 'iphone se', 'iphone air'
   ],
   ipad: [
     'ipad pro 11', 'ipad pro 13', 'ipad pro 12.9',
@@ -86,7 +86,8 @@ const BAD_WORDS = [
   'airpods', 'earpods', 'watch', 'strap', 'สายนาฬิกา', 'apple tv',
   'care+', 'applecare', 'ประกัน', 'warranty', 'airtag',
   'ลำโพง', 'speaker', 'ขาตั้ง', 'stand', 'หูฟัง', 'headphone', 'earbud',
-  'charger', 'power bank', 'แบตสำรอง', 'magsafe battery'
+  'charger', 'power bank', 'แบตสำรอง', 'magsafe battery',
+  'flash drive', 'sandisk', 'phone drive', 'usb', 'lens', 'ปกป้อง'
 ];
 
 // ─── Fetch one keyword via search API ───
@@ -192,120 +193,6 @@ function processItems(rawItems, categoryKey) {
 }
 
 // ─── Main fetch per category ───
-async function fetchAdviceCategory(categoryKey) {
-  let allProducts = [];
-  const token = await getApiToken();
-  if (!token) throw new Error('ไม่สามารถขอ Token จากระบบได้');
-
-  let retryCount = 0;
-  const isSearchApi = ['iphone', 'ipad', 'macbook'].includes(categoryKey);
-  
-  let keywords = [categoryKey];
-  if (categoryKey === 'iphone') {
-    keywords = ['iphone 17 pro max', 'iphone 17 pro', 'iphone 17 plus', 'iphone 17', 'iphone 16 pro max', 'iphone 16 pro', 'iphone 16 plus', 'iphone 16', 'iphone 15 pro max', 'iphone 15 pro', 'iphone 15 plus', 'iphone 15', 'iphone 14', 'iphone 13', 'iphone se'];
-  } else if (categoryKey === 'ipad') {
-    keywords = ['ipad pro 11', 'ipad pro 13', 'ipad pro 12.9', 'ipad pro m5', 'ipad pro m4', 'ipad air 11', 'ipad air 13', 'ipad air 10.9', 'ipad air m4', 'ipad 11', 'ipad 10.9', 'ipad 10.2', 'ipad mini 7', 'ipad mini 6'];
-  } else if (categoryKey === 'macbook') {
-    keywords = ['macbook pro 14', 'macbook pro 16', 'macbook pro 13', 'macbook air 15', 'macbook air 13', 'macbook air m4', 'macbook air m3', 'macbook air m2', 'macbook air m1', 'imac', 'mac mini', 'mac studio'];
-  }
-
-  // If android, we use standard pagination loop
-  let paginationList = isSearchApi ? keywords : [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200];
-
-  for (let param of paginationList) {
-    try {
-      let endpoint = 'https://www.advice.co.th/_advice-api/api/v1.0.0/product/get';
-      let reqPayload = {};
-      
-      if (isSearchApi) {
-        endpoint = 'https://www.advice.co.th/_advice-api/api/v1.0.0/product/search';
-        reqPayload = {
-          keyword: param,
-          sort: 'price_desc', // THIS IS CRITICAL TO PUSH PHONES ABOVE CASES!
-          order: 'popular'
-        };
-      } else {
-        reqPayload = {
-          category: 'smartphone-tablet',
-          category_sub: 'smartphone',
-          group_end: true,
-          take: 100,
-          skip: param,
-          page: 'product'
-        };
-      }
-
-      await new Promise(r => setTimeout(r, 1000));
-      
-      const res = await axios.post(endpoint, reqPayload, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          'Accept': 'application/json, text/plain, */*',
-          'Accept-Language': 'th-TH,th;q=0.9,en-US;q=0.8,en;q=0.7',
-          'Authorization': 'Bearer ' + token,
-          'Content-Type': 'application/json'
-        },
-        timeout: 15000
-      });
-
-      const data = res.data;
-      if (!data || !data.data || !data.data.product) {
-         if (!isSearchApi) break; else continue;
-      }
-      
-      const pObj = data.data.product;
-      const groups = Object.values(pObj);
-      if (groups.length === 0) {
-         if (!isSearchApi) break; else continue;
-      }
-      
-      let itemsReturnedThisPage = 0;
-      groups.forEach(group => {
-        if (group.product && Array.isArray(group.product)) {
-          itemsReturnedThisPage += group.product.length;
-          group.product.forEach(p => {
-            if (categoryKey === 'android' && (p.brand || '').toUpperCase() === 'APPLE') return;
-            
-            const modelCode = p.code || '-';
-            if (allProducts.some(existing => existing.modelCode === modelCode && modelCode !== '-')) return;
-            
-            const nameLow = (p.name || p.product || '').toLowerCase();
-            
-            const badWords = ['case', 'เคส', 'film', 'ฟิล์ม', 'glass', 'กระจก', 'magsafe', 'cable', 'สายชาร์จ', 'สาย', 'adapter', 'หัวชาร์จ', 'อะแดปเตอร์', 'อะแดปปเตอร์', 'wallet', 'pencil', 'ปากกา', 'keyboard', 'คีย์บอร์ด', 'folio', 'mouse', 'เมาส์', 'trackpad', 'แทร็คแพด', 'hub', 'dongle', 'dock', 'ซอง', 'กระเป๋า', 'bag', 'sleeve', 'airpods', 'earpods', 'watch', 'strap', 'สายนาฬิกา', 'apple tv', 'care+', 'applecare', 'ประกัน', 'warranty', 'smart tag', 'airtag', 'ซิม', 'sim', 'ลำโพง', 'speaker', 'ขาตั้ง', 'stand', 'ชาร์จไร้สาย', 'wireless charger', 'หูฟัง', 'headphone', 'earbud'];
-            if (badWords.some(w => nameLow.includes(w))) return;
-
-            if (categoryKey === 'iphone' && !nameLow.includes('iphone')) return;
-            if (categoryKey === 'ipad' && !nameLow.includes('ipad')) return;
-            if (categoryKey === 'macbook' && !(nameLow.includes('macbook') || nameLow.includes('mac ') || nameLow.includes('imac') || nameLow.includes('mac mini') || nameLow.includes('mac studio'))) return;
-            
-            allProducts.push({
-              model: p.name || p.product || '',
-              spec: p.spec || '',
-              price: p.price_sale || p.price || 0,
-              modelCode: modelCode,
-              brand: p.brand || '',
-              image: p.image || p.pic_url || '',
-              url: p.product_url ? 'https://www.advice.co.th/product/' + p.product_url : '',
-              inStock: p.stock > 0 || p.type === 'instock'
-            });
-          });
-        }
-      });
-      
-      if (!isSearchApi && itemsReturnedThisPage === 0) break;
-      if (!isSearchApi && itemsReturnedThisPage < 100 && param !== 0) break;
-      
-    } catch(err) {
-      if (err.response && err.response.status === 401) {
-        cachedApiToken = null; 
-      }
-      retryCount++;
-      if (retryCount > 3) throw err;
-      await new Promise(r => setTimeout(r, 2000));
-    }
-  }
-  return allProducts;
-}
 async function fetchAdviceCategory(categoryKey) {
   const token = await getApiToken();
   let rawItems;
