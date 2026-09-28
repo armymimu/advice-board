@@ -7,73 +7,191 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const CACHE_FILE = path.join(__dirname, '.product_cache.json');
+const CACHE_TTL = 30 * 60 * 1000; // 30 min — mobile hits cache more often
 
 app.use(cors());
 app.use(express.static('.'));
 
-// ==========================================
-// Caching Management
-// ==========================================
+// ─── Cache ───
 let productCache = {};
 
 function loadProductCache() {
   try {
     if (fs.existsSync(CACHE_FILE)) {
-      const data = fs.readFileSync(CACHE_FILE, 'utf8');
-      productCache = JSON.parse(data);
+      productCache = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf8'));
     }
-  } catch (error) {
-    console.error('Failed to load product cache:', error.message);
+  } catch (e) {
+    console.error('Cache load error:', e.message);
   }
 }
 
 function saveProductCache() {
   try {
     fs.writeFileSync(CACHE_FILE, JSON.stringify(productCache, null, 2), 'utf8');
-  } catch (error) {
-    console.error('Failed to save product cache:', error.message);
+  } catch (e) {
+    console.error('Cache save error:', e.message);
   }
 }
 
 loadProductCache();
 
-// ==========================================
-// Advice API Fetching (Axios - No Puppeteer needed)
-// ==========================================
-const categoryConfigs = {
-  iphone:  { payload: { category: 'apple-product', category_sub: 'iphone', group_end: true }, label: 'iPhone' },
-  ipad:    { payload: { category: 'apple-product', category_sub: 'ipad', group_end: true }, label: 'iPad' },
-  macbook: { payload: { category: 'apple-product', category_sub: 'mac', group_end: true }, label: 'Mac' },
-  android: { payload: { category: 'smartphone-tablet', category_sub: 'smartphone', group_end: true }, label: 'Smart Phone' }
-};
-
+// ─── Token ───
 let cachedApiToken = null;
 
 async function getApiToken() {
   if (cachedApiToken) return cachedApiToken;
-  try {
-    const res = await axios.get('https://www.advice.co.th/', {
-      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-          'Accept-Language': 'th-TH,th;q=0.9,en-US;q=0.8,en;q=0.7',
-          'Sec-Ch-Ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
-          'Sec-Ch-Ua-Mobile': '?0',
-          'Sec-Ch-Ua-Platform': '"Windows"' },
-      timeout: 10000
-    });
-    if (res.headers['set-cookie']) {
-      const tokenCookie = res.headers['set-cookie'].find(c => c.startsWith('user_token='));
-      if (tokenCookie) {
-        cachedApiToken = tokenCookie.split(';')[0].split('=')[1];
-        return cachedApiToken;
-      }
-    }
-  } catch(e) {
-    console.error('Failed to get token:', e.message);
+  const res = await axios.get('https://www.advice.co.th/', {
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+      'Accept-Language': 'th-TH,th;q=0.9,en-US;q=0.8,en;q=0.7',
+    },
+    timeout: 12000
+  });
+  const tokenCookie = res.headers['set-cookie']?.find(c => c.startsWith('user_token='));
+  if (tokenCookie) {
+    cachedApiToken = tokenCookie.split(';')[0].split('=')[1];
+    return cachedApiToken;
   }
-  return null;
+  throw new Error('No user_token cookie from advice.co.th');
 }
 
+// ─── Keywords per category ───
+const KEYWORDS = {
+  iphone: [
+    'iphone 17 pro max', 'iphone 17 pro', 'iphone 17 plus', 'iphone 17', 'iphone 17e',
+    'iphone 16 pro max', 'iphone 16 pro', 'iphone 16 plus', 'iphone 16',
+    'iphone 15 pro max', 'iphone 15 pro', 'iphone 15 plus', 'iphone 15',
+    'iphone 14 pro max', 'iphone 14 pro', 'iphone 14 plus', 'iphone 14',
+    'iphone 13', 'iphone se'
+  ],
+  ipad: [
+    'ipad pro 11', 'ipad pro 13', 'ipad pro 12.9',
+    'ipad air 11', 'ipad air 13', 'ipad air 10.9',
+    'ipad mini 7', 'ipad mini 6',
+    'ipad 10.9', 'ipad 10.2', 'ipad a16'
+  ],
+  macbook: [
+    'macbook pro 14', 'macbook pro 16', 'macbook pro 13',
+    'macbook air 15', 'macbook air 13', 'macbook air m1',
+    'imac 24', 'mac mini', 'mac studio'
+  ]
+};
+
+const BAD_WORDS = [
+  'case', 'เคส', 'film', 'ฟิล์ม', 'กระจก', 'cable', 'สายชาร์จ',
+  'adapter', 'หัวชาร์จ', 'อะแดปเตอร์', 'wallet', 'pencil', 'ปากกา',
+  'keyboard', 'คีย์บอร์ด', 'folio', 'mouse', 'เมาส์', 'trackpad',
+  'hub', 'dongle', 'dock', 'ซอง', 'กระเป๋า', 'bag', 'sleeve',
+  'airpods', 'earpods', 'watch', 'strap', 'สายนาฬิกา', 'apple tv',
+  'care+', 'applecare', 'ประกัน', 'warranty', 'airtag',
+  'ลำโพง', 'speaker', 'ขาตั้ง', 'stand', 'หูฟัง', 'headphone', 'earbud',
+  'charger', 'power bank', 'แบตสำรอง', 'magsafe battery'
+];
+
+// ─── Fetch one keyword via search API ───
+async function searchOne(keyword, token) {
+  const res = await axios.post(
+    'https://www.advice.co.th/_advice-api/api/v1.0.0/product/search',
+    { keyword, sort: 'desc', order: 'popular' },
+    {
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Accept': 'application/json, text/plain, */*',
+        'Accept-Language': 'th-TH,th;q=0.9,en-US;q=0.8,en;q=0.7',
+      },
+      timeout: 15000
+    }
+  );
+  const groups = res.data?.data?.product || [];
+  return groups.flatMap(g => g.product || []);
+}
+
+// ─── Fetch android via paginated /get API ───
+async function fetchAndroid(token) {
+  const allRaw = [];
+  const skips = [0, 100, 200, 300, 400, 500, 600, 700, 800];
+  for (const skip of skips) {
+    try {
+      const res = await axios.post(
+        'https://www.advice.co.th/_advice-api/api/v1.0.0/product/get',
+        { category: 'smartphone-tablet', category_sub: 'smartphone', group_end: true, take: 100, skip, page: 'product' },
+        {
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json',
+            'User-Agent': 'Mozilla/5.0',
+          },
+          timeout: 15000
+        }
+      );
+      const pObj = res.data?.data?.product;
+      if (!pObj) break;
+      const groups = Array.isArray(pObj) ? pObj : Object.values(pObj);
+      const items = groups.flatMap(g => g.product || []);
+      if (items.length === 0) break;
+      allRaw.push(...items);
+      if (items.length < 100) break;
+    } catch (e) {
+      break;
+    }
+  }
+  return allRaw;
+}
+
+// ─── Parallel keyword fetch (batch 4 at a time) ───
+async function fetchInBatches(keywords, token, batchSize = 4) {
+  const allRaw = [];
+  for (let i = 0; i < keywords.length; i += batchSize) {
+    const batch = keywords.slice(i, i + batchSize);
+    const results = await Promise.allSettled(batch.map(kw => searchOne(kw, token)));
+    results.forEach(r => { if (r.status === 'fulfilled') allRaw.push(...r.value); });
+    // 400ms pause between batches to avoid rate limit
+    if (i + batchSize < keywords.length) await new Promise(r => setTimeout(r, 400));
+  }
+  return allRaw;
+}
+
+// ─── Filter & dedup raw items ───
+function processItems(rawItems, categoryKey) {
+  const seen = new Set();
+  const result = [];
+
+  for (const p of rawItems) {
+    if (categoryKey === 'android' && (p.brand || '').toUpperCase() === 'APPLE') continue;
+
+    const code = p.code || '';
+    if (code && seen.has(code)) continue;
+
+    const nameLow = (p.product || p.name || '').toLowerCase();
+    if (!nameLow) continue;
+    if (BAD_WORDS.some(w => nameLow.includes(w))) continue;
+
+    if (categoryKey === 'iphone'  && !nameLow.includes('iphone')) continue;
+    if (categoryKey === 'ipad'    && !nameLow.includes('ipad')) continue;
+    if (categoryKey === 'macbook' && !['macbook', 'imac', 'mac mini', 'mac studio', 'mac pro'].some(w => nameLow.includes(w))) continue;
+    if (categoryKey === 'android' && (nameLow.includes('iphone') || nameLow.includes('ipad'))) continue;
+
+    if (code) seen.add(code);
+    result.push({
+      model:     p.product || p.name || '',
+      spec:      p.spec || '',
+      price:     p.price_sale || p.price || 0,
+      priceSrp:  p.price_srp || 0,
+      modelCode: code || '-',
+      brand:     p.brand || '',
+      image:     p.pic_url || p.image || '',
+      url:       p.product_url ? 'https://www.advice.co.th/product/' + p.product_url : '',
+      inStock:   p.type === 'instock',
+      promotion: p.product_promotion || ''
+    });
+  }
+  return result;
+}
+
+// ─── Main fetch per category ───
 async function fetchAdviceCategory(categoryKey) {
   let allProducts = [];
   const token = await getApiToken();
@@ -84,11 +202,11 @@ async function fetchAdviceCategory(categoryKey) {
   
   let keywords = [categoryKey];
   if (categoryKey === 'iphone') {
-    keywords = ['iphone 16 pro max', 'iphone 16 pro', 'iphone 16 plus', 'iphone 16', 'iphone 15 pro max', 'iphone 15 pro', 'iphone 15 plus', 'iphone 15', 'iphone 14 pro max', 'iphone 14 pro', 'iphone 14 plus', 'iphone 14', 'iphone 13', 'iphone se'];
+    keywords = ['iphone 17 pro max', 'iphone 17 pro', 'iphone 17 plus', 'iphone 17', 'iphone 16 pro max', 'iphone 16 pro', 'iphone 16 plus', 'iphone 16', 'iphone 15 pro max', 'iphone 15 pro', 'iphone 15 plus', 'iphone 15', 'iphone 14', 'iphone 13', 'iphone se'];
   } else if (categoryKey === 'ipad') {
-    keywords = ['ipad pro 11', 'ipad pro 13', 'ipad pro 12.9', 'ipad air 11', 'ipad air 13', 'ipad air 10.9', 'ipad 11 a16', 'ipad 10.9', 'ipad 10.2', 'ipad mini 7', 'ipad mini 6'];
+    keywords = ['ipad pro 11', 'ipad pro 13', 'ipad pro 12.9', 'ipad pro m5', 'ipad pro m4', 'ipad air 11', 'ipad air 13', 'ipad air 10.9', 'ipad air m4', 'ipad 11', 'ipad 10.9', 'ipad 10.2', 'ipad mini 7', 'ipad mini 6'];
   } else if (categoryKey === 'macbook') {
-    keywords = ['macbook pro 14', 'macbook pro 16', 'macbook pro 13', 'macbook air 15', 'macbook air 13', 'macbook air m1', 'imac 24', 'mac mini', 'mac studio'];
+    keywords = ['macbook pro 14', 'macbook pro 16', 'macbook pro 13', 'macbook air 15', 'macbook air 13', 'macbook air m4', 'macbook air m3', 'macbook air m2', 'macbook air m1', 'imac', 'mac mini', 'mac studio'];
   }
 
   // If android, we use standard pagination loop
@@ -103,7 +221,7 @@ async function fetchAdviceCategory(categoryKey) {
         endpoint = 'https://www.advice.co.th/_advice-api/api/v1.0.0/product/search';
         reqPayload = {
           keyword: param,
-          sort: 'desc',
+          sort: 'price_desc', // THIS IS CRITICAL TO PUSH PHONES ABOVE CASES!
           order: 'popular'
         };
       } else {
@@ -117,7 +235,7 @@ async function fetchAdviceCategory(categoryKey) {
         };
       }
 
-      await new Promise(r => setTimeout(r, 1000)); // Reduced to 1s to make it slightly faster
+      await new Promise(r => setTimeout(r, 1000));
       
       const res = await axios.post(endpoint, reqPayload, {
         headers: {
@@ -188,103 +306,121 @@ async function fetchAdviceCategory(categoryKey) {
   }
   return allProducts;
 }
+async function fetchAdviceCategory(categoryKey) {
+  const token = await getApiToken();
+  let rawItems;
 
-// ==========================================
-// API Routes
-// ==========================================
-app.get('/api/prices/:category', async (req, res) => {
-  const category = req.params.category;
-  const config = categoryConfigs[category];
+  if (categoryKey === 'android') {
+    rawItems = await fetchAndroid(token);
+  } else {
+    const keywords = KEYWORDS[categoryKey] || [categoryKey];
+    rawItems = await fetchInBatches(keywords, token, 4);
+  }
 
-  if (!config) return res.status(400).json({ error: 'ไม่พบหมวดหมู่นี้' });
+  const items = processItems(rawItems, categoryKey);
+  console.log(`  [${categoryKey}] raw=${rawItems.length} → filtered=${items.length}`);
+  return items;
+}
 
-  const cached = productCache[category];
-  const CACHE_TTL = 5 * 60 * 1000;
-  
-  const hasCache = cached && cached.items && cached.items.length > 0;
-  const isFresh = hasCache && (Date.now() - cached.fetchedAt) < CACHE_TTL;
+// ─── Background refresh ───
+const refreshing = new Set();
 
-  const triggerBackgroundRefresh = async () => {
-    try {
-      console.log('\\n🔄 กำลังดึงข้อมูลสด ' + config.label + ' เบื้องหลัง...');
-      const items = await fetchAdviceCategory(category);
-
-      if (items && items.length > 0) {
-        productCache[category] = { items, fetchedAt: Date.now(), lastError: null };
-        saveProductCache();
-        console.log('✅ อัปเดต ' + config.label + ' เบื้องหลังสำเร็จ: ' + items.length + ' รุ่น');
-      } else {
+async function backgroundRefresh(category) {
+  if (refreshing.has(category)) return;
+  refreshing.add(category);
+  try {
+    console.log(`\n🔄 Refreshing ${category}...`);
+    const items = await fetchAdviceCategory(category);
+    if (items.length > 0) {
+      productCache[category] = { items, fetchedAt: Date.now(), lastError: null };
+      saveProductCache();
+      console.log(`✅ ${category}: ${items.length} items cached`);
+    } else {
+      if (!productCache[category]) {
         productCache[category] = { items: [], fetchedAt: Date.now(), lastError: 'API returned 0 items' };
       }
-    } catch (error) {
-      console.error('❌ Background fetch error for ' + category + ':', error.message);
-      productCache[category] = { items: [], fetchedAt: Date.now(), lastError: error.message };
+      console.log(`⚠️  ${category}: 0 items returned (kept old cache)`);
     }
-  };
+  } catch (e) {
+    console.error(`❌ ${category} fetch error:`, e.message);
+    if (!productCache[category]) {
+      productCache[category] = { items: [], fetchedAt: Date.now(), lastError: e.message };
+    }
+  } finally {
+    refreshing.delete(category);
+  }
+}
+
+// ─── Startup warm-up: refresh any stale/missing cache ───
+async function warmupCache() {
+  console.log('\n🚀 Warming up cache on startup...');
+  const categories = ['iphone', 'ipad', 'macbook', 'android'];
+  for (const cat of categories) {
+    const cached = productCache[cat];
+    const isStale = !cached || !cached.items?.length || (Date.now() - cached.fetchedAt) > CACHE_TTL;
+    if (isStale) {
+      await backgroundRefresh(cat);
+    } else {
+      console.log(`  [${cat}] cache ok (${cached.items.length} items)`);
+    }
+  }
+  console.log('✅ Warmup done\n');
+}
+
+// ─── Routes ───
+const CATEGORIES = { iphone: 'iPhone', ipad: 'iPad', macbook: 'Mac', android: 'Smart Phone' };
+
+app.get('/api/prices/:category', async (req, res) => {
+  const category = req.params.category;
+  if (!CATEGORIES[category]) return res.status(400).json({ error: 'ไม่พบหมวดหมู่นี้' });
+
+  const cached = productCache[category];
+  const hasCache = cached?.items?.length > 0;
+  const isFresh = hasCache && (Date.now() - cached.fetchedAt) < CACHE_TTL;
 
   if (hasCache) {
-    if (!isFresh) {
-      triggerBackgroundRefresh();
-    }
-    return res.json({ 
-      items: cached.items, 
-      total: cached.items.length, 
-      cached: true, 
-      stale: !isFresh,
-      fetchedAt: cached.fetchedAt 
-    });
+    if (!isFresh) backgroundRefresh(category); // fire-and-forget, update in background
+    return res.json({ items: cached.items, total: cached.items.length, cached: true, stale: !isFresh, fetchedAt: cached.fetchedAt });
   }
 
-  try {
-    console.log('\\n🔍 ไม่มีแคช กำลังดึงข้อมูล ' + config.label + ' ครั้งแรก...');
-    await triggerBackgroundRefresh();
-    
-    const newCache = productCache[category];
-    if (newCache && newCache.items && newCache.items.length > 0) {
-      res.json({ items: newCache.items, total: newCache.items.length, cached: false, stale: false, fetchedAt: newCache.fetchedAt });
-    } else {
-      res.status(500).json({ error: newCache && newCache.lastError ? newCache.lastError : 'ดึงข้อมูลไม่สำเร็จ' });
-    }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  // No cache at all — must wait for first fetch (happens at startup, should be rare)
+  await backgroundRefresh(category);
+  const newCache = productCache[category];
+  if (newCache?.items?.length > 0) {
+    return res.json({ items: newCache.items, total: newCache.items.length, cached: false, stale: false, fetchedAt: newCache.fetchedAt });
   }
+  return res.status(500).json({ error: newCache?.lastError || 'ดึงข้อมูลไม่สำเร็จ กรุณาลองใหม่' });
 });
 
-// Force update route
+app.get('/api/health', (req, res) => {
+  const summary = {};
+  Object.keys(CATEGORIES).forEach(cat => {
+    const c = productCache[cat];
+    summary[cat] = { count: c?.items?.length || 0, age: c ? Math.round((Date.now() - c.fetchedAt) / 1000) + 's' : 'none' };
+  });
+  res.json({ status: 'ok', cache: summary, uptime: Math.floor(process.uptime()) + 's' });
+});
+
 app.post('/api/update', async (req, res) => {
-  try {
-    const categoryConfigsKeys = Object.keys(categoryConfigs);
-    const results = {};
-    
-    for (const cat of categoryConfigsKeys) {
-      try {
-        const items = await fetchAdviceCategory(cat);
-        if (items && items.length > 0) {
-          productCache[cat] = { items, fetchedAt: Date.now() };
-          results[cat] = items.length;
-        }
-      } catch (err) {
-        console.error('Update error for ' + cat + ':', err);
-      }
-    }
-    
-    saveProductCache();
-    res.json({ success: true, updated: results });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+  const results = {};
+  for (const cat of Object.keys(CATEGORIES)) {
+    await backgroundRefresh(cat);
+    results[cat] = productCache[cat]?.items?.length || 0;
   }
+  res.json({ success: true, updated: results });
 });
-
 
 app.get('/api/debug', async (req, res) => {
   try {
-    const r1 = await axios.get('https://www.advice.co.th/', { headers: { 'User-Agent': 'Mozilla/5.0' }, timeout: 10000 });
-    res.json({ success: true, status: r1.status, headers: r1.headers['set-cookie'] ? 'Has Cookies' : 'No Cookies' });
+    const r = await axios.get('https://www.advice.co.th/', { headers: { 'User-Agent': 'Mozilla/5.0' }, timeout: 10000 });
+    res.json({ success: true, status: r.status, hasCookie: !!(r.headers['set-cookie']?.find(c => c.startsWith('user_token='))) });
   } catch (e) {
-    res.json({ success: false, error: e.message, code: e.code, status: e.response ? e.response.status : null });
+    res.json({ success: false, error: e.message });
   }
 });
 
+// ─── Start ───
 app.listen(PORT, () => {
-  console.log('🚀 API Server รันแล้วที่ port ' + PORT);
+  console.log(`🚀 Server on port ${PORT}`);
+  warmupCache(); // start cache build immediately
 });
