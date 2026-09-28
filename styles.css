@@ -1,40 +1,18 @@
 :root {
-  /* Colors - MUJI x iOS Minimal */
-  --bg-canvas: #FAF9F7;
-  --bg-surface: #FFFFFF;
-  --bg-subtle: #F2F0ED;
-  
-  --text-primary: #3C3A39;
-  --text-secondary: #7A7673;
-  --text-tertiary: #B0ABA6;
-  
-  --accent: #5C82B8; /* Muted Korean blue */
-  --accent-tint: #EEF3FA;
-  --accent-hover: #486E9E;
-  
-  --success: #34C759;
-  --danger: #FF3B30;
-  
-  --border-divider: rgba(60, 58, 57, 0.08);
-  --border-light: rgba(60, 58, 57, 0.04);
-
-  /* Shadows - Delicate */
-  --shadow-sm: 0 1px 2px rgba(60, 58, 57, 0.03);
-  --shadow-card: 0 8px 30px rgba(60, 58, 57, 0.04), 0 2px 8px rgba(60, 58, 57, 0.02);
-  --shadow-hover: 0 12px 40px rgba(60, 58, 57, 0.06), 0 4px 16px rgba(60, 58, 57, 0.03);
-
-  /* Radius */
-  --radius-sm: 10px;
-  --radius-md: 16px;
+  --primary-color: #A17C6B;
+  --primary-hover: #8B6554;
+  --bg-color: #FDF9F6;
+  --surface-color: #FFFFFF;
+  --text-main: #4A3C31;
+  --text-muted: #8E7C71;
+  --border-color: #EEDDD5;
+  --accent-color: #E2C0BF;
+  --success-color: #8C9970;
+  --shadow-sm: 0 2px 8px rgba(161, 124, 107, 0.08);
+  --shadow-md: 0 8px 24px rgba(161, 124, 107, 0.12);
   --radius-lg: 24px;
-  --radius-full: 9999px;
-
-  /* Typography */
-  --font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", "Sukhumvit Set", sans-serif;
-  
-  /* Animations */
-  --spring: cubic-bezier(0.32, 0.72, 0, 1);
-  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --radius-md: 16px;
+  --radius-sm: 10px;
 }
 
 * {
